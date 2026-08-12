@@ -360,7 +360,6 @@ p { max-width: 62ch; }
 .card--lg { grid-column: span 7; }
 .card--sm { grid-column: span 5; }
 .card--sm .frame { margin-top: clamp(1.25rem, 2.5vw, 2.75rem); }
-.card--offset { margin-top: clamp(2.5rem, 6vw, 6rem); }
 
 .card .frame img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
 .card--tall .frame img { aspect-ratio: 4 / 5; }
