@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Kizlo Studio · Edit &amp; Export</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ivory:#FAF7F2; --ink:#1C1A17; --body:#4A463F; --muted:#6E6659;
+    --hairline:#E3DED4; --bronze:#8A6D4B; --espresso:#23211C;
+    --bar:64px; --side:310px;
+    --sans:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+    --serif:Fraunces,Georgia,serif;
+  }
+  html,body{height:100%}
+  body{font-family:var(--sans);background:var(--espresso);color:var(--ivory);overflow:hidden;font-size:14px}
+  button,select,input,textarea{font:inherit;color:inherit}
+  button{cursor:pointer;background:none;border:none}
+
+  /* ---------- top bar ---------- */
+  .bar{height:var(--bar);display:flex;align-items:center;gap:14px;padding:0 16px;
+       background:var(--espresso);border-bottom:1px solid #3A362F;position:relative;z-index:20}
+  .brand{font-family:var(--serif);font-size:17px;letter-spacing:.01em;white-space:nowrap}
+  .brand span{display:block;font-family:var(--sans);font-size:8.5px;letter-spacing:.3em;
+              text-transform:uppercase;color:rgba(250,247,242,.55);margin-top:2px}
+  .sep{width:1px;height:30px;background:#3A362F;flex:none}
+  select.page{background:#2C2A24;border:1px solid #3A362F;padding:9px 11px;max-width:270px}
+  .modes{display:flex;border:1px solid #3A362F}
+  .modes button{padding:9px 13px;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;
+                color:rgba(250,247,242,.62);border-right:1px solid #3A362F}
+  .modes button:last-child{border-right:none}
+  .modes button.on{background:var(--bronze);color:#fff}
+  .grow{flex:1}
+  .btn{padding:10px 16px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+       border:1px solid rgba(250,247,242,.35)}
+  .btn:hover{background:rgba(250,247,242,.1)}
+  .btn.primary{background:var(--bronze);border-color:var(--bronze);color:#fff}
+  .btn.primary:hover{background:#7a5f40}
+  .count{background:var(--bronze);color:#fff;border-radius:999px;padding:1px 8px;font-size:11px;margin-left:7px}
+  .vp{display:flex;border:1px solid #3A362F}
+  .vp button{padding:9px 11px;font-size:11px;color:rgba(250,247,242,.62);border-right:1px solid #3A362F}
+  .vp button:last-child{border-right:none}
+  .vp button.on{background:#3A362F;color:var(--ivory)}
+
+  /* ---------- layout ---------- */
+  .wrap{display:flex;height:calc(100% - var(--bar))}
+  .stage{flex:1;background:#15130F;display:flex;align-items:flex-start;justify-content:center;
+         overflow:auto;padding:0}
+  .stage.pad{padding:22px}
+  iframe{width:100%;height:100%;border:0;background:#fff;display:block}
+  .frameShell{background:#fff;box-shadow:0 0 0 1px #3A362F;height:100%;width:100%}
+  .frameShell.narrow{width:390px;height:calc(100% - 44px);flex:none}
+  .frameShell.tab{width:768px;height:calc(100% - 44px);flex:none}
+
+  /* ---------- side panel ---------- */
+  .side{width:var(--side);flex:none;border-left:1px solid #3A362F;background:#221F1A;
+        display:flex;flex-direction:column;overflow:hidden}
+  .side h2{font-family:var(--serif);font-size:15px;font-weight:400;padding:14px 16px 10px}
+  .tabs{display:flex;border-bottom:1px solid #3A362F}
+  .tabs button{flex:1;padding:11px 4px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+               color:rgba(250,247,242,.55)}
+  .tabs button.on{color:var(--ivory);box-shadow:inset 0 -2px 0 var(--bronze)}
+  .pane{flex:1;overflow-y:auto;padding:14px 16px 26px;display:none}
+  .pane.on{display:block}
+  .fld{margin-bottom:15px}
+  .fld label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+             color:rgba(250,247,242,.5);margin-bottom:6px}
+  .row{display:flex;align-items:center;gap:9px}
+  input[type=color]{width:38px;height:30px;border:1px solid #3A362F;background:none;padding:2px}
+  input[type=text],textarea{width:100%;background:#2C2A24;border:1px solid #3A362F;padding:8px 9px;font-size:12.5px}
+  textarea{min-height:70px;resize:vertical;line-height:1.5}
+  input[type=range]{width:100%}
+  .hint{font-size:11.5px;line-height:1.6;color:rgba(250,247,242,.6)}
+  .hint strong{color:var(--ivory);font-weight:600}
+  .chg{border:1px solid #3A362F;padding:10px;margin-bottom:9px;font-size:11.5px;line-height:1.5}
+  .chg .k{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze);display:block;margin-bottom:4px}
+  .chg .old{color:rgba(250,247,242,.45);text-decoration:line-through;display:block;margin-bottom:3px;word-break:break-word}
+  .chg .new{color:var(--ivory);display:block;word-break:break-word}
+  .chg .where{color:rgba(250,247,242,.4);font-size:10px;margin-top:5px;display:block;word-break:break-all}
+  .chg button{color:var(--bronze);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-top:7px}
+  .empty{color:rgba(250,247,242,.4);font-size:12px;line-height:1.7}
+  .side .foot{border-top:1px solid #3A362F;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+  ul.tips{margin:0 0 0 15px;font-size:11.5px;line-height:1.75;color:rgba(250,247,242,.62)}
+  ul.tips li{margin-bottom:5px}
+
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+         background:var(--bronze);color:#fff;padding:12px 22px;font-size:12.5px;
+         letter-spacing:.06em;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
+  .toast.show{opacity:1}
+  .modal{position:fixed;inset:0;background:rgba(10,9,7,.82);z-index:200;display:none;
+         align-items:center;justify-content:center;padding:28px}
+  .modal.show{display:flex}
+  .modal .box{background:#221F1A;border:1px solid #3A362F;max-width:780px;width:100%;
+              max-height:86vh;display:flex;flex-direction:column}
+  .modal .box h3{font-family:var(--serif);font-size:19px;font-weight:400;padding:18px 20px 6px}
+  .modal .box p{padding:0 20px 12px;font-size:12.5px;color:rgba(250,247,242,.65);line-height:1.6}
+  .modal textarea{flex:1;margin:0 20px;min-height:300px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+  .modal .acts{padding:16px 20px;display:flex;gap:10px;justify-content:flex-end}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="brand">Kizlo Studio<span>Edit · Export</span></div>
+  <div class="sep"></div>
+  <select class="page" id="page"></select>
+  <div class="modes" id="modes">
+    <button data-mode="browse" class="on">Browse</button>
+    <button data-mode="text">Edit text</button>
+    <button data-mode="note">Add note</button>
+    <button data-mode="hide">Hide</button>
+  </div>
+  <div class="vp" id="vp">
+    <button data-w="full" class="on">Desktop</button>
+    <button data-w="tab">Tablet</button>
+    <button data-w="narrow">Phone</button>
+  </div>
+  <div class="grow"></div>
+  <button class="btn" id="reset">Reset</button>
+  <button class="btn primary" id="export">Send to Claude<span class="count" id="count">0</span></button>
+</div>
+
+<div class="wrap">
+  <div class="stage" id="stage"><div class="frameShell" id="shell"><iframe id="fr" src="/"></iframe></div></div>
+
+  <aside class="side">
+    <div class="tabs">
+      <button data-pane="changes" class="on">Changes</button>
+      <button data-pane="style">Style</button>
+      <button data-pane="help">Help</button>
+    </div>
+
+    <div class="pane on" id="pane-changes">
+      <div id="chgList"><p class="empty">No changes yet.<br><br>Pick a mode above, then click something on the page.</p></div>
+    </div>
+
+    <div class="pane" id="pane-style">
+      <p class="hint" style="margin-bottom:14px">Site-wide colours. These preview instantly and are recorded as changes.</p>
+      <div class="fld"><label>Page background (ivory)</label><div class="row"><input type="color" data-tok="--ivory" value="#FAF7F2"><input type="text" data-tokhex="--ivory" value="#FAF7F2"></div></div>
+      <div class="fld"><label>Alt band (ivory 2)</label><div class="row"><input type="color" data-tok="--ivory-2" value="#F3EFE8"><input type="text" data-tokhex="--ivory-2" value="#F3EFE8"></div></div>
+      <div class="fld"><label>Headlines (ink)</label><div class="row"><input type="color" data-tok="--ink" value="#1C1A17"><input type="text" data-tokhex="--ink" value="#1C1A17"></div></div>
+      <div class="fld"><label>Body text</label><div class="row"><input type="color" data-tok="--body" value="#4A463F"><input type="text" data-tokhex="--body" value="#4A463F"></div></div>
+      <div class="fld"><label>Accent (bronze)</label><div class="row"><input type="color" data-tok="--bronze" value="#8A6D4B"><input type="text" data-tokhex="--bronze" value="#8A6D4B"></div></div>
+      <div class="fld"><label>Dark band (espresso)</label><div class="row"><input type="color" data-tok="--espresso" value="#23211C"><input type="text" data-tokhex="--espresso" value="#23211C"></div></div>
+      <div class="fld"><label>Hairlines</label><div class="row"><input type="color" data-tok="--hairline" value="#E3DED4"><input type="text" data-tokhex="--hairline" value="#E3DED4"></div></div>
+      <div class="fld"><label>Page side margin <span id="gutV">5.5vw</span></label><input type="range" id="gut" min="2" max="10" step="0.5" value="5.5"></div>
+      <div class="fld"><label>General note for Claude</label><textarea id="globalNote" placeholder="Anything that doesn't fit a single element."></textarea></div>
+    </div>
+
+    <div class="pane" id="pane-help">
+      <p class="hint" style="margin-bottom:12px"><strong>Nothing here touches the live site.</strong> Everything is a preview in your browser. The site only changes when I apply your export.</p>
+      <ul class="tips">
+        <li><strong>Edit text</strong> · click any text, type over it. Click away to save.</li>
+        <li><strong>Add note</strong> · click anything and describe what you want. Best for photos, layout and "move this".</li>
+        <li><strong>Hide</strong> · click a block to mark it for removal. Click again to bring it back.</li>
+        <li><strong>Style</strong> · change colours site-wide and see it instantly.</li>
+        <li><strong>Browse</strong> · click links normally to move around the site.</li>
+      </ul>
+      <p class="hint" style="margin-top:14px">Your work is saved in this browser automatically, so you can close the tab and come back.</p>
+      <p class="hint" style="margin-top:14px">When you're done, hit <strong>Send to Claude</strong>, copy the text, and paste it into our chat.</p>
+    </div>
+
+    <div class="foot">
+      <p class="hint" id="status">Ready.</p>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="noteModal">
+  <div class="box" style="max-width:520px">
+    <h3>What should change here?</h3>
+    <p>In <strong id="noteWhere" style="color:var(--ivory)"></strong><br>
+       <span id="noteSnip" style="color:rgba(250,247,242,.45);font-size:11.5px"></span></p>
+    <textarea id="noteText" style="margin:0 20px;min-height:120px"
+      placeholder="e.g. Swap this photo for the Isleworth twilight shot, and make the heading shorter."></textarea>
+    <div class="acts">
+      <button class="btn" id="noteCancel">Cancel</button>
+      <button class="btn primary" id="noteSave">Save note</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <h3>Paste this into our chat</h3>
+    <p>This is the exact list of what you changed. I'll apply it to the real site.</p>
+    <textarea id="out" readonly></textarea>
+    <div class="acts">
+      <button class="btn" id="dl">Download file</button>
+      <button class="btn" id="close">Close</button>
+      <button class="btn primary" id="copy">Copy</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var PAGES = [
+  ["/", "Home"],
+  ["/about/", "About"],
+  ["/sell/", "Sell"],
+  ["/buy/", "Buy"],
+  ["/reviews/", "Reviews"],
+  ["/contact/", "Contact"],
+  ["/home-valuation/", "Home valuation"],
+  ["/communities/", "Communities hub"],
+  ["/communities/windermere/", "Windermere"],
+  ["/communities/windermere/isleworth/", "Isleworth"],
+  ["/communities/windermere/keenes-pointe/", "Keene's Pointe"],
+  ["/communities/winter-garden/", "Winter Garden"],
+  ["/communities/horizon-west/", "Horizon West"],
+  ["/communities/horizon-west/hamlin/", "Hamlin"],
+  ["/ukrainian-realtor-orlando/", "Ukrainian page"]
+];
+
+var KEY = "kizlo-studio-v1";
+var state = load();
+var mode = "browse";
+var fr = document.getElementById("fr");
+var doc = null;
+
+function load(){
+  try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.changes) return s; } catch(e){}
+  return { changes: [], tokens: {}, gutter: null, note: "" };
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} render(); }
+
+function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.classList.add("show");
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove("show");},1900); }
+
+/* ---------- build a stable, readable path to an element ---------- */
+function pathOf(el){
+  if (!el || el.nodeType!==1) return "";
+  var parts=[], n=el, guard=0;
+  while (n && n.nodeType===1 && n.tagName!=="BODY" && guard++<12){
+    var t=n.tagName.toLowerCase(), seg=t;
+    if (n.id) { parts.unshift(t+"#"+n.id); break; }
+    var cls=(n.getAttribute("class")||"").trim().split(/\s+/)
+      .filter(function(c){return c && !/^(is-|reveal)/.test(c);});
+    if (cls.length) seg += "."+cls.slice(0,2).join(".");
+    var p=n.parentElement;
+    if (p){
+      var same=Array.prototype.filter.call(p.children,function(c){return c.tagName===n.tagName;});
+      if (same.length>1) seg += ":nth-of-type("+(Array.prototype.indexOf.call(same,n)+1)+")";
+    }
+    parts.unshift(seg); n=n.parentElement;
+  }
+  return parts.join(" > ");
+}
+function sectionOf(el){
+  var s = el.closest ? el.closest("section, header, footer, nav") : null;
+  if (!s) return "";
+  var h = s.querySelector("h1,h2,h3,.eyebrow");
+  var label = h ? h.textContent.trim().replace(/\s+/g," ").slice(0,48) : (s.className||s.tagName);
+  return label;
+}
+function curPage(){ try{ return fr.contentWindow.location.pathname; }catch(e){ return document.getElementById("page").value; } }
+
+function addChange(c){
+  c.page = curPage();
+  c.at = new Date().toISOString();
+  // replace an existing change of same kind+path
+  var i = state.changes.findIndex(function(x){ return x.kind===c.kind && x.path===c.path && x.page===c.page; });
+  if (i>=0) {
+    if (c.kind==="hide") { state.changes.splice(i,1); save(); return false; } // toggle off
+    c.before = state.changes[i].before;                                        // keep original
+    state.changes[i]=c;
+  } else state.changes.push(c);
+  save(); return true;
+}
+
+/* ---------- editing layer injected into the page ---------- */
+var LAYER_CSS = ""
+ + ".ks-hi{outline:2px solid #8A6D4B !important;outline-offset:2px;cursor:pointer !important}"
+ + ".ks-edit{outline:2px dashed #8A6D4B !important;outline-offset:2px;background:rgba(138,109,75,.07) !important}"
+ + ".ks-hidden{opacity:.18 !important;filter:grayscale(1);outline:2px dashed #b23c3c !important;outline-offset:2px}"
+ + ".ks-noted{outline:2px solid #2f7d5c !important;outline-offset:2px}"
+ + ".ks-noted::after{content:'note';position:absolute;background:#2f7d5c;color:#fff;font:600 9px/1 sans-serif;"
+ + "letter-spacing:.1em;text-transform:uppercase;padding:3px 5px;transform:translate(4px,-100%)}";
+
+function paint(){
+  if(!doc) return;
+  Array.prototype.forEach.call(doc.querySelectorAll(".ks-hidden,.ks-noted,.ks-edit"),function(e){
+    e.classList.remove("ks-hidden","ks-noted","ks-edit");
+  });
+  var page = curPage();
+  state.changes.forEach(function(c){
+    if (c.page!==page) return;
+    var el; try{ el = doc.querySelector(c.selector); }catch(e){ el=null; }
+    if(!el) return;
+    if (c.kind==="hide") el.classList.add("ks-hidden");
+    if (c.kind==="note") { el.classList.add("ks-noted"); if(getComputedStyle(el).position==="static") el.style.position="relative"; }
+    if (c.kind==="text" && el.textContent.trim()!==c.after) el.textContent = c.after;
+  });
+  applyTokens();
+}
+
+function applyTokens(){
+  if(!doc) return;
+  var r = doc.documentElement;
+  Object.keys(state.tokens).forEach(function(k){ r.style.setProperty(k, state.tokens[k]); });
+  if (state.gutter) r.style.setProperty("--gutter", state.gutter);
+}
+
+function editableTarget(el){
+  // climb to a sensible text-bearing element
+  var ok = "H1,H2,H3,H4,P,SPAN,A,LI,TD,TH,BLOCKQUOTE,FIGCAPTION,BUTTON,LABEL,SUMMARY";
+  var n = el, guard=0;
+  while (n && guard++<6){
+    if (ok.indexOf(n.tagName)>=0 && n.textContent.trim()) return n;
+    n = n.parentElement;
+  }
+  return el;
+}
+function blockTarget(el){
+  var n = el, guard=0;
+  while (n && guard++<8){
+    if (n.matches && n.matches("section,article,.card,.frame,figure,table,ol,ul,.stat,.form-grid,header,footer")) return n;
+    n = n.parentElement;
+  }
+  return el;
+}
+
+function wire(){
+  try { doc = fr.contentDocument; } catch(e){ doc=null; }
+  if(!doc) return;
+  if (!doc.getElementById("ks-style")){
+    var s=doc.createElement("style"); s.id="ks-style"; s.textContent=LAYER_CSS; doc.head.appendChild(s);
+  }
+  // reveal animations off so nothing is invisible while editing
+  var r=doc.createElement("style");
+  r.textContent=".js .reveal{opacity:1 !important;transform:none !important}";
+  doc.head.appendChild(r);
+
+  doc.addEventListener("mouseover", function(e){
+    if (mode==="browse") return;
+    var t = mode==="text" ? editableTarget(e.target) : blockTarget(e.target);
+    if (t && t!==doc._hi){ if(doc._hi) doc._hi.classList.remove("ks-hi"); t.classList.add("ks-hi"); doc._hi=t; }
+  }, true);
+  doc.addEventListener("mouseout", function(){ if(doc._hi){doc._hi.classList.remove("ks-hi"); doc._hi=null;} }, true);
+
+  doc.addEventListener("click", function(e){
+    if (mode==="browse") return;
+    e.preventDefault(); e.stopPropagation();
+    var raw=e.target;
+
+    if (mode==="text"){
+      var el = editableTarget(raw);
+      if (el.isContentEditable) return;
+      var before = el.textContent.trim().replace(/\s+/g," ");
+      el.classList.add("ks-edit");
+      el.setAttribute("contenteditable","true"); el.focus();
+      var done=function(){
+        el.removeAttribute("contenteditable"); el.classList.remove("ks-edit");
+        el.removeEventListener("blur",done);
+        var after = el.textContent.trim().replace(/\s+/g," ");
+        if (after!==before){
+          addChange({kind:"text", selector:cssOf(el), path:pathOf(el),
+                     where:sectionOf(el), before:before, after:after});
+          toast("Text change saved");
+        }
+      };
+      el.addEventListener("blur",done);
+      return;
+    }
+    if (mode==="hide"){
+      var b = blockTarget(raw);
+      var added = addChange({kind:"hide", selector:cssOf(b), path:pathOf(b), where:sectionOf(b),
+                             before:(b.textContent||"").trim().replace(/\s+/g," ").slice(0,90), after:"(remove)"});
+      toast(added ? "Marked for removal" : "Un-marked");
+      paint(); return;
+    }
+    if (mode==="note"){
+      askNote(blockTarget(raw));
+      return;
+    }
+  }, true);
+
+  paint();
+  document.getElementById("status").textContent = "Editing " + curPage();
+  var sel=document.getElementById("page");
+  if (sel.value !== curPage()) { var m=PAGES.find(function(p){return p[0]===curPage();}); if(m) sel.value=m[0]; }
+}
+
+/* inline note composer — avoids window.prompt, which Chrome lets you suppress
+   after a few uses and which would then fail silently */
+var noteTarget = null;
+function askNote(el){
+  noteTarget = el;
+  document.getElementById("noteWhere").textContent = sectionOf(el) || el.tagName.toLowerCase();
+  var snip = (el.textContent||"").trim().replace(/\s+/g," ").slice(0,110);
+  document.getElementById("noteSnip").textContent = snip ? '“'+snip+(snip.length>=110?"…":"")+'”' : "(no text in this block)";
+  var t = document.getElementById("noteText"); t.value = "";
+  document.getElementById("noteModal").classList.add("show");
+  setTimeout(function(){ t.focus(); }, 30);
+}
+function closeNote(){ document.getElementById("noteModal").classList.remove("show"); noteTarget=null; }
+document.getElementById("noteCancel").addEventListener("click", closeNote);
+document.getElementById("noteSave").addEventListener("click", function(){
+  var txt = document.getElementById("noteText").value.trim();
+  if (!txt || !noteTarget) { closeNote(); return; }
+  addChange({kind:"note", selector:cssOf(noteTarget), path:pathOf(noteTarget), where:sectionOf(noteTarget),
+             before:(noteTarget.textContent||"").trim().replace(/\s+/g," ").slice(0,90), after:txt});
+  closeNote(); toast("Note added"); paint();
+});
+document.getElementById("noteText").addEventListener("keydown", function(e){
+  if (e.key==="Enter" && (e.metaKey||e.ctrlKey)) document.getElementById("noteSave").click();
+  if (e.key==="Escape") closeNote();
+});
+
+/* unique css selector within the page */
+function cssOf(el){
+  if (el.id) return "#"+el.id;
+  var parts=[], n=el, guard=0;
+  while (n && n.nodeType===1 && n.tagName!=="HTML" && guard++<12){
+    var seg=n.tagName.toLowerCase();
+    var p=n.parentElement;
+    if (p){
+      var same=Array.prototype.filter.call(p.children,function(c){return c.tagName===n.tagName;});
+      if (same.length>1) seg+=":nth-of-type("+(Array.prototype.indexOf.call(same,n)+1)+")";
+    }
+    parts.unshift(seg); n=p;
+  }
+  return parts.join(" > ");
+}
+
+fr.addEventListener("load", wire);
+
+/* ---------- UI ---------- */
+var sel=document.getElementById("page");
+PAGES.forEach(function(p){ var o=document.createElement("option"); o.value=p[0]; o.textContent=p[1]; sel.appendChild(o); });
+sel.addEventListener("change", function(){ fr.src=sel.value; });
+
+document.getElementById("modes").addEventListener("click", function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  mode=b.dataset.mode;
+  Array.prototype.forEach.call(this.querySelectorAll("button"),function(x){x.classList.toggle("on",x===b);});
+  document.getElementById("status").textContent =
+    mode==="browse" ? "Browsing. Links work normally." :
+    mode==="text"   ? "Click any text to rewrite it." :
+    mode==="note"   ? "Click a block to leave a note." :
+                      "Click a block to mark it for removal.";
+});
+
+document.getElementById("vp").addEventListener("click", function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  Array.prototype.forEach.call(this.querySelectorAll("button"),function(x){x.classList.toggle("on",x===b);});
+  var shell=document.getElementById("shell"), stage=document.getElementById("stage");
+  shell.className="frameShell"+(b.dataset.w==="narrow"?" narrow":b.dataset.w==="tab"?" tab":"");
+  stage.classList.toggle("pad", b.dataset.w!=="full");
+});
+
+document.querySelector(".tabs").addEventListener("click", function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  Array.prototype.forEach.call(this.querySelectorAll("button"),function(x){x.classList.toggle("on",x===b);});
+  ["changes","style","help"].forEach(function(p){
+    document.getElementById("pane-"+p).classList.toggle("on", p===b.dataset.pane);
+  });
+});
+
+/* colour tokens */
+Array.prototype.forEach.call(document.querySelectorAll("[data-tok]"), function(inp){
+  inp.addEventListener("input", function(){
+    var k=inp.dataset.tok; state.tokens[k]=inp.value;
+    var hex=document.querySelector('[data-tokhex="'+k+'"]'); if(hex) hex.value=inp.value;
+    applyTokens(); save();
+  });
+});
+Array.prototype.forEach.call(document.querySelectorAll("[data-tokhex]"), function(inp){
+  inp.addEventListener("change", function(){
+    var k=inp.dataset.tokhex, v=inp.value.trim();
+    if(!/^#[0-9a-f]{6}$/i.test(v)) { toast("Use a hex colour like #8A6D4B"); return; }
+    state.tokens[k]=v;
+    var c=document.querySelector('[data-tok="'+k+'"]'); if(c) c.value=v;
+    applyTokens(); save();
+  });
+});
+var gut=document.getElementById("gut");
+gut.addEventListener("input", function(){
+  state.gutter=gut.value+"vw";
+  document.getElementById("gutV").textContent=state.gutter;
+  applyTokens(); save();
+});
+document.getElementById("globalNote").addEventListener("change", function(){
+  state.note=this.value.trim(); save();
+});
+
+/* changes list */
+function render(){
+  document.getElementById("count").textContent = state.changes.length;
+  var box=document.getElementById("chgList");
+  if(!state.changes.length){
+    box.innerHTML='<p class="empty">No changes yet.<br><br>Pick a mode above, then click something on the page.</p>';
+  } else {
+    box.innerHTML = state.changes.map(function(c,i){
+      var kind = c.kind==="text"?"Text":c.kind==="note"?"Note":"Remove";
+      return '<div class="chg"><span class="k">'+kind+' · '+(c.where||c.page)+'</span>'
+        + (c.kind==="text" ? '<span class="old">'+esc(c.before)+'</span>' : '')
+        + '<span class="new">'+esc(c.after)+'</span>'
+        + '<span class="where">'+esc(c.page)+'</span>'
+        + '<button data-del="'+i+'">Undo this</button></div>';
+    }).join("");
+  }
+  var g=document.getElementById("globalNote"); if(g && g.value!==state.note) g.value=state.note||"";
+}
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[m];}); }
+
+document.getElementById("chgList").addEventListener("click", function(e){
+  var b=e.target.closest("[data-del]"); if(!b) return;
+  state.changes.splice(+b.dataset.del,1); save(); paint();
+});
+
+document.getElementById("reset").addEventListener("click", function(){
+  if(!confirm("Clear every change and start over?")) return;
+  state={changes:[],tokens:{},gutter:null,note:""}; save();
+  fr.src = fr.src; toast("Cleared");
+});
+
+/* export */
+function buildExport(){
+  var L=[];
+  L.push("KIZLO STUDIO — CHANGE REQUEST");
+  L.push("Generated " + new Date().toString());
+  L.push("");
+  if (state.note) { L.push("GENERAL NOTE"); L.push("  " + state.note); L.push(""); }
+
+  var toks=Object.keys(state.tokens);
+  if (toks.length || state.gutter){
+    L.push("SITE-WIDE STYLE");
+    toks.forEach(function(k){ L.push("  " + k + "  ->  " + state.tokens[k]); });
+    if (state.gutter) L.push("  --gutter  ->  " + state.gutter);
+    L.push("");
+  }
+  var byPage={};
+  state.changes.forEach(function(c){ (byPage[c.page]=byPage[c.page]||[]).push(c); });
+  Object.keys(byPage).forEach(function(pg){
+    L.push("PAGE " + pg);
+    byPage[pg].forEach(function(c,i){
+      L.push("  " + (i+1) + ". " + (c.kind==="text"?"REWRITE":c.kind==="note"?"NOTE":"REMOVE")
+             + (c.where ? "  [in: " + c.where + "]" : ""));
+      if (c.kind==="text"){
+        L.push("     from: " + c.before);
+        L.push("     to:   " + c.after);
+      } else if (c.kind==="note"){
+        L.push("     element text: " + c.before);
+        L.push("     asked:        " + c.after);
+      } else {
+        L.push("     element text: " + c.before);
+      }
+      L.push("     selector: " + c.selector);
+    });
+    L.push("");
+  });
+  if (!state.changes.length && !toks.length && !state.gutter && !state.note)
+    L.push("(no changes recorded)");
+  L.push("--- machine readable ---");
+  L.push(JSON.stringify(state));
+  return L.join("\n");
+}
+document.getElementById("export").addEventListener("click", function(){
+  document.getElementById("out").value = buildExport();
+  document.getElementById("modal").classList.add("show");
+});
+document.getElementById("close").addEventListener("click", function(){
+  document.getElementById("modal").classList.remove("show");
+});
+document.getElementById("copy").addEventListener("click", function(){
+  var t=document.getElementById("out"); t.select();
+  navigator.clipboard.writeText(t.value).then(function(){ toast("Copied — paste it into our chat"); },
+    function(){ document.execCommand("copy"); toast("Copied"); });
+});
+document.getElementById("dl").addEventListener("click", function(){
+  var b=new Blob([document.getElementById("out").value],{type:"text/plain"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(b);
+  a.download="kizlo-changes.txt"; a.click();
+});
+
+/* restore token inputs */
+Object.keys(state.tokens).forEach(function(k){
+  var c=document.querySelector('[data-tok="'+k+'"]'); if(c) c.value=state.tokens[k];
+  var h=document.querySelector('[data-tokhex="'+k+'"]'); if(h) h.value=state.tokens[k];
+});
+if (state.gutter){ gut.value=parseFloat(state.gutter); document.getElementById("gutV").textContent=state.gutter; }
+render();
+})();
+</script>
+</body>
+</html>
