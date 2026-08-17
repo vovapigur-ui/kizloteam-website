@@ -473,6 +473,18 @@ p { max-width: 62ch; }
 
 .form-field textarea { resize: vertical; min-height: 6rem; }
 
+/* Consent line under the submit button. Sentence case and a hairline rule,
+   not the uppercase .micro treatment — it has to be readable, not decorative. */
+.form-consent {
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--hairline);
+  max-width: 52ch;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
 /* ---------- CTA band ---------- */
 
 .cta-band { background: var(--espresso); color: rgba(250, 247, 242, 0.78); }

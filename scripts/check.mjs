@@ -208,7 +208,25 @@ if (titleOf(pages.get("index.html")) !== HOME_TITLE) {
   fail("index.html", `title is "${titleOf(pages.get("index.html"))}"`);
 }
 
-/* ------------------------------- 11. internal links resolve */
+/* ---------------------- 11. every form states what submitting agrees to */
+
+for (const [file, html] of pages) {
+  const forms = [...html.matchAll(/<form\b[^>]*>/gi)];
+  if (forms.length === 0) continue;
+  const consents = [...html.matchAll(/class="form-consent"/g)];
+  if (consents.length !== forms.length) {
+    fail(file, `${forms.length} form(s) but ${consents.length} consent line(s)`);
+  }
+  // The intake at server/routes/websiteLead.js records can_text = 0 on purpose,
+  // so this copy must not read as an SMS opt-in. That needs the /optin flow.
+  for (const m of html.matchAll(/<p class="form-consent">([\s\S]*?)<\/p>/g)) {
+    if (/\b(text|texts|texting|SMS)\b/i.test(m[1])) {
+      fail(file, "consent copy implies SMS opt-in, which the form does not record");
+    }
+  }
+}
+
+/* ------------------------------- 12. internal links resolve */
 
 for (const [file, html] of pages) {
   for (const m of html.matchAll(/\bhref="(\/[^"#?]*)"/g)) {
