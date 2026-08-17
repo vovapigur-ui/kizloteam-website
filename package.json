@@ -1,0 +1,15 @@
+{
+  "name": "kizloteam-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site for kizloteam.com. The site itself has no runtime dependencies; these scripts are dev-time generators whose output is committed.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "verify": "npm run build && npm run check"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

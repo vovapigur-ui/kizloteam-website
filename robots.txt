@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /studio/
+Disallow: /content/
+Disallow: /scripts/
 
 Sitemap: https://www.kizloteam.com/sitemap.xml
