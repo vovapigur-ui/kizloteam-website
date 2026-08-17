@@ -47,6 +47,14 @@ function renderTable(rows) {
   return `<div class="table-scroll">\n          <table class="data-table">\n            <thead><tr>${head}</tr></thead>\n            <tbody>\n            ${trs}\n            </tbody>\n          </table>\n        </div>`;
 }
 
+// Pulls the leading `# Heading` off a document. The page template already
+// renders the h1, so leaving it in the body would produce two of them.
+export function splitH1(body) {
+  const m = /^\s*#\s+(.+?)\s*$/m.exec(body);
+  if (!m || body.slice(0, m.index).trim()) return { heading: null, body };
+  return { heading: m[1], body: body.slice(m.index + m[0].length) };
+}
+
 export function renderMarkdown(body) {
   const lines = body.replace(/\r\n/g, "\n").split("\n");
   const out = [];
@@ -117,11 +125,13 @@ export function renderMarkdown(body) {
     }
 
     const paragraph = [];
-    while (i < lines.length && lines[i].trim() && !/^(#{2,4}\s|\s*[-*]\s|\s*\d+[.)]\s|>|\|)/.test(lines[i])) {
+    while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|\s*[-*]\s|\s*\d+[.)]\s|>|\|)/.test(lines[i])) {
       paragraph.push(lines[i].trim());
       i += 1;
     }
-    out.push(`<p>${inline(paragraph.join(" "))}</p>`);
+    // Line breaks inside a paragraph are kept, so address and contact blocks
+    // stack the way they are written instead of collapsing into one run-on line.
+    out.push(`<p>${paragraph.map(inline).join("<br>\n        ")}</p>`);
   }
 
   return out.join("\n        ");

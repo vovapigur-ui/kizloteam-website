@@ -12,6 +12,12 @@
   --muted-on-dark: rgba(250, 247, 242, 0.6);
   --hairline: #E3DED4;
   --bronze: #8A6D4B;
+  /* --bronze is the brand accent and stays exact for rules, borders and
+     underlines, which only need 3:1 as non-text UI. Small bronze TEXT on it
+     lands at 4.50 / 4.19 against our two ivories and 3.35 on espresso, all
+     short of WCAG AA's 4.5, so text uses these two instead. */
+  --bronze-text: #826647;
+  --bronze-on-dark: #AD885E;
   --espresso: #23211C;
   --hairline-dark: #3A362F;
   --serif: "Fraunces", Georgia, serif;
@@ -97,7 +103,7 @@ p { max-width: 62ch; }
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--bronze);
+  color: var(--bronze-text);
   margin-bottom: 1.75rem;
 }
 
@@ -232,7 +238,7 @@ p { max-width: 62ch; }
   transition: border-color 0.3s var(--ease), color 0.3s var(--ease);
 }
 
-.text-link:hover { color: var(--bronze); }
+.text-link:hover { color: var(--bronze-text); }
 
 /* ---------- Hero ---------- */
 
@@ -346,7 +352,7 @@ p { max-width: 62ch; }
   font-variation-settings: "opsz" 144;
   font-weight: 340;
   font-size: 1.5rem;
-  color: var(--bronze);
+  color: var(--bronze-text);
   line-height: 1.3;
 }
 
@@ -364,9 +370,11 @@ p { max-width: 62ch; }
 .card .frame img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
 .card--tall .frame img { aspect-ratio: 4 / 5; }
 
-.card__title { margin-top: 0; font-size: clamp(1.375rem, 1.7vw, 1.625rem); }
+/* line-height is pinned because these titles are h2 for the outline but were
+   sized as h3, and the two base rules set different line-heights. */
+.card__title { margin-top: 0; font-size: clamp(1.375rem, 1.7vw, 1.625rem); line-height: 1.25; }
 .card__title a::after { content: ""; position: absolute; inset: 0; }
-.card:hover .card__title a { color: var(--bronze); transition: color 0.3s var(--ease); }
+.card:hover .card__title a { color: var(--bronze-text); transition: color 0.3s var(--ease); }
 
 /* ---------- Quote / testimonial ---------- */
 
@@ -401,7 +409,7 @@ p { max-width: 62ch; }
   transition: color 0.3s var(--ease);
 }
 
-.quote-nav button:hover { color: var(--bronze); }
+.quote-nav button:hover { color: var(--bronze-text); }
 
 .quote-nav .counter { font-family: var(--serif); font-size: 0.9375rem; color: var(--muted); letter-spacing: 0.08em; }
 
@@ -437,7 +445,7 @@ p { max-width: 62ch; }
 }
 
 .faq-item summary::-webkit-details-marker { display: none; }
-.faq-item summary::after { content: "+"; font-family: var(--sans); font-weight: 300; font-size: 1.5rem; color: var(--bronze); transition: transform 0.35s var(--ease); flex-shrink: 0; }
+.faq-item summary::after { content: "+"; font-family: var(--sans); font-weight: 300; font-size: 1.5rem; color: var(--bronze-text); transition: transform 0.35s var(--ease); flex-shrink: 0; }
 .faq-item[open] summary::after { transform: rotate(45deg); }
 .faq-item .faq-body { padding: 0 0 2rem; max-width: 60ch; }
 
@@ -484,12 +492,39 @@ p { max-width: 62ch; }
   line-height: 1.6;
   color: var(--muted);
 }
+.form-consent a { color: var(--bronze-text); border-bottom: 1px solid var(--bronze); }
+
+/* Sits above the form, not below it: a valuation is an estimate and the
+   reader should know that before filling anything in. */
+.form-disclaimer {
+  margin-bottom: 2.5rem;
+  padding: 1.2rem 1.4rem;
+  border-left: 2px solid var(--bronze);
+  background: var(--ivory-2);
+  max-width: 56ch;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--body);
+}
+
+/* ---------- Long-form legal copy ---------- */
+
+.prose > * + * { margin-top: 1.5rem; }
+.prose h2 {
+  margin-top: 3.25rem;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+}
+.prose h3 { margin-top: 2.5rem; font-size: 1.125rem; }
+.prose p, .prose li { max-width: 68ch; }
+.prose ul, .prose ol { padding-left: 1.25rem; }
+.prose li + li { margin-top: 0.6rem; }
+.prose a { color: var(--bronze-text); border-bottom: 1px solid var(--bronze); }
 
 /* ---------- CTA band ---------- */
 
 .cta-band { background: var(--espresso); color: rgba(250, 247, 242, 0.78); }
 .cta-band h2, .cta-band .display { color: var(--ivory); }
-.cta-band .eyebrow { color: var(--bronze); }
+.cta-band .eyebrow { color: var(--bronze-on-dark); }
 .cta-band .eyebrow::after { background: var(--hairline-dark); }
 
 /* ---------- Footer ---------- */
@@ -510,7 +545,7 @@ p { max-width: 62ch; }
 
 .footer-cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1.4fr; gap: 3rem; padding: clamp(2.75rem, 5vw, 4.5rem) 0; }
 
-.footer-cols h4 { font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-on-dark); margin-bottom: 1.4rem; }
+.footer-cols h2 { font-family: var(--sans); line-height: 1.65; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-on-dark); margin-bottom: 1.4rem; }
 
 .footer-cols ul { list-style: none; }
 .footer-cols li { margin-bottom: 0.8rem; }
@@ -518,6 +553,14 @@ p { max-width: 62ch; }
 .footer-cols a:hover { color: var(--ivory); }
 
 .footer-legal { border-top: 1px solid var(--hairline-dark); padding: 2rem 0 2.5rem; font-size: 0.75rem; line-height: 1.8; color: rgba(250, 247, 242, 0.65); display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+
+/* Shares the row with the copyright on desktop, stacks on narrow screens
+   through the parent's flex-wrap. */
+.footer-legal__links a { border-bottom: 1px solid var(--hairline-dark); padding-bottom: 0.15rem; transition: border-color 0.3s var(--ease); }
+.footer-legal__links a:hover { border-bottom-color: var(--bronze-on-dark); }
+
+.footer-eho { display: flex; align-items: center; gap: 1rem; }
+.footer-eho img { width: 130px; height: auto; opacity: 0.72; }
 
 /* ---------- Reveal on scroll ---------- */
 
@@ -540,7 +583,7 @@ p { max-width: 62ch; }
 .breadcrumbs { padding-top: 7.5rem; margin-bottom: -5.5rem; position: relative; z-index: 5; }
 .breadcrumbs ol { list-style: none; display: flex; flex-wrap: wrap; gap: 0.6rem; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .breadcrumbs li:not(:last-child)::after { content: "/"; margin-left: 0.6rem; color: var(--hairline); }
-.breadcrumbs a:hover { color: var(--bronze); }
+.breadcrumbs a:hover { color: var(--bronze-text); }
 .breadcrumbs [aria-current] { color: var(--ink); }
 
 /* ---------- Vertical accent ---------- */

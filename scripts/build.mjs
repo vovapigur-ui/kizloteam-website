@@ -14,7 +14,7 @@ import { fileURLToPath } from "node:url";
 
 import { breadcrumbs, canonicalOf, faqs, reviews } from "./lib/extract.mjs";
 import { escapeHtml } from "./lib/html.mjs";
-import { parseFrontMatter, renderMarkdown } from "./lib/markdown.mjs";
+import { parseFrontMatter, renderMarkdown, splitH1 } from "./lib/markdown.mjs";
 import { agency, people, HREFLANG_CLUSTERS, RATING, SITE, SKIP, VLAD_ID, AGENCY_ID } from "./lib/site-data.mjs";
 import { breadcrumbNav, page } from "./lib/template.mjs";
 
@@ -181,6 +181,76 @@ function buildMarketReports(posts) {
   return published;
 }
 
+/* --------------------------------------------------------- legal pages */
+
+const LEGAL_DIR = join(ROOT, "content", "legal");
+
+function loadLegal() {
+  if (!existsSync(LEGAL_DIR)) return [];
+  return readdirSync(LEGAL_DIR)
+    .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+    .map((file) => {
+      const { data, body } = parseFrontMatter(readFileSync(join(LEGAL_DIR, file), "utf8"));
+      const slug = data.slug || file.replace(/\.md$/, "");
+      for (const key of ["title", "description"]) {
+        if (!data[key]) throw new Error(`content/legal/${file}: missing front matter ${key}`);
+      }
+      const { heading, body: rest } = splitH1(body);
+      return {
+        file,
+        slug,
+        draft: data.draft === true,
+        title: data.title,
+        heading: heading || data.title,
+        description: data.description,
+        eyebrow: data.eyebrow || "Legal",
+        body: rest,
+      };
+    })
+    .sort((a, b) => a.slug.localeCompare(b.slug));
+}
+
+function buildLegal(docs) {
+  const published = docs.filter((d) => !d.draft);
+  for (const doc of published) {
+    const trail = [{ name: "Home", href: "/" }, { name: doc.heading }];
+    const body = `${breadcrumbNav(trail)}
+
+    <section class="page-hero">
+      <div class="wrap">
+        <span class="eyebrow">${escapeHtml(doc.eyebrow)}</span>
+        <h1>${escapeHtml(doc.heading)}</h1>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="wrap grid">
+        <div style="grid-column: 2 / span 8;" class="prose">
+        ${renderMarkdown(doc.body)}
+        </div>
+      </div>
+    </section>`;
+
+    // No CTA band: a sales pitch under a privacy policy reads badly, and these
+    // pages exist to be read, not to convert.
+    const dir = join(ROOT, doc.slug);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(
+      join(dir, "index.html"),
+      page({
+        title: doc.title,
+        description: doc.description,
+        canonical: `${SITE}/${doc.slug}/`,
+        body,
+        cta: false,
+      })
+    );
+    log.push(`legal: wrote /${doc.slug}/`);
+  }
+  for (const doc of docs.filter((d) => d.draft)) log.push(`legal: DRAFT held back: ${doc.file}`);
+  return published;
+}
+
 /* ------------------------------------------------------------ json-ld */
 
 function graphFor(file, html, posts) {
@@ -267,13 +337,67 @@ function injectHreflang(file, html) {
   return html.replace(/([ \t]*)(<link rel="canonical"[^>]*>)/i, `$1$2\n${block}`);
 }
 
-// Keep the footer's Explore column in step across every page.
-function ensureFooterLink(html) {
-  if (html.includes('<a href="/market-reports/">Market Reports</a>')) return html;
-  return html.replace(
-    /([ \t]*)<li><a href="\/reviews\/">Reviews<\/a><\/li>/,
-    '$1<li><a href="/market-reports/">Market Reports</a></li>\n$1<li><a href="/reviews/">Reviews</a></li>'
+// Keep the footer in step across every page. Two pages carry slightly
+// different legal wording, so this edits in place rather than replacing the
+// whole footer, which would rewrite copy nobody asked to change.
+function ensureFooter(file, html) {
+  let out = html;
+
+  if (!out.includes('<a href="/market-reports/">Market Reports</a>')) {
+    out = out.replace(
+      /([ \t]*)<li><a href="\/reviews\/">Reviews<\/a><\/li>/,
+      '$1<li><a href="/market-reports/">Market Reports</a></li>\n$1<li><a href="/reviews/">Reviews</a></li>'
+    );
+  }
+
+  // The Ukrainian link is Ukrainian text inside an English page: without a
+  // lang attribute a screen reader reads it with English phonetics (WCAG 3.1.2).
+  out = out.replace(
+    /<li><a href="\/ukrainian-realtor-orlando\/">Українською<\/a><\/li>/,
+    '<li><a href="/ukrainian-realtor-orlando/" lang="uk">Українською</a></li>'
   );
+
+  const LEGAL_LINKS =
+    '<p class="footer-legal__links"><a href="/privacy-policy/">Privacy Policy</a> · <a href="/terms-of-use/">Terms of Use</a> · <a href="/accessibility/">Accessibility</a></p>';
+
+  if (!out.includes('class="footer-legal__links"')) {
+    out = out.replace(
+      /([ \t]*)<div class="footer-legal">\n/,
+      `$1<div class="footer-legal">\n$1  ${LEGAL_LINKS}\n`
+    );
+  }
+  // 404 has its own stripped-down footer with a different wrapper.
+  if (!out.includes('class="footer-legal__links"')) {
+    out = out.replace(
+      /([ \t]*)<div class="wrap footer-legal"([^>]*)>\n/,
+      `$1<div class="wrap footer-legal"$2>\n$1  ${LEGAL_LINKS}\n`
+    );
+  }
+
+  // The mark carries the words "Equal Housing Opportunity" in its own artwork,
+  // so the adjacent text drops them rather than announcing them twice.
+  if (!out.includes("equal-housing-opportunity.svg")) {
+    out = out.replace(
+      /<p>Equal Housing Opportunity(?: ·|\.) Realtor®\.?<\/p>/,
+      '<p class="footer-eho"><img src="/img/equal-housing-opportunity.svg" alt="Equal Housing Opportunity" width="260" height="64" loading="lazy" decoding="async"> <span>Realtor®</span></p>'
+    );
+  }
+
+  // 404 has no Equal Housing line of its own to swap, so the mark is appended.
+  if (!out.includes("equal-housing-opportunity.svg") && file === "404.html") {
+    out = out.replace(
+      /([ \t]*)<\/div>\n([ \t]*)<\/footer>/,
+      `$1  <p class="footer-eho"><img src="/img/equal-housing-opportunity.svg" alt="Equal Housing Opportunity" width="260" height="64" loading="lazy" decoding="async"> <span>Realtor®</span></p>\n$1</div>\n$2</footer>`
+    );
+  }
+
+  if (!out.includes("equal-housing-opportunity.svg")) {
+    log.push(`WARNING: ${file} has no Equal Housing Opportunity line to replace`);
+  }
+  if (!out.includes('class="footer-legal__links"')) {
+    log.push(`WARNING: ${file} has no .footer-legal block for the legal links`);
+  }
+  return out;
 }
 
 /* ----------------------------------------------------------- sitemap */
@@ -312,19 +436,31 @@ ${urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod></ur
 
 const posts = loadPosts();
 const published = buildMarketReports(posts);
+buildLegal(loadLegal());
 
-const files = htmlFiles().filter((f) => !SKIP.has(f));
+const all = htmlFiles();
+const files = all.filter((f) => !SKIP.has(f));
 const pages = new Map();
 
 for (const file of files) {
   const original = readFileSync(join(ROOT, file), "utf8");
-  let html = ensureFooterLink(original);
+  let html = ensureFooter(file, original);
   html = injectHreflang(file, html);
   html = injectSchema(html, graphFor(file, html, published));
   pages.set(file, html);
   if (html !== original) {
     writeFileSync(join(ROOT, file), html);
     log.push(`schema: ${file}`);
+  }
+}
+
+// 404 carries no structured data but still needs the legal footer.
+if (all.includes("404.html")) {
+  const original = readFileSync(join(ROOT, "404.html"), "utf8");
+  const html = ensureFooter("404.html", original);
+  if (html !== original) {
+    writeFileSync(join(ROOT, "404.html"), html);
+    log.push("footer: 404.html");
   }
 }
 

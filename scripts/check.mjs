@@ -9,14 +9,17 @@ import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { breadcrumbs, canonicalOf, faqs, images, langOf, reviews, titleOf } from "./lib/extract.mjs";
+import { textOf } from "./lib/html.mjs";
 import { AGENCY_ID, ANASTASIIA_ID, HREFLANG_CLUSTERS, RATING, SITE, SKIP, VLAD_ID } from "./lib/site-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const HOME_TITLE = "The Kizlo Team | West Orlando Realtors - Windermere, Winter Garden, Horizon West";
 
 const failures = [];
+const warnings = [];
 const notes = [];
 const fail = (file, message) => failures.push(`${file}: ${message}`);
+const warn = (message) => warnings.push(message);
 
 function htmlFiles(dir = ROOT) {
   const out = [];
@@ -210,23 +213,96 @@ if (titleOf(pages.get("index.html")) !== HOME_TITLE) {
 
 /* ---------------------- 11. every form states what submitting agrees to */
 
+const CONSENT_TEXT =
+  "By submitting, you agree that The Kizlo Team may call, text, or email you about your inquiry, " +
+  "including through automated means. Consent is not a condition of purchase. Message and data rates " +
+  "may apply. Reply STOP to opt out. See our Privacy Policy.";
+
 for (const [file, html] of pages) {
   const forms = [...html.matchAll(/<form\b[^>]*>/gi)];
   if (forms.length === 0) continue;
-  const consents = [...html.matchAll(/class="form-consent"/g)];
+  const consents = [...html.matchAll(/<p class="form-consent">([\s\S]*?)<\/p>/g)];
   if (consents.length !== forms.length) {
     fail(file, `${forms.length} form(s) but ${consents.length} consent line(s)`);
   }
-  // The intake at server/routes/websiteLead.js records can_text = 0 on purpose,
-  // so this copy must not read as an SMS opt-in. That needs the /optin flow.
-  for (const m of html.matchAll(/<p class="form-consent">([\s\S]*?)<\/p>/g)) {
-    if (/\b(text|texts|texting|SMS)\b/i.test(m[1])) {
-      fail(file, "consent copy implies SMS opt-in, which the form does not record");
+  for (const m of consents) {
+    if (textOf(m[1]) !== CONSENT_TEXT) fail(file, "consent copy does not match the approved wording");
+    if (!m[1].includes('href="/privacy-policy/"')) fail(file, "consent copy does not link the Privacy Policy");
+  }
+}
+
+if (!pages.get("home-valuation/index.html").includes('class="form-disclaimer"')) {
+  fail("home-valuation/index.html", "missing the valuation estimate disclaimer");
+}
+
+/* ------------------------- 12. legal chrome on every page */
+
+for (const slug of ["privacy-policy", "terms-of-use", "accessibility"]) {
+  if (!pages.has(`${slug}/index.html`)) fail(`${slug}/index.html`, "legal page missing");
+}
+
+const allHtml = htmlFiles().filter((f) => !f.startsWith("studio/") && !f.startsWith("google"));
+for (const file of allHtml) {
+  const html = pages.get(file) || readFileSync(join(ROOT, file), "utf8");
+  if (file === "russian-ukrainian-realtor-orlando/index.html") continue; // retired-URL stub
+  for (const href of ["/privacy-policy/", "/terms-of-use/", "/accessibility/"]) {
+    if (!html.includes(`href="${href}"`)) fail(file, `footer is missing the ${href} link`);
+  }
+  if (!html.includes('alt="Equal Housing Opportunity"')) fail(file, "footer is missing the Equal Housing Opportunity mark");
+}
+
+/* -------------------------------- 13. WCAG structural checks */
+
+for (const file of allHtml) {
+  const html = pages.get(file) || readFileSync(join(ROOT, file), "utf8");
+  if (file === "russian-ukrainian-realtor-orlando/index.html") continue;
+
+  // 2.4.1 Bypass Blocks — a skip link that lands somewhere.
+  if (!html.includes('class="skip-link" href="#main"')) fail(file, "no skip link (WCAG 2.4.1)");
+  if (!/<main\b[^>]*\bid="main"/.test(html)) fail(file, 'no <main id="main"> for the skip link to target');
+
+  // 4.1.2 — aria-current must name the page you are actually on.
+  for (const m of html.matchAll(/<a href="([^"]+)"[^>]*aria-current="page"/g)) {
+    const canonical = canonicalOf(html);
+    if (canonical && !canonical.endsWith(m[1])) {
+      fail(file, `aria-current="page" on ${m[1]}, which is not this page`);
+    }
+  }
+
+  // Exactly one h1 per page.
+  const h1s = [...html.matchAll(/<h1\b/g)].length;
+  if (h1s !== 1) fail(file, `${h1s} <h1> elements, expected exactly 1`);
+
+  // Skipped heading levels are an axe best-practice rule, not a WCAG AA
+  // success criterion, and closing the remaining ones would mean restyling
+  // visible headings. Reported, not enforced.
+  const levels = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
+  for (let i = 1; i < levels.length; i += 1) {
+    if (levels[i] - levels[i - 1] > 1) {
+      warn(`${file}: heading outline jumps h${levels[i - 1]} to h${levels[i]} (best practice, not AA)`);
+      break;
+    }
+  }
+
+  // 3.1.2 — Ukrainian text inside an English page needs its own lang.
+  if (/lang="en"/.test(html) && /<a [^>]*>Українською<\/a>/.test(html)) {
+    if (!/<a [^>]*lang="uk"[^>]*>Українською<\/a>/.test(html)) {
+      fail(file, 'the "Українською" link needs lang="uk" (WCAG 3.1.2)');
     }
   }
 }
 
-/* ------------------------------- 12. internal links resolve */
+// Contrast regression guard: --bronze fails AA as small text on every
+// background the site uses, so it must never be a `color` for text again.
+{
+  const css = readFileSync(join(ROOT, "css", "main.css"), "utf8");
+  for (const m of css.matchAll(/^(.*)color:\s*var\(--bronze\)\s*;/gm)) {
+    if (/border|background|outline|fill|stroke/.test(m[1])) continue;
+    fail("css/main.css", `--bronze used as text colour (fails WCAG AA): ${m[0].trim()}`);
+  }
+}
+
+/* ------------------------------- 14. internal links resolve */
 
 for (const [file, html] of pages) {
   for (const m of html.matchAll(/\bhref="(\/[^"#?]*)"/g)) {
@@ -241,6 +317,7 @@ for (const [file, html] of pages) {
 /* ------------------------------------------------------ report */
 
 for (const note of notes) console.log(`  ${note}`);
+for (const w of warnings) console.log(`  ! ${w}`);
 if (failures.length) {
   console.error(`\n${failures.length} problem(s):`);
   for (const f of failures) console.error(`  ✗ ${f}`);

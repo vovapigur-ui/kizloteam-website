@@ -34,12 +34,12 @@ export const FOOTER = `  <footer class="site-footer">
       <p class="footer-mark">The Kizlo Team</p>
       <div class="footer-cols">
         <div>
-          <h4>The Kizlo Team · Realtors</h4>
+          <h2>The Kizlo Team · Realtors</h2>
           <p style="max-width: 34ch;">A husband and wife real estate team at Keller Williams Realty At The Lakes, serving Windermere, Winter Garden, Horizon West and all of Central Florida.</p>
           <p style="margin-top: 1.2rem;">7107 Beek St<br>Windermere, FL 34786</p>
         </div>
         <div>
-          <h4>Explore</h4>
+          <h2>Explore</h2>
           <ul>
             <li><a href="/about/">About</a></li>
             <li><a href="/sell/">Sell</a></li>
@@ -49,12 +49,12 @@ export const FOOTER = `  <footer class="site-footer">
             <li><a href="/market-reports/">Market Reports</a></li>
             <li><a href="/reviews/">Reviews</a></li>
             <li><a href="/contact/">Contact</a></li>
-            <li><a href="/ukrainian-realtor-orlando/">Українською</a></li>
+            <li><a href="/ukrainian-realtor-orlando/" lang="uk">Українською</a></li>
             <li><a href="https://www.kthomesforsale.com/?utm_source=kizloteam.com&utm_medium=referral" target="_blank" rel="noopener">Search Homes</a></li>
           </ul>
         </div>
         <div>
-          <h4>Communities</h4>
+          <h2>Communities</h2>
           <ul>
             <li><a href="/communities/windermere/">Windermere</a></li>
             <li><a href="/communities/winter-garden/">Winter Garden</a></li>
@@ -69,7 +69,7 @@ export const FOOTER = `  <footer class="site-footer">
           </ul>
         </div>
         <div>
-          <h4>Contact</h4>
+          <h2>Contact</h2>
           <ul>
             <li><a href="tel:+18139923073">813 992 3073</a></li>
             <li><a href="mailto:thekizloteam@kw.com">thekizloteam@kw.com</a></li>
@@ -80,8 +80,9 @@ export const FOOTER = `  <footer class="site-footer">
         </div>
       </div>
       <div class="footer-legal">
+        <p class="footer-legal__links"><a href="/privacy-policy/">Privacy Policy</a> · <a href="/terms-of-use/">Terms of Use</a> · <a href="/accessibility/">Accessibility</a></p>
         <p>© 2026 The Kizlo Team · Realtors. Vlad Kizlo, Lic. SL3475553 · Anastasiia Zbihla, Lic. SL3469407.<br>Keller Williams Realty At The Lakes. Each office is independently owned and operated.</p>
-        <p>Equal Housing Opportunity. Realtor®.</p>
+        <p class="footer-eho"><img src="/img/equal-housing-opportunity.svg" alt="Equal Housing Opportunity" width="260" height="64" loading="lazy" decoding="async"> <span>Realtor®</span></p>
       </div>
     </div>
   </footer>`;
@@ -111,7 +112,7 @@ export function breadcrumbNav(trail) {
   return `    <nav class="breadcrumbs wrap" aria-label="Breadcrumb">\n      <ol>\n${items}\n      </ol>\n    </nav>`;
 }
 
-export function page({ lang = "en", title, description, canonical, ogImage, robots, extraHead = "", body }) {
+export function page({ lang = "en", title, description, canonical, ogImage, robots, extraHead = "", body, cta = true }) {
   const image = ogImage || `${SITE}/img/og-living-room.jpg`;
   return `<!DOCTYPE html>
 <html lang="${lang}">
@@ -141,9 +142,7 @@ ${HEADER}
   <main id="main">
 
 ${body}
-
-${CTA_BAND}
-
+${cta ? `\n${CTA_BAND}\n` : ""}
   </main>
 
 ${FOOTER}
