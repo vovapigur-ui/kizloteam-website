@@ -87,10 +87,30 @@
       status.classList.add(kind === "ok" ? "is-success" : "is-error");
       status.textContent = msg;
     }
+    /* A ticked consent box needs a number to text. The server rejects the
+       combination anyway; catching it here says so next to the field instead
+       of bouncing the whole submission back with an error. */
+    var phoneField = form.querySelector('input[type="tel"]');
+    var consentBoxes = form.querySelectorAll('.consent-check input[type="checkbox"]');
+    function syncPhoneRequired() {
+      if (!phoneField || !consentBoxes.length) return;
+      var wanted = false;
+      consentBoxes.forEach(function (c) { if (c.checked) wanted = true; });
+      phoneField.required = wanted;
+      var label = form.querySelector('label[for="' + phoneField.id + '"]');
+      if (label) label.textContent = wanted ? "Phone (required for texts)" : "Phone";
+    }
+    consentBoxes.forEach(function (c) { c.addEventListener("change", syncPhoneRequired); });
+    syncPhoneRequired();
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var data = {};
+      /* Unchecked boxes are absent from FormData, which the server already
+         reads as "no consent" — but send an explicit "no" so the payload
+         states the answer rather than leaving it to be inferred. */
       new FormData(form).forEach(function (v, k) { data[k] = v; });
+      consentBoxes.forEach(function (c) { if (!c.checked) data[c.name] = "no"; });
       data.page = location.pathname;
       var btn = form.querySelector('button[type="submit"], [type="submit"]');
       if (btn) { btn.disabled = true; }

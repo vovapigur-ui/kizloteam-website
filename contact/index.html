@@ -237,6 +237,18 @@
               <label for="message">Message</label>
               <textarea id="message" name="message" rows="4" placeholder="Address, timeline, or what you are trying to figure out"></textarea>
             </div>
+            <fieldset class="form-field--full consent-group">
+              <legend>Text me (optional)</legend>
+              <p class="consent-group__intro">Both boxes are optional and neither is required to hear back from us. Leave them unticked and we will only call or email.</p>
+              <label class="consent-check">
+                <input type="checkbox" name="sms_service_consent" value="yes">
+                <span>Account &amp; service texts: I agree to receive account and service text messages from The Kizlo Team, such as appointment reminders, showing confirmations, and replies to my inquiries, including messages sent using an automatic telephone dialing system. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</span>
+              </label>
+              <label class="consent-check">
+                <input type="checkbox" name="sms_marketing_consent" value="yes">
+                <span>Marketing texts: I agree to receive marketing text messages from The Kizlo Team (Volodymyr Kizlo LLC) about new property listings, price changes, market updates, and promotions at the number provided, including messages sent using an automatic telephone dialing system. Consent is not a condition of any purchase or of using this site. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</span>
+              </label>
+            </fieldset>
             <div class="hp-field" aria-hidden="true">
               <label for="company">Company</label>
               <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
@@ -244,7 +256,7 @@
             <div class="form-field--full">
               <button class="btn btn--solid" type="submit">Send Message</button>
               <p class="form-status" role="status" aria-live="polite"></p>
-              <p class="form-consent">By submitting, you agree that The Kizlo Team may call, text, or email you about your inquiry, including through automated means. Consent is not a condition of purchase. Message and data rates may apply. Reply STOP to opt out. See our <a href="/privacy-policy/">Privacy Policy</a>.</p>
+              <p class="form-consent">By submitting, you agree that The Kizlo Team may call or email you about your inquiry. Consent is not a condition of purchase. See our <a href="/privacy-policy/">Privacy Policy</a>.</p>
             </div>
           </form>
         </div>
