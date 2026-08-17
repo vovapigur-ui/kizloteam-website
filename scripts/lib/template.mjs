@@ -23,7 +23,7 @@ export const HEADER = `  <a class="skip-link" href="#main">Skip to content</a>
         <a href="/sell/">Sell</a>
         <a href="/buy/">Buy</a>
         <a href="/communities/">Communities</a>
-        <a href="https://www.kthomesforsale.com/?utm_source=kizloteam.com&utm_medium=referral" target="_blank" rel="noopener">Search Homes</a>
+        <a href="https://www.kthomesforsale.com/search?utm_source=kizloteam.com&utm_medium=referral" target="_blank" rel="noopener">Search Homes</a>
         <a href="/contact/" class="btn">Inquire</a>
       </nav>
     </div>
@@ -50,7 +50,7 @@ export const FOOTER = `  <footer class="site-footer">
             <li><a href="/reviews/">Reviews</a></li>
             <li><a href="/contact/">Contact</a></li>
             <li><a href="/ukrainian-realtor-orlando/" lang="uk">Українською</a></li>
-            <li><a href="https://www.kthomesforsale.com/?utm_source=kizloteam.com&utm_medium=referral" target="_blank" rel="noopener">Search Homes</a></li>
+            <li><a href="https://www.kthomesforsale.com/search?utm_source=kizloteam.com&utm_medium=referral" target="_blank" rel="noopener">Search Homes</a></li>
           </ul>
         </div>
         <div>

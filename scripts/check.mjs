@@ -213,27 +213,16 @@ if (titleOf(pages.get("index.html")) !== HOME_TITLE) {
 
 /* ---------------------- 11. every form states what submitting agrees to */
 
+// MUST stay byte-identical to WEBSITE_INQUIRY_CONSENT_TEXT in
+// kizlohq/server/lib/smsConsent.js. Submitting one of these forms is now read
+// as service-texting consent, and THAT string is what lands in
+// sms_consent_records — so if this line drifts, the site shows one disclosure
+// and the legal record proves a different one.
 const CONSENT_TEXT =
-  "By submitting, you agree that The Kizlo Team may call or email you about your inquiry. " +
-  "Consent is not a condition of purchase. See our Privacy Policy.";
-
-// These MUST stay byte-identical to MARKETING_CONSENT_TEXT and
-// SERVICE_CONSENT_TEXT in kizlohq/server/lib/smsConsent.js. That constant is
-// what gets written to sms_consent_records, so if the label here drifts, the
-// site shows one disclosure and the legal record proves a different one.
-const SERVICE_CONSENT_TEXT =
-  "Account & service texts: I agree to receive account and service text messages from " +
-  "The Kizlo Team, such as appointment reminders, showing confirmations, and replies to " +
-  "my inquiries, including messages sent using an automatic telephone dialing system. " +
-  "Message frequency varies. Msg & data rates may apply. " +
-  "Reply STOP to opt out, HELP for help.";
-const MARKETING_CONSENT_TEXT =
-  "Marketing texts: I agree to receive marketing text messages from The Kizlo Team " +
-  "(Volodymyr Kizlo LLC) about new property listings, price changes, market updates, " +
-  "and promotions at the number provided, including messages sent using an automatic " +
-  "telephone dialing system. Consent is not a condition of any purchase " +
-  "or of using this site. Message frequency varies. Msg & data rates may apply. " +
-  "Reply STOP to opt out, HELP for help.";
+  "By submitting, you agree that The Kizlo Team may contact you about your inquiry by " +
+  "phone, text or email, including messages sent using an automatic telephone dialing " +
+  "system. Consent is not a condition of purchase. Message frequency varies. " +
+  "Msg & data rates may apply. Reply STOP to opt out, HELP for help. See our Privacy Policy.";
 
 for (const [file, html] of pages) {
   const forms = [...html.matchAll(/<form\b[^>]*>/gi)];
@@ -244,36 +233,25 @@ for (const [file, html] of pages) {
     fail(file, `${forms.length} form(s) but ${consents.length} consent line(s)`);
   }
   for (const m of consents) {
-    if (textOf(m[1]) !== CONSENT_TEXT) fail(file, "consent copy does not match the approved wording");
-    if (!m[1].includes('href="/privacy-policy/"')) fail(file, "consent copy does not link the Privacy Policy");
-    // Texting permission comes from the checkboxes. If this line starts
-    // claiming it too, the page is asserting consent nothing records.
-    if (/\b(text|texts|texting|SMS)\b/i.test(textOf(m[1]))) {
-      fail(file, "the submit line must not imply texting consent — that lives on the checkboxes");
+    if (textOf(m[1]) !== CONSENT_TEXT) {
+      fail(file, "consent copy does not match the disclosure the server stores");
     }
+    if (!m[1].includes('href="/privacy-policy/"')) fail(file, "consent copy does not link the Privacy Policy");
   }
 
-  // Every form that takes a phone number must offer the two opt-ins.
-  if (!/<input[^>]*type="tel"/.test(html)) continue;
-  const boxes = [...html.matchAll(/<label class="consent-check">([\s\S]*?)<\/label>/g)];
-  if (boxes.length !== 2) {
-    fail(file, `${boxes.length} consent checkbox(es), expected 2 (A2P 10DLC needs marketing and service separate)`);
-    continue;
-  }
-  const expected = [
-    { name: "sms_service_consent", text: SERVICE_CONSENT_TEXT },
-    { name: "sms_marketing_consent", text: MARKETING_CONSENT_TEXT },
-  ];
-  boxes.forEach((m, i) => {
-    const { name, text } = expected[i];
-    if (!m[1].includes(`name="${name}"`)) fail(file, `consent box ${i + 1} is not ${name}`);
-    if (!m[1].includes('value="yes"')) fail(file, `${name} must post the literal "yes"`);
-    if (/\bchecked\b/.test(m[1])) fail(file, `${name} is pre-checked, which is not express consent`);
-    const label = textOf(m[1]);
-    if (label !== text) {
-      fail(file, `${name} label does not match the disclosure the server stores`);
+  // The line is the whole disclosure now, so it has to carry what TCPA needs.
+  for (const m of consents) {
+    const t = textOf(m[1]);
+    for (const [needed, label] of [
+      [/automatic telephone dialing system/, "autodialer disclosure"],
+      [/Msg & data rates may apply/, "rates disclosure"],
+      [/Message frequency varies/, "frequency disclosure"],
+      [/Reply STOP to opt out/, "opt-out instruction"],
+      [/not a condition of purchase/, "not-a-condition statement"],
+    ]) {
+      if (!needed.test(t)) fail(file, `consent copy is missing the ${label}`);
     }
-  });
+  }
 }
 
 if (!pages.get("home-valuation/index.html").includes('class="form-disclaimer"')) {
