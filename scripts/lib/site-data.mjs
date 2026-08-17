@@ -70,7 +70,9 @@ export const agency = () => ({
   priceRange: "$$",
   slogan: "Real estate in West Orlando, done properly.",
   employee: [{ "@id": VLAD_ID }, { "@id": ANASTASIIA_ID }],
-  aggregateRating: { "@type": "AggregateRating", ...RATING },
+  // aggregateRating is deliberately NOT here. Google treats review markup on a
+  // business's own site as self-serving, so the rating is attached only on
+  // /reviews/, where all 120 reviews' worth of quotes are actually visible.
   sameAs: [
     "https://www.google.com/maps/place/The+Kizlo+Team+-+Realtors+-+Windermere%2FWinter+Garden/@28.4632431,-81.5821345,17z",
     "https://www.instagram.com/thekizloteam_realestate",

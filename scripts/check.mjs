@@ -62,14 +62,24 @@ for (const file of files) {
     continue;
   }
   if (agencyNode["@id"] !== AGENCY_ID) fail(file, `agency @id is ${agencyNode["@id"]}`);
-  for (const key of ["name", "url", "logo", "image", "telephone", "email", "address", "geo", "openingHoursSpecification", "areaServed", "parentOrganization", "knowsLanguage", "aggregateRating", "sameAs"]) {
+  for (const key of ["name", "url", "logo", "image", "telephone", "email", "address", "geo", "openingHoursSpecification", "areaServed", "parentOrganization", "knowsLanguage", "sameAs"]) {
     if (!agencyNode[key]) fail(file, `agency node missing ${key}`);
   }
   const asset = agencyNode.logo.replace(SITE, "");
   if (!existsSync(join(ROOT, asset))) fail(file, `agency logo asset missing: ${asset}`);
   const img = agencyNode.image.replace(SITE, "");
   if (!existsSync(join(ROOT, img))) fail(file, `agency image asset missing: ${img}`);
-  if (agencyNode.aggregateRating.ratingValue !== RATING.ratingValue) fail(file, "aggregateRating drifted");
+
+  // Review markup belongs only where the reviews are visible. Anywhere else it
+  // is self-serving markup, which risks a manual action.
+  const ratingAllowed = file === "reviews/index.html";
+  if (agencyNode.aggregateRating && !ratingAllowed) {
+    fail(file, "aggregateRating on a page with no visible reviews");
+  }
+  if (agencyNode.review && !ratingAllowed) fail(file, "Review markup on a page with no visible reviews");
+  if (ratingAllowed && agencyNode.aggregateRating?.ratingValue !== RATING.ratingValue) {
+    fail(file, "aggregateRating missing or drifted");
+  }
 }
 
 /* ------------------------------------------ 3. Person nodes on /about/ */

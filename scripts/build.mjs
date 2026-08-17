@@ -198,6 +198,9 @@ function graphFor(file, html, posts) {
   if (file === "reviews/index.html") {
     const found = reviews(html);
     if (found.length) {
+      // Only this page carries the rating: it is the one page where the
+      // reviews behind the number are on screen.
+      graph[0].aggregateRating = { "@type": "AggregateRating", ...RATING };
       graph[0].review = found.map((r) => ({ ...r, itemReviewed: { "@id": AGENCY_ID } }));
       log.push(`reviews: ${found.length} Review nodes + AggregateRating ${RATING.ratingValue}/${RATING.reviewCount}`);
     }
