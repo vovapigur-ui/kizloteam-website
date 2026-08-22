@@ -57,8 +57,9 @@
   img { max-width:100%; display:block; }
   a { color:inherit; }
   ::selection { background:var(--gold); color:var(--black); }
-  .wrap { max-width:1440px; margin:0 auto; padding-left:5.5vw; padding-right:5.5vw; }
+  .wrap { max-width:1440px; margin:0 auto; padding-left:5.5vw; padding-right:5.5vw; position:relative; z-index:1; }
   section { padding:clamp(4.5rem,8vw,8.5rem) 0; }
+  .sec { position:relative; }
   .skip { position:absolute; left:-9999px; }
   .skip:focus { left:0; top:0; z-index:200; background:var(--gold); color:var(--black); padding:.8rem 1.4rem; }
 
@@ -66,9 +67,38 @@
   .eyebrow::after { content:""; display:block; width:2.5rem; border-bottom:1px solid var(--hair2); margin-top:.65rem; }
   .micro { font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); font-weight:500; }
 
+  /* film grain: the single cheapest thing that separates a page from a template.
+     Fixed, tiled SVG noise at ~4% with a stepped drift so it flickers like stock. */
+  .grain { position:fixed; inset:-100px; z-index:90; pointer-events:none; opacity:.042;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+    animation:grain 9s steps(6) infinite; }
+  @keyframes grain {
+    0%{transform:translate(0,0)} 20%{transform:translate(-42px,28px)} 40%{transform:translate(28px,-48px)}
+    60%{transform:translate(-28px,-18px)} 80%{transform:translate(42px,38px)} 100%{transform:translate(0,0)}
+  }
+
+  /* reading progress, a 2px gold hairline under the nav */
+  .progress { position:fixed; top:0; left:0; right:0; height:2px; z-index:70; pointer-events:none; }
+  .progress i { display:block; height:100%; background:var(--gold); transform-origin:0 50%; transform:scaleX(0); }
+
+  /* bespoke cursor: a gold diamond, desktop fine-pointers only.
+     Two layers so the dot snaps and the ring trails. */
+  .curw { position:fixed; top:0; left:0; z-index:130; pointer-events:none; display:none; }
+  html.cursor-on .curw { display:block; }
+  html.cursor-on, html.cursor-on a, html.cursor-on button, html.cursor-on .ph, html.cursor-on label { cursor:none; }
+  .cur-dot { display:block; width:5px; height:5px; background:var(--gold); transform:translate(-50%,-50%) rotate(45deg); }
+  .cur-ring { display:flex; align-items:center; justify-content:center; width:34px; height:34px;
+    border:1px solid rgba(200,155,102,.5); transform:translate(-50%,-50%) rotate(45deg);
+    transition:width .35s var(--ease), height .35s var(--ease), border-color .35s, background-color .35s; }
+  .cur-ring i { font-style:normal; transform:rotate(-45deg); font-size:.55rem; letter-spacing:.18em; text-transform:uppercase; color:var(--black); opacity:0; transition:opacity .25s; font-weight:600; white-space:nowrap; }
+  #curRing.link .cur-ring { width:48px; height:48px; border-color:var(--gold); }
+  #curRing.act .cur-ring { width:88px; height:88px; background:var(--gold); border-color:var(--gold); }
+  #curRing.act .cur-ring i { opacity:1; }
+
   /* nav */
-  nav { position:fixed; top:0; left:0; right:0; z-index:60; padding:1.2rem 0; transition:background .4s var(--ease), box-shadow .4s var(--ease); }
+  nav { position:fixed; top:0; left:0; right:0; z-index:60; padding:1.2rem 0; transition:background .4s var(--ease), box-shadow .4s var(--ease), transform .55s var(--ease); }
   nav.scrolled { background:rgba(16,14,11,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--hair); }
+  nav.hide { transform:translateY(-100%); }
   .nav-in { display:flex; align-items:center; justify-content:space-between; }
   .wordmark { font-family:'Fraunces',serif; font-weight:380; font-size:1.1rem; color:var(--white); text-decoration:none; letter-spacing:.01em; }
   .wordmark em { font-style:italic; }
@@ -83,6 +113,7 @@
     display:flex; align-items:center; justify-content:center;
   }
   .hero-media .ph-label { position:absolute; top:32%; left:50%; transform:translate(-50%,-50%); }
+  .hero-num { position:absolute; right:3vw; top:10%; font-family:'Fraunces',serif; font-weight:220; font-size:clamp(9rem,24vw,23rem); line-height:1; color:transparent; -webkit-text-stroke:1px rgba(200,155,102,.16); user-select:none; pointer-events:none; letter-spacing:-.02em; }
   .hero-media::after { content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(16,14,11,.92) 0%, rgba(16,14,11,.25) 45%, rgba(16,14,11,.45) 100%); }
   .hero-inner { position:relative; z-index:2; width:100%; }
   .hero .micro { color:#B7AD97; }
@@ -93,13 +124,14 @@
   }
   .hero h1 em { font-style:italic; font-weight:250; }
   .hero-row { display:flex; flex-wrap:wrap; align-items:baseline; gap:1.5rem 3rem; margin-top:2rem; border-top:1px solid rgba(200,155,102,.35); padding-top:1.5rem; }
-  .price { font-family:'Fraunces',serif; font-weight:300; font-size:clamp(1.9rem,3.4vw,3rem); color:var(--gold); letter-spacing:.01em; }
+  .price { font-family:'Fraunces',serif; font-weight:300; font-size:clamp(1.9rem,3.4vw,3rem); color:var(--gold); letter-spacing:.01em; font-variant-numeric:tabular-nums; }
   .hero-cta { margin-left:auto; }
 
   .btn-gold {
     display:inline-block; background:var(--gold); color:var(--black); text-decoration:none;
     font-weight:600; font-size:.75rem; letter-spacing:.18em; text-transform:uppercase;
     padding:1.15rem 2.4rem; border:1px solid var(--gold); transition:background .3s var(--ease), color .3s var(--ease);
+    will-change:transform;
   }
   .btn-gold:hover { background:transparent; color:var(--gold); }
   .btn-line {
@@ -108,8 +140,27 @@
     border-bottom:1px solid var(--gold); padding-bottom:5px;
   }
 
-  /* placeholders */
-  .ph { background:var(--panel); border:1px solid var(--hair); display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+  /* section titles: big masked serif lines, the editorial scale the page lacked */
+  .sec-title { font-family:'Fraunces',serif; font-weight:255; font-size:clamp(2.1rem,4.6vw,3.9rem); color:var(--white); line-height:1.06; margin-top:1.2rem; letter-spacing:-.012em; text-wrap:balance; max-width:20ch; }
+  .sec-title em { font-style:italic; color:var(--gold); }
+  .mask { display:block; overflow:hidden; }
+  .mask > span { display:inline-block; will-change:transform; }
+  .js .mask > span { transform:translateY(115%); }
+
+  /* ghost numerals: huge outlined chapter numbers drifting behind each section */
+  .sec-num { position:absolute; top:clamp(.5rem,3vw,2.5rem); right:5.5vw; z-index:0; font-family:'Fraunces',serif; font-weight:250; font-size:clamp(6rem,15vw,14rem); line-height:1; color:transparent; -webkit-text-stroke:1px rgba(200,155,102,.12); pointer-events:none; user-select:none; letter-spacing:-.02em; }
+
+  /* placeholders as numbered plates: fine inner keyline, corner caption,
+     center registration mark, hover sheen. They read as intentional frames
+     awaiting the shoot, not unfinished gray boxes. */
+  .ph { background:radial-gradient(120% 100% at 30% 0%, #1D1912 0%, #14110C 60%, #100E0B 100%); border:1px solid var(--hair); display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+  .ph::before { content:""; position:absolute; inset:12px; border:1px solid rgba(200,155,102,.14); pointer-events:none; z-index:2; }
+  .ph .mark { position:absolute; top:50%; left:50%; width:9px; height:9px; border:1px solid var(--gold-dim); transform:translate(-50%,-50%) rotate(45deg); opacity:.7; }
+  .ph .sheen { position:absolute; inset:0; background:linear-gradient(115deg,transparent 40%,rgba(245,240,228,.05) 50%,transparent 60%); transform:translateX(-130%); transition:transform 1.2s var(--ease); z-index:1; pointer-events:none; }
+  .ph:hover .sheen { transform:translateX(130%); }
+  .ph .cap { position:absolute; left:1.35rem; bottom:1.05rem; z-index:3; display:flex; align-items:baseline; gap:.8rem; }
+  .ph .cap .no { font-family:'Fraunces',serif; font-style:italic; font-weight:300; color:var(--gold); font-size:.9rem; letter-spacing:.02em; }
+  .ph .cap .cl { font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#8F856E; font-weight:500; }
   .ph-label, .ph span { font-size:.65rem; letter-spacing:.24em; text-transform:uppercase; color:#6E6552; font-weight:500; text-align:center; padding:1rem; }
   .r43 { aspect-ratio:4/3; } .r45 { aspect-ratio:4/5; } .r219 { aspect-ratio:21/9; }
 
@@ -139,17 +190,19 @@
 
   /* numbered */
   .num-list { border-top:1px solid var(--hair); margin-top:3rem; }
-  .num-item { display:grid; grid-template-columns:4rem 1fr; gap:1.5rem; padding:1.8rem 0; border-bottom:1px solid var(--hair); align-items:baseline; }
+  .num-item { display:grid; grid-template-columns:4rem 1fr; gap:1.5rem; padding:1.8rem 0; border-bottom:1px solid var(--hair); align-items:baseline; transition:padding-left .5s var(--ease); }
+  .num-item:hover { padding-left:.6rem; }
   .num { font-family:'Fraunces',serif; font-style:italic; color:var(--gold); font-size:1.15rem; }
   .num-item h3 { font-family:'Fraunces',serif; font-weight:350; font-size:1.45rem; color:var(--white); letter-spacing:-.005em; }
   .num-item p { margin-top:.5rem; max-width:62ch; color:var(--dim); }
   .num-item p strong { color:var(--text); font-weight:500; }
 
-  /* details */
-  .details-grid { display:grid; grid-template-columns:1fr; gap:1.3rem; margin-top:3rem; }
+  /* details as a ruled ledger, not cards */
+  .details-grid { display:grid; grid-template-columns:1fr; gap:2.2rem 3.5rem; margin-top:3rem; }
   @media(min-width:820px){ .details-grid { grid-template-columns:repeat(3,1fr); } }
-  .dl { background:var(--panel); border:1px solid var(--hair); padding:2rem; }
-  .dl h3 { font-family:'Fraunces',serif; font-weight:350; font-size:1.3rem; color:var(--white); padding-bottom:1rem; border-bottom:1px solid var(--gold-dim); }
+  .dl { border-top:1px solid var(--gold-dim); padding-top:1.6rem; }
+  .dl h3 { font-family:'Fraunces',serif; font-weight:330; font-size:1.35rem; color:var(--white); padding-bottom:.9rem; }
+  .dl h3 em { font-style:italic; color:var(--gold); font-size:.85rem; margin-right:.7rem; letter-spacing:.03em; }
   .dl ul { list-style:none; }
   .dl li { padding:.75rem 0; border-bottom:1px solid var(--hair); font-size:.93rem; color:var(--dim); }
   .dl li:last-child { border-bottom:none; }
@@ -172,6 +225,7 @@
   .lead p.sub { margin-top:1.3rem; color:var(--dim); max-width:44ch; }
   .agent { display:flex; gap:1.1rem; margin-top:2.5rem; align-items:center; }
   .agent .ph { width:64px; height:64px; flex:none; border-radius:0; }
+  .agent .ph::before { inset:4px; }
   .agent .ph span { font-size:.5rem; padding:.2rem; letter-spacing:.1em; }
   .agent .an { color:var(--white); font-weight:500; font-size:.95rem; }
   .agent .al { font-size:.78rem; color:var(--dim); margin-top:2px; }
@@ -211,7 +265,7 @@
   .sticky-cta.show { opacity:1; pointer-events:auto; transform:none; }
 
   /* footer */
-  footer { background:var(--black); color:#6E6552; padding:4.5rem 0 2.5rem 0; border-top:1px solid var(--hair); }
+  footer { background:var(--black); color:#6E6552; padding:4.5rem 0 2.5rem 0; border-top:1px solid var(--hair); overflow:hidden; }
   .foot-wordmark { font-family:'Fraunces',serif; font-weight:250; font-size:clamp(3.5rem,9vw,9.5rem); color:#2E2921; letter-spacing:-.02em; line-height:1; }
   .foot-wordmark em { font-style:italic; }
   .foot-meta { display:flex; flex-wrap:wrap; gap:1rem 2.5rem; margin-top:2.5rem; padding-top:1.6rem; border-top:1px solid var(--hair); font-size:.76rem; letter-spacing:.05em; }
@@ -222,9 +276,13 @@
     position:fixed; inset:0; z-index:100; background:var(--black);
     display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1rem;
   }
+  .pl-veil { position:absolute; inset:0; background:var(--gold); transform:translateY(101%); z-index:3; }
+  .pl-center { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:1rem; }
   .preload .pl-word { font-family:'Fraunces',serif; font-weight:250; font-size:clamp(1.6rem,4vw,3rem); color:var(--white); overflow:hidden; }
   .preload .pl-word span { display:inline-block; transform:translateY(110%); }
   .preload .pl-line { width:0; max-width:220px; border-bottom:1px solid var(--gold); }
+  .pl-count { position:absolute; bottom:2rem; right:5.5vw; z-index:2; font-family:'Fraunces',serif; font-style:italic; font-weight:250; font-size:clamp(2.4rem,7vw,4.5rem); color:var(--gold); line-height:1; font-variant-numeric:tabular-nums; }
+  .pl-count::after { content:"%"; font-size:45%; color:var(--gold-dim); margin-left:.2rem; font-style:normal; }
   html.motion-ready .preload { pointer-events:none; }
 
   .hero-media { will-change:transform; transform-origin:center 30%; }
@@ -237,7 +295,6 @@
   .marquee-track span { font-family:'Fraunces',serif; font-weight:280; font-style:italic; font-size:1.05rem; color:var(--gold); white-space:nowrap; letter-spacing:.04em; }
   .marquee-track span::after { content:"·"; margin-left:3.5rem; color:var(--gold-dim); }
 
-  .ph > .pplx { position:absolute; inset:-12% 0; background:inherit; }
   .sec-title-mask { overflow:hidden; display:block; }
 
   /* Without JS the page must still be readable: the preloader would otherwise
@@ -254,7 +311,12 @@
     .hero h1 .word > span { transform:none !important; }
     .marquee-track { transform:none !important; }
     .js .rv { opacity:1; transform:none; transition:none; }
+    .js .mask > span { transform:none; }
     .sticky-cta { transition:none; }
+    .grain { animation:none; }
+    .curw { display:none !important; }
+    .ph .sheen { display:none; }
+    .num-item { transition:none; }
   }
 </style>
 </head>
@@ -262,9 +324,18 @@
 
 <a class="skip" href="#main">Skip to content</a>
 
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><i id="progbar"></i></div>
+<div class="curw" id="curRing" aria-hidden="true"><span class="cur-ring"><i id="curLabel">View</i></span></div>
+<div class="curw" id="curDot" aria-hidden="true"><span class="cur-dot"></span></div>
+
 <div class="preload" id="preload" aria-hidden="true">
-  <div class="pl-word"><span id="plw">8291 Procida Isle</span></div>
-  <div class="pl-line" id="pll"></div>
+  <div class="pl-veil"></div>
+  <div class="pl-center">
+    <div class="pl-word"><span id="plw">8291 Procida Isle</span></div>
+    <div class="pl-line" id="pll"></div>
+  </div>
+  <div class="pl-count" id="plc">0</div>
 </div>
 
 <nav id="nav">
@@ -275,12 +346,15 @@
 </nav>
 
 <header class="hero">
-  <div class="hero-media"><div class="ph-label">Hero Photo · Twilight Saltwater Pool, Full Bleed<br>Estate home in Windermere Florida, Horizon West</div></div>
+  <div class="hero-media">
+    <div class="ph-label">Hero Photo · Twilight Saltwater Pool, Full Bleed<br>Estate home in Windermere Florida, Horizon West</div>
+    <div class="hero-num" aria-hidden="true">8291</div>
+  </div>
   <div class="wrap hero-inner">
     <div class="micro rv">Windermere Isle · Horizon West · Private Listing Page</div>
     <h1 class="rv">8291 Procida <em>Isle</em> Lane</h1>
     <div class="hero-row rv">
-      <div class="price">$775,000</div>
+      <div class="price">$<span id="pricenum">775,000</span></div>
       <div class="micro" style="color:#B7AD97;">4 Bed · 3 Bath · 2,224 SF · One Story · 2019</div>
       <div class="hero-cta"><a class="btn-gold" href="#tour">Request a Private Tour</a></div>
     </div>
@@ -304,7 +378,8 @@
   </div>
 </div>
 
-<section>
+<section class="sec">
+  <div class="sec-num" aria-hidden="true">01</div>
   <div class="wrap split">
     <div class="rv">
       <div class="eyebrow">The Home</div>
@@ -327,23 +402,27 @@
   </div>
 </section>
 
-<section style="padding-top:0;">
+<section class="sec" style="padding-top:0;">
+  <div class="sec-num" aria-hidden="true">02</div>
   <div class="wrap">
     <div class="eyebrow rv">Gallery</div>
+    <h2 class="sec-title"><span class="mask"><span>The rooms, in <em>order.</em></span></span></h2>
     <div class="gal">
-      <div class="ph r43 g7 rv"><span>Photo · Great Room</span></div>
-      <div class="ph r45 g5 g-off rv"><span>Photo · Kitchen Island &amp; Pendants</span></div>
-      <div class="ph r45 g5 rv"><span>Photo · Primary Suite</span></div>
-      <div class="ph r43 g7 g-off rv"><span>Photo · Pool &amp; Natural Stone Deck</span></div>
-      <div class="ph r43 g7 rv"><span>Photo · Covered Pergola at Dusk</span></div>
-      <div class="ph r45 g5 g-off rv"><span>Photo · Front Elevation</span></div>
+      <div class="ph r43 g7 rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 01</i><i class="cl">Great Room</i></div></div>
+      <div class="ph r45 g5 g-off rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 02</i><i class="cl">Kitchen Island &amp; Pendants</i></div></div>
+      <div class="ph r45 g5 rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 03</i><i class="cl">Primary Suite</i></div></div>
+      <div class="ph r43 g7 g-off rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 04</i><i class="cl">Pool &amp; Natural Stone Deck</i></div></div>
+      <div class="ph r43 g7 rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 05</i><i class="cl">Covered Pergola at Dusk</i></div></div>
+      <div class="ph r45 g5 g-off rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 06</i><i class="cl">Front Elevation</i></div></div>
     </div>
   </div>
 </section>
 
-<section style="padding-top:2rem;">
+<section class="sec" style="padding-top:2rem;">
+  <div class="sec-num" aria-hidden="true">03</div>
   <div class="wrap">
     <div class="eyebrow rv">Why This One</div>
+    <h2 class="sec-title"><span class="mask"><span>Four reasons it <em>holds</em> its price.</span></span></h2>
     <div class="num-list">
       <div class="num-item rv"><div class="num">01</div><div><h3>The backyard is the headline</h3><p><strong>Gas heated saltwater pool</strong> with color changing lighting, natural stone surround, PVC privacy fence and a covered pergola. Built 2021, fully permitted, certificate of completion on file.</p></div></div>
       <div class="num-item rv"><div class="num">02</div><div><h3>True one story living</h3><p>All four bedrooms, three full baths and the laundry room with sink on a single floor. Primary suite with <strong>walk-in closet and walk-in shower</strong>.</p></div></div>
@@ -353,12 +432,14 @@
   </div>
 </section>
 
-<section style="padding-top:2rem;">
+<section class="sec" style="padding-top:2rem;">
+  <div class="sec-num" aria-hidden="true">04</div>
   <div class="wrap">
     <div class="eyebrow rv">The Details</div>
+    <h2 class="sec-title"><span class="mask"><span>Down to the <em>hardware.</em></span></span></h2>
     <div class="details-grid">
       <div class="dl rv">
-        <h3>Kitchen</h3>
+        <h3><em>N&deg; 01</em>Kitchen</h3>
         <ul>
           <li><strong>Granite counters</strong>, island, bar seating for 4</li>
           <li><strong>42 inch cabinets</strong>, walk-in pantry</li>
@@ -368,7 +449,7 @@
         </ul>
       </div>
       <div class="dl rv">
-        <h3>Comfort &amp; Systems</h3>
+        <h3><em>N&deg; 02</em>Comfort &amp; Systems</h3>
         <ul>
           <li><strong>LVP flooring</strong> through the main areas</li>
           <li><strong>8 foot doors</strong> throughout</li>
@@ -378,7 +459,7 @@
         </ul>
       </div>
       <div class="dl rv">
-        <h3>Outdoor</h3>
+        <h3><em>N&deg; 03</em>Outdoor</h3>
         <ul>
           <li><strong>Saltwater pool</strong>, gas heated, color changing light</li>
           <li><strong>Natural stone deck</strong>, covered pergola</li>
@@ -391,7 +472,8 @@
   </div>
 </section>
 
-<section style="padding-top:2rem;">
+<section class="sec" style="padding-top:2rem;">
+  <div class="sec-num" aria-hidden="true">05</div>
   <div class="wrap">
     <div class="eyebrow rv">Room Dimensions</div>
     <div class="dims rv">
@@ -409,10 +491,12 @@
   </div>
 </section>
 
-<section style="padding-top:2rem;">
+<section class="sec" style="padding-top:2rem;">
+  <div class="sec-num" aria-hidden="true">06</div>
   <div class="wrap">
     <div class="eyebrow rv">Walk It From Anywhere</div>
-    <div class="rv" style="margin-top:3rem;"><div class="ph r219"><span>3D Tour Embed · Replace With Matterport iframe</span></div></div>
+    <h2 class="sec-title"><span class="mask"><span>Every room, from <em>any</em> room.</span></span></h2>
+    <div class="rv" style="margin-top:3rem;"><div class="ph r219"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 07</i><i class="cl">Immersive 3D Tour · Arrives With The Shoot</i></div></div></div>
   </div>
 </section>
 
@@ -465,7 +549,7 @@
 
 <footer>
   <div class="wrap">
-    <div class="foot-wordmark">The Kizlo <em>Team</em></div>
+    <div class="foot-wordmark rv">The Kizlo <em>Team</em></div>
     <div class="foot-meta">
       <span>Vlad Kizlo SL3475553 · Anastasiia Zbihla SL3469407</span>
       <a href="tel:8139923073">813 992 3073</a>
@@ -485,6 +569,7 @@
     var ENDPOINT = "https://kizlohq.onrender.com/api/public/website-lead";
 
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
     var hasGsap = typeof gsap !== 'undefined';
 
     /* Failsafe: GSAP comes from a CDN, so if it is blocked or the load event
@@ -493,19 +578,28 @@
        from under a running timeline kills the rest of it, which left the
        headline stuck in its hidden state. */
     var introStarted=false;
-    setTimeout(function(){
-      if(introStarted) return;
+    function showEverything(){
       var p=document.getElementById('preload');
       if(p && p.parentNode) p.parentNode.removeChild(p);
       document.querySelectorAll('.hero h1 .word > span').forEach(function(s){ s.style.transform='none'; });
+      document.querySelectorAll('.mask > span').forEach(function(s){ s.style.transform='none'; });
       document.querySelectorAll('.rv').forEach(function(e){e.classList.add('in');});
-    }, 3500);
+    }
+    setTimeout(function(){ if(!introStarted) showEverything(); }, 3500);
 
-    /* ---------- nav + sticky cta ---------- */
-    var nav=document.getElementById('nav'), sticky=document.getElementById('sticky'), hero=document.querySelector('.hero');
+    /* ---------- nav + sticky cta + progress ---------- */
+    var nav=document.getElementById('nav'), sticky=document.getElementById('sticky'),
+        hero=document.querySelector('.hero'), prog=document.getElementById('progbar'),
+        lastNavY=window.scrollY||0;
     function onScroll(){
       var y=window.scrollY||0;
       nav.classList.toggle('scrolled', y>40);
+      /* premium standard: nav retreats while reading down, returns on any scroll up */
+      if(y>700 && y>lastNavY+2) nav.classList.add('hide');
+      else if(y<lastNavY-2 || y<=700) nav.classList.remove('hide');
+      lastNavY=y;
+      var dh=document.documentElement.scrollHeight-window.innerHeight;
+      if(prog) prog.style.transform='scaleX('+(dh>0 ? y/dh : 0)+')';
       var past=hero? y>hero.offsetHeight*0.7 : y>500;
       var lead=document.getElementById('tour').getBoundingClientRect();
       sticky.classList.toggle('show', past && lead.top>window.innerHeight);
@@ -534,15 +628,29 @@
     var pre=document.getElementById('preload');
     function heroIntro(){
       introStarted=true;
-      if(!hasGsap || reduced){ if(pre && pre.parentNode) pre.parentNode.removeChild(pre); document.querySelectorAll('.rv').forEach(function(e){e.classList.add('in');}); return; }
+      if(!hasGsap || reduced){ showEverything(); return; }
+      var plc=document.getElementById('plc'), cnt={v:0};
+      var pn=document.getElementById('pricenum'), po={v:0};
       var tl=gsap.timeline();
-      tl.to('#plw',{y:0,duration:.9,ease:'power4.out'})
+      tl.to(cnt,{v:100,duration:1.55,ease:'power2.inOut',onUpdate:function(){ if(plc) plc.textContent=Math.round(cnt.v); }},0)
+        .to('#plw',{y:0,duration:.9,ease:'power4.out'},0)
         .to('#pll',{width:220,duration:.7,ease:'power2.inOut'},'-=.3')
-        .to(pre,{yPercent:-100,duration:.9,ease:'power4.inOut',delay:.25,onComplete:function(){ if(pre.parentNode) pre.parentNode.removeChild(pre); }})
+        /* two-stage exit: a gold sheet floods up over the black, then the whole
+           preloader lifts away, so the reveal reads as a curtain, not a fade */
+        .to('.pl-veil',{y:0,duration:.65,ease:'power4.inOut',delay:.1})
+        .to(pre,{yPercent:-100,duration:.9,ease:'power4.inOut',onComplete:function(){ if(pre.parentNode) pre.parentNode.removeChild(pre); }},'-=.05')
         .from('.hero-media',{scale:1.14,duration:2.2,ease:'power2.out'},'-=.9')
+        /* fromTo, not from: these elements sit at opacity 0 under the .rv rule
+           when the timeline is built, so from() would record 0 as the end
+           value and animate 0 to 0, leaving them invisible forever */
+        .fromTo('.hero-num',{opacity:0,y:40},{opacity:1,y:0,duration:1.6,ease:'power3.out'},'-=2')
         .to('.hero h1 .word > span',{y:0,duration:1.1,ease:'power4.out',stagger:.07},'-=1.8')
-        .from('.hero .micro',{opacity:0,y:14,duration:.8,ease:'power3.out'},'-=.9')
-        .from('.hero-row',{opacity:0,y:18,duration:.9,ease:'power3.out'},'-=.6');
+        .fromTo('.hero .micro',{opacity:0,y:14},{opacity:1,y:0,duration:.8,ease:'power3.out'},'-=.9')
+        .fromTo('.hero-row',{opacity:0,y:18},{opacity:1,y:0,duration:.9,ease:'power3.out'},'-=.6');
+      if(pn){
+        tl.to(po,{v:775000,duration:1.5,ease:'power2.out',
+          onUpdate:function(){ pn.textContent=Math.round(po.v).toLocaleString('en-US'); }},'-=1.1');
+      }
       document.querySelectorAll('.hero .rv').forEach(function(e){e.classList.add('in');});
     }
     if(document.readyState==='complete') heroIntro(); else window.addEventListener('load', heroIntro);
@@ -551,12 +659,16 @@
     if(hasGsap && !reduced){
       gsap.registerPlugin(ScrollTrigger);
 
+      /* GSAP drives the reveals from here on; the CSS transition on .rv is the
+         no-JS fallback and would otherwise chase and lag every GSAP write */
+      document.querySelectorAll('.rv').forEach(function(e){ e.style.transition='none'; });
+
       gsap.to('.hero-media',{yPercent:18,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
       gsap.to('.hero-inner',{yPercent:-10,opacity:.25,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
 
-      var track=document.getElementById('mtrack');
+      var track=document.getElementById('mtrack'), mtl=null;
       if(track){ track.innerHTML+=track.innerHTML;
-        gsap.to(track,{xPercent:-50,duration:36,ease:'none',repeat:-1});
+        mtl=gsap.to(track,{xPercent:-50,duration:36,ease:'none',repeat:-1});
       }
 
       gsap.utils.toArray('.rv').forEach(function(el){
@@ -564,6 +676,18 @@
         gsap.fromTo(el,{opacity:0,y:34},{opacity:1,y:0,duration:1.1,ease:'power3.out',
           scrollTrigger:{trigger:el,start:'top 86%',once:true},
           onStart:function(){el.classList.add('in');}});
+      });
+
+      /* section titles rise out of their masks */
+      gsap.utils.toArray('.sec-title .mask > span').forEach(function(sp){
+        gsap.to(sp,{y:0,duration:1.15,ease:'power4.out',
+          scrollTrigger:{trigger:sp.closest('.sec-title'),start:'top 88%',once:true}});
+      });
+
+      /* ghost chapter numerals drift slower than the page */
+      gsap.utils.toArray('.sec-num').forEach(function(n){
+        gsap.fromTo(n,{yPercent:24},{yPercent:-24,ease:'none',
+          scrollTrigger:{trigger:n.parentElement,start:'top bottom',end:'bottom top',scrub:true}});
       });
 
       gsap.utils.toArray('.gal .ph').forEach(function(ph){
@@ -580,10 +704,51 @@
       gsap.from('.band .stat',{y:26,opacity:0,stagger:.1,duration:.9,ease:'power3.out',
         scrollTrigger:{trigger:'.band',start:'top 88%',once:true}});
 
-      gsap.from('.details-grid .dl',{y:34,opacity:0,stagger:.12,duration:1,ease:'power3.out',
-        scrollTrigger:{trigger:'.details-grid',start:'top 85%',once:true}});
+      gsap.from('.dims tbody tr',{opacity:0,y:14,stagger:.08,duration:.7,ease:'power3.out',
+        scrollTrigger:{trigger:'.dims',start:'top 85%',once:true}});
+
+      /* scroll velocity feeds the marquee speed and a faint shear on the
+         gallery frames, so the page physically responds to how you move it */
+      var lastY=window.scrollY||0, vel=0,
+          skewSet=gsap.quickSetter('.gal .ph','skewY','deg');
+      gsap.ticker.add(function(){
+        var y=window.scrollY||0; vel += ((y-lastY)-vel)*.12; lastY=y;
+        if(mtl) mtl.timeScale(1+Math.min(Math.abs(vel)/30,2.5));
+        skewSet(Math.max(-1.2,Math.min(1.2,vel*.05)));
+      });
     } else {
       document.querySelectorAll('.rv').forEach(function(e){e.classList.add('in');});
+      document.querySelectorAll('.mask > span').forEach(function(s){ s.style.transform='none'; });
+    }
+
+    /* ---------- bespoke cursor + magnetic buttons, fine pointers only ---------- */
+    if(fine && hasGsap && !reduced){
+      document.documentElement.classList.add('cursor-on');
+      gsap.set(['#curDot','#curRing'],{x:-100,y:-100});
+      var dX=gsap.quickTo('#curDot','x',{duration:.1,ease:'power3.out'}),
+          dY=gsap.quickTo('#curDot','y',{duration:.1,ease:'power3.out'}),
+          rX=gsap.quickTo('#curRing','x',{duration:.4,ease:'power3.out'}),
+          rY=gsap.quickTo('#curRing','y',{duration:.4,ease:'power3.out'});
+      window.addEventListener('pointermove',function(e){ dX(e.clientX); dY(e.clientY); rX(e.clientX); rY(e.clientY); });
+      var ring=document.getElementById('curRing'), curLabel=document.getElementById('curLabel');
+      document.addEventListener('mouseover',function(e){
+        if(!e.target.closest) return;
+        var g=e.target.closest('.gal .ph, .r219');
+        if(g){ curLabel.textContent = g.classList.contains('r219') ? '3D Tour' : 'View'; ring.classList.add('act'); }
+        else if(e.target.closest('a,button')) ring.classList.add('link');
+      });
+      document.addEventListener('mouseout',function(e){
+        if(!e.target.closest) return;
+        if(e.target.closest('.gal .ph, .r219')) ring.classList.remove('act');
+        if(e.target.closest('a,button')) ring.classList.remove('link');
+      });
+      document.querySelectorAll('.btn-gold').forEach(function(b){
+        b.addEventListener('pointermove',function(e){
+          var r=b.getBoundingClientRect();
+          gsap.to(b,{x:(e.clientX-r.left-r.width/2)*.18,y:(e.clientY-r.top-r.height/2)*.35,duration:.4,ease:'power3.out'});
+        });
+        b.addEventListener('pointerleave',function(){ gsap.to(b,{x:0,y:0,duration:.7,ease:'power3.out'}); });
+      });
     }
 
     /* ---------- lead form ----------
