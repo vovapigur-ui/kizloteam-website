@@ -273,8 +273,6 @@
   .preload .pl-word { font-family:'Fraunces',serif; font-weight:250; font-size:clamp(1.6rem,4vw,3rem); color:var(--white); overflow:hidden; }
   .preload .pl-word span { display:inline-block; transform:translateY(110%); }
   .preload .pl-line { width:0; max-width:220px; border-bottom:1px solid var(--gold); }
-  .pl-count { position:absolute; bottom:2rem; right:5.5vw; z-index:2; font-family:'Fraunces',serif; font-style:italic; font-weight:250; font-size:clamp(2.4rem,7vw,4.5rem); color:var(--gold); line-height:1; font-variant-numeric:tabular-nums; }
-  .pl-count::after { content:"%"; font-size:45%; color:var(--gold-dim); margin-left:.2rem; font-style:normal; }
   html.motion-ready .preload { pointer-events:none; }
 
   .hero-media { will-change:transform; transform-origin:center 30%; }
@@ -325,7 +323,7 @@
     <div class="pl-word"><span id="plw">8291 Procida Isle</span></div>
     <div class="pl-line" id="pll"></div>
   </div>
-  <div class="pl-count" id="plc">0</div>
+
 </div>
 
 <nav id="nav">
@@ -358,7 +356,7 @@
 
 <div class="band">
   <div class="wrap">
-    <div class="stat"><div class="v">Saltwater</div><div class="k micro">Gas Heated Pool · 2021</div></div>
+    <div class="stat"><div class="v">Saltwater</div><div class="k micro">Gas Heated Pool</div></div>
     <div class="stat"><div class="v">One Story</div><div class="k micro">All Bedrooms on Main</div></div>
     <div class="stat"><div class="v">9 kW</div><div class="k micro">Solar Array</div></div>
     <div class="stat"><div class="v">Smart</div><div class="k micro">Thermostat · Locks · Doorbell · Garage</div></div>
@@ -384,8 +382,8 @@
         Inside, all four bedrooms sit on one floor, the doors are eight feet tall, and the
         kitchen has granite counters, 42 inch cabinets, a walk-in pantry and gas cooking.
         Out back: a gas heated saltwater pool with color changing lights, natural stone
-        around it, and a covered pergola to sit under. The pool was built in 2021 and
-        permitted with Orange County from day one.
+        around it, and a covered pergola to sit under. The pool was permitted with
+        Orange County from day one.
       </p>
       <p class="body-copy" style="margin-top:1.2rem;">
         The house was repainted this year in Sherwin Williams Emerald and pressure washed.
@@ -437,7 +435,7 @@
     <div class="eyebrow rv">Why This One</div>
     <h2 class="sec-title"><span class="mask"><span>Four things worth <em>knowing.</em></span></span></h2>
     <div class="num-list">
-      <div class="num-item rv"><div class="num">01</div><div><h3>Start with the backyard</h3><p>A <strong>gas heated saltwater pool</strong> with color changing lights, natural stone decking, a covered pergola and a PVC privacy fence. Built in 2021, fully permitted, certificate of completion on file. Heated means you swim in January, not just July.</p></div></div>
+      <div class="num-item rv"><div class="num">01</div><div><h3>Start with the backyard</h3><p>A <strong>gas heated saltwater pool</strong> with color changing lights, natural stone decking, a covered pergola and a PVC privacy fence. Fully permitted, certificate of completion on file. Heated means you swim in January, not just July.</p></div></div>
       <div class="num-item rv"><div class="num">02</div><div><h3>Everything on one floor</h3><p>No stairs. All four bedrooms, all three baths and the laundry room with its own sink sit on a single level. The primary suite has a <strong>walk-in closet and a walk-in shower</strong>.</p></div></div>
       <div class="num-item rv"><div class="num">03</div><div><h3>The extras are included</h3><p>Smart thermostat, doorbell, locks and garage control. A water softener and whole home filtration. An <strong>EV charger</strong> in the 2 car garage. The washer, dryer and the Samsung fridge stay with the house.</p></div></div>
       <div class="num-item rv"><div class="num">04</div><div><h3>The numbers check out</h3><p>Roof and AC from 2019. A <strong>9 kW solar array</strong> trims the power bill. There is no homestead exemption on record, so the taxes you see are the taxes you will pay. Every county permit is closed and finaled.</p></div></div>
@@ -625,11 +623,9 @@
     function heroIntro(){
       introStarted=true;
       if(!hasGsap || reduced){ showEverything(); return; }
-      var plc=document.getElementById('plc'), cnt={v:0};
       var pn=document.getElementById('pricenum'), po={v:0};
       var tl=gsap.timeline();
-      tl.to(cnt,{v:100,duration:1.55,ease:'power2.inOut',onUpdate:function(){ if(plc) plc.textContent=Math.round(cnt.v); }},0)
-        .to('#plw',{y:0,duration:.9,ease:'power4.out'},0)
+      tl.to('#plw',{y:0,duration:.9,ease:'power4.out'},0)
         .to('#pll',{width:220,duration:.7,ease:'power2.inOut'},'-=.3')
         /* two-stage exit: a gold sheet floods up over the black, then the whole
            preloader lifts away, so the reveal reads as a curtain, not a fade */
