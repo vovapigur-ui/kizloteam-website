@@ -48,7 +48,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..500;1,9..144,200..500&family=Hanken+Grotesk:wght@300..600&display=swap" rel="stylesheet">
-<link rel="preload" as="image" type="image/avif" imagesrcset="img/hero-pool-dusk-1100.avif 1100w, img/hero-pool-dusk-2048.avif 2048w" imagesizes="100vw">
+<link rel="preload" as="image" imagesrcset="img/hero-pool-dusk-1100.jpg 1100w, img/hero-pool-dusk-2048.jpg 2048w" imagesizes="100vw">
 <style>
   :root {
     --black:#100E0B; --char:#17150F; --panel:#1E1B15; --panel2:#242019;
@@ -210,7 +210,14 @@
   .tour-embed { position:relative; aspect-ratio:21/9; border:1px solid var(--hair); background:var(--panel); margin-top:3rem; }
   .tour-embed::before { content:""; position:absolute; inset:12px; border:1px solid rgba(200,155,102,.14); pointer-events:none; z-index:2; }
   .tour-embed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
-  @media(max-width:700px){ .tour-embed { aspect-ratio:4/3; } }
+  .tour-launch { display:none; }
+  /* Zillow's embedded widget is unusable inside a small iframe: the floor
+     plan overlay covers the pano and there is no room to drive it. On
+     phones, send the buyer to Zillow's own full-screen mobile tour instead. */
+  @media(max-width:700px){
+    .tour-embed { display:none; }
+    .tour-launch { display:block; text-align:center; margin-top:2rem; }
+  }
 
   /* lead form */
   .lead { background:var(--panel); border-top:1px solid var(--hair); border-bottom:1px solid var(--hair); }
@@ -340,7 +347,6 @@
 <header class="hero">
   <div class="hero-media">
     <picture>
-      <source type="image/avif" srcset="img/hero-pool-dusk-1100.avif 1100w, img/hero-pool-dusk-2048.avif 2048w" sizes="100vw">
       <img src="img/hero-pool-dusk-2048.jpg" srcset="img/hero-pool-dusk-1100.jpg 1100w, img/hero-pool-dusk-2048.jpg 2048w" sizes="100vw" fetchpriority="high" alt="Gas heated saltwater pool, fire pit and covered pergola at dusk at 8291 Procida Isle Ln, Windermere Florida, Horizon West">
     </picture>
     <div class="hero-num" aria-hidden="true">8291</div>
@@ -405,35 +411,35 @@
     <h2 class="sec-title"><span class="mask"><span>Have a <em>look</em> around.</span></span></h2>
     <div class="gal">
       <div class="ph r43 g7 rv">
-        <picture><source type="image/avif" srcset="img/great-room-1400.avif"><img src="img/great-room-1400.jpg" decoding="async" alt="Great room with wood look tile and pool view at 8291 Procida Isle Ln, Windermere Isle, Horizon West Florida"></picture>
+        <picture><img src="img/great-room-1400.jpg" decoding="async" alt="Great room with wood look tile and pool view at 8291 Procida Isle Ln, Windermere Isle, Horizon West Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 01</i><i class="cl">Great Room</i></div>
       </div>
       <div class="ph r45 g5 g-off rv">
-        <picture><source type="image/avif" srcset="img/kitchen-island-1400.avif"><img src="img/kitchen-island-1400.jpg" decoding="async" alt="Kitchen with granite island, pendant lighting and 42 inch cabinets at 8291 Procida Isle Ln, Windermere Florida"></picture>
+        <picture><img src="img/kitchen-island-1400.jpg" decoding="async" alt="Kitchen with granite island, pendant lighting and 42 inch cabinets at 8291 Procida Isle Ln, Windermere Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 02</i><i class="cl">Kitchen Island &amp; Pendants</i></div>
       </div>
       <div class="ph r45 g5 rv">
-        <picture><source type="image/avif" srcset="img/primary-suite-1400.avif"><img src="img/primary-suite-1400.jpg" decoding="async" alt="Primary suite with tray ceiling at 8291 Procida Isle Ln, Windermere Florida"></picture>
+        <picture><img src="img/primary-suite-1400.jpg" decoding="async" alt="Primary suite with tray ceiling at 8291 Procida Isle Ln, Windermere Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 03</i><i class="cl">Primary Suite</i></div>
       </div>
       <div class="ph r43 g7 g-off rv">
-        <picture><source type="image/avif" srcset="img/pool-stone-deck-1400.avif"><img src="img/pool-stone-deck-1400.jpg" decoding="async" alt="Saltwater pool with in-water loungers and natural stone deck at 8291 Procida Isle Ln, Windermere Florida"></picture>
+        <picture><img src="img/pool-stone-deck-1400.jpg" decoding="async" alt="Saltwater pool with in-water loungers and natural stone deck at 8291 Procida Isle Ln, Windermere Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 04</i><i class="cl">Pool &amp; Natural Stone Deck</i></div>
       </div>
       <div class="ph r43 g7 rv">
-        <picture><source type="image/avif" srcset="img/pool-after-dark-1400.avif"><img src="img/pool-after-dark-1400.jpg" decoding="async" alt="Heated saltwater pool lit at night at 8291 Procida Isle Ln, Windermere Florida"></picture>
+        <picture><img src="img/pool-after-dark-1400.jpg" decoding="async" alt="Heated saltwater pool lit at night at 8291 Procida Isle Ln, Windermere Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 05</i><i class="cl">Poolside After Dark</i></div>
       </div>
       <div class="ph r45 g5 g-off rv">
-        <picture><source type="image/avif" srcset="img/front-twilight-1400.avif"><img src="img/front-twilight-1400.jpg" decoding="async" alt="Stone front elevation at twilight, 8291 Procida Isle Ln, Windermere Isle, Horizon West Florida"></picture>
+        <picture><img src="img/front-twilight-1400.jpg" decoding="async" alt="Stone front elevation at twilight, 8291 Procida Isle Ln, Windermere Isle, Horizon West Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 06</i><i class="cl">Front Elevation at Twilight</i></div>
       </div>
       <div class="ph r43 g7 rv">
-        <picture><source type="image/avif" srcset="img/community-pool-1400.avif"><img src="img/community-pool-1400.jpg" decoding="async" alt="Windermere Isle community pool and cabana, Horizon West Florida"></picture>
+        <picture><img src="img/community-pool-1400.jpg" decoding="async" alt="Windermere Isle community pool and cabana, Horizon West Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 07</i><i class="cl">Community Pool &amp; Cabana</i></div>
       </div>
       <div class="ph r45 g5 g-off rv">
-        <picture><source type="image/avif" srcset="img/playground-1400.avif"><img src="img/playground-1400.jpg" decoding="async" alt="Shaded community playground in Windermere Isle, Horizon West Florida"></picture>
+        <picture><img src="img/playground-1400.jpg" decoding="async" alt="Shaded community playground in Windermere Isle, Horizon West Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 08</i><i class="cl">Community Playground</i></div>
       </div>
     </div>
@@ -499,9 +505,12 @@
   <div class="wrap">
     <div class="eyebrow rv">3D Tour</div>
     <h2 class="sec-title"><span class="mask"><span>Walk through it right <em>now.</em></span></span></h2>
-    <div class="rv"><div class="tour-embed">
-      <iframe src="https://www.zillow.com/view-imx/6a84593c-5f77-4a97-9a1c-d1eef940a70b?setAttribution=mls&amp;wl=true&amp;initialViewType=pano" title="Immersive 3D tour of 8291 Procida Isle Ln, Windermere FL" loading="lazy" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" allowfullscreen></iframe>
-    </div></div>
+    <div class="rv">
+      <div class="tour-embed">
+        <iframe src="https://www.zillow.com/view-imx/6a84593c-5f77-4a97-9a1c-d1eef940a70b?setAttribution=mls&amp;wl=true&amp;initialViewType=pano" title="Immersive 3D tour of 8291 Procida Isle Ln, Windermere FL" loading="lazy" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" allowfullscreen></iframe>
+      </div>
+      <a class="btn-gold tour-launch" href="https://www.zillow.com/view-imx/6a84593c-5f77-4a97-9a1c-d1eef940a70b?setAttribution=mls&amp;wl=true&amp;initialViewType=pano" target="_blank" rel="noopener">Launch the 3D Tour</a>
+    </div>
   </div>
 </section>
 
@@ -512,7 +521,7 @@
       <h2>Come see it in <em>person.</em></h2>
       <p class="sub">Showings are private and by appointment. Tell us what day and time work for you and we will set it up, usually the same day. Rather talk to a person? Call or text 813 992 3073.</p>
       <div class="agent">
-        <div class="ph"><picture><source type="image/avif" srcset="/img/team-portrait-480.avif"><img src="/img/team-portrait-480.jpg" alt="Vlad Kizlo and Anastasiia Zbihla, The Kizlo Team Realtors"></picture></div>
+        <div class="ph"><picture><img src="/img/team-portrait-480.jpg" alt="Vlad Kizlo and Anastasiia Zbihla, The Kizlo Team Realtors"></picture></div>
         <div>
           <div class="an">Vlad Kizlo &amp; Anastasiia Zbihla</div>
           <div class="al">The Kizlo Team · Keller Williams Realty At The Lakes · EN / UA</div>
@@ -763,9 +772,16 @@
           pending++;
           if(stuck(ph, true)) ph.style.clipPath='none';
         });
-        /* stop only when nothing on the page is still waiting to reveal,
-           or after two minutes as an absolute cap */
-        if(pending===0 || runs>=100) clearInterval(timer);
+        /* The price odometer freezes mid-count if the browser suspends the
+           page during the intro (seen live: a stuck "$252,838"). Well after
+           the intro window, snap it to the real price. */
+        if(runs>=6){
+          var pn=document.getElementById('pricenum');
+          if(pn && pn.textContent.replace(/\D/g,'')!=='775000') pn.textContent='775,000';
+        }
+        /* stop only when nothing is waiting to reveal AND the price check has
+           had its window, or after two minutes as an absolute cap */
+        if((pending===0 && runs>=6) || runs>=100) clearInterval(timer);
       }, 1200);
     })();
 
