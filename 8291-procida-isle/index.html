@@ -160,12 +160,16 @@
 
   /* stats band */
   .band { border-top:1px solid var(--hair); border-bottom:1px solid var(--hair); background:var(--char); }
-  .band .wrap { display:grid; grid-template-columns:repeat(4,1fr); }
-  .stat { padding:1.8rem 1.5rem 1.8rem 0; }
-  .stat + .stat { border-left:1px solid var(--hair); padding-left:1.5rem; }
-  .stat .v { font-family:'Fraunces',serif; font-weight:280; font-size:1.7rem; color:var(--white); }
+  .band .wrap { display:grid; grid-template-columns:repeat(5,1fr); }
+  .stat { padding:1.8rem 1.2rem 1.8rem 0; }
+  .stat + .stat { border-left:1px solid var(--hair); padding-left:1.2rem; }
+  .stat .v { font-family:'Fraunces',serif; font-weight:280; font-size:1.55rem; color:var(--white); }
   .stat .k { margin-top:.35rem; }
-  @media(max-width:700px){ .band .wrap { grid-template-columns:repeat(2,1fr); } .stat:nth-child(3){ border-left:none; padding-left:0; border-top:1px solid var(--hair);} .stat:nth-child(4){ border-top:1px solid var(--hair);} }
+  @media(max-width:820px){
+    .band .wrap { grid-template-columns:repeat(2,1fr); }
+    .stat:nth-child(odd){ border-left:none; padding-left:0; }
+    .stat:nth-child(n+3){ border-top:1px solid var(--hair); }
+  }
 
   /* story */
   .split { display:grid; grid-template-columns:1fr; gap:3rem; }
@@ -359,13 +363,14 @@
     <div class="stat"><div class="v">Saltwater</div><div class="k micro">Gas Heated Pool</div></div>
     <div class="stat"><div class="v">One Story</div><div class="k micro">All Bedrooms on the Main Floor</div></div>
     <div class="stat"><div class="v">Disney</div><div class="k micro">Fireworks From the Backyard</div></div>
+    <div class="stat"><div class="v">Tile Roof</div><div class="k micro">Longer Life · Less Upkeep</div></div>
     <div class="stat"><div class="v">Smart Home</div><div class="k micro">Thermostat · Locks · Doorbell · Garage</div></div>
   </div>
 </div>
 
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track" id="mtrack">
-    <span>Saltwater Pool</span><span>Gas Heated</span><span>One Story</span><span>Disney Fireworks</span><span>Natural Stone</span><span>Covered Pergola</span><span>Smart Home</span><span>EV Charger</span><span>Windermere Isle</span>
+    <span>Saltwater Pool</span><span>Gas Heated</span><span>One Story</span><span>Disney Fireworks</span><span>Tile Roof</span><span>Natural Stone</span><span>Covered Pergola</span><span>Smart Home</span><span>EV Charger</span><span>Windermere Isle</span>
   </div>
 </div>
 
@@ -386,9 +391,8 @@
       </p>
       <p class="body-copy" style="margin-top:1.2rem;">
         The house was repainted this year in Sherwin Williams Emerald and pressure washed.
-        The 9 kW solar panels keep the power bills low. And because there is no homestead
-        exemption on record, the taxes you see are the taxes you will pay. You could move
-        in tomorrow and change nothing.
+        The 9 kW solar panels keep the power bills low. You could move in tomorrow and
+        change nothing.
       </p>
     </div>
   </div>
@@ -437,7 +441,7 @@
       <div class="num-item rv"><div class="num">01</div><div><h3>Start with the backyard</h3><p>A <strong>gas heated saltwater pool</strong> with color changing lights, natural stone decking, a covered pergola and a PVC privacy fence. Fully permitted, certificate of completion on file. Heated means you swim in January, not just July.</p></div></div>
       <div class="num-item rv"><div class="num">02</div><div><h3>Everything on one floor</h3><p>No stairs. All four bedrooms, all three baths and the laundry room with its own sink sit on a single level. The primary suite has a <strong>walk-in closet and a walk-in shower</strong>.</p></div></div>
       <div class="num-item rv"><div class="num">03</div><div><h3>The extras are included</h3><p>Smart thermostat, doorbell, locks and garage control. A water softener and whole home filtration. An <strong>EV charger</strong> in the 2 car garage. The washer, dryer and the Samsung fridge stay with the house.</p></div></div>
-      <div class="num-item rv"><div class="num">04</div><div><h3>The numbers check out</h3><p>Roof and AC from 2019. <strong>9 kW solar panels</strong> trim the power bill. There is no homestead exemption on record, so the taxes you see are the taxes you will pay. Every county permit is closed and finaled.</p></div></div>
+      <div class="num-item rv"><div class="num">04</div><div><h3>The numbers check out</h3><p>A <strong>tile roof</strong> and AC from 2019. Tile lasts for decades with almost no upkeep. <strong>9 kW solar panels</strong> trim the power bill. Every county permit is closed and finaled.</p></div></div>
     </div>
   </div>
 </section>
@@ -465,7 +469,7 @@
           <li><strong>8 foot doors</strong> throughout</li>
           <li>Smart thermostat, doorbell, locks, garage</li>
           <li>Water softener and whole home filtration</li>
-          <li>Roof 2019 · AC 2019 · 9 kW solar</li>
+          <li>Tile roof 2019 · AC 2019 · 9 kW solar</li>
         </ul>
       </div>
       <div class="dl rv">
