@@ -428,6 +428,14 @@
         <picture><source type="image/avif" srcset="img/front-twilight-1400.avif"><img src="img/front-twilight-1400.jpg" decoding="async" alt="Stone front elevation at twilight, 8291 Procida Isle Ln, Windermere Isle, Horizon West Florida"></picture>
         <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 06</i><i class="cl">Front Elevation at Twilight</i></div>
       </div>
+      <div class="ph r43 g7 rv">
+        <picture><source type="image/avif" srcset="img/community-pool-1400.avif"><img src="img/community-pool-1400.jpg" decoding="async" alt="Windermere Isle community pool and cabana, Horizon West Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 07</i><i class="cl">Community Pool &amp; Cabana</i></div>
+      </div>
+      <div class="ph r45 g5 g-off rv">
+        <picture><source type="image/avif" srcset="img/playground-1400.avif"><img src="img/playground-1400.jpg" decoding="async" alt="Shaded community playground in Windermere Isle, Horizon West Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 08</i><i class="cl">Community Playground</i></div>
+      </div>
     </div>
   </div>
 </section>
@@ -712,6 +720,54 @@
       document.querySelectorAll('.rv').forEach(function(e){e.classList.add('in');});
       document.querySelectorAll('.mask > span').forEach(function(s){ s.style.transform='none'; });
     }
+
+    /* ---------- reveal watchdog ----------
+       Belt and braces for phones: if an element that should have revealed is
+       sitting ON SCREEN but still hidden after two consecutive checks, its
+       animation is not coming (stalled trigger, throttled webview, content
+       blocker, stale cached script). Force it visible. When everything works
+       nothing here ever matches, because revealed elements fail the tests. */
+    (function(){
+      var runs=0;
+      function offY(el){
+        var t=getComputedStyle(el).transform;
+        if(!t || t==='none') return 0;
+        var m=t.match(/matrix\(([^)]+)\)/);
+        return m ? Math.abs(parseFloat(m[1].split(',')[5])||0) : 0;
+      }
+      function stuck(el, hidden){
+        var r=el.getBoundingClientRect();
+        var vh=window.innerHeight||800;
+        if(!(r.top<vh && r.bottom>0) || !hidden){ el.__wd=0; return false; }
+        el.__wd=(el.__wd||0)+1;
+        return el.__wd>=2;
+      }
+      var timer=setInterval(function(){
+        runs++;
+        var pending=0;
+        document.querySelectorAll('.rv').forEach(function(el){
+          if(parseFloat(getComputedStyle(el).opacity)>=0.5) return;
+          pending++;
+          if(stuck(el, true)){
+            el.classList.add('in'); el.style.transition='none';
+            el.style.opacity='1'; el.style.transform='none';
+          }
+        });
+        document.querySelectorAll('.mask > span, .hero h1 .word > span').forEach(function(s){
+          if(offY(s)<=4) return;
+          pending++;
+          if(stuck(s, true)) s.style.transform='none';
+        });
+        document.querySelectorAll('.gal .ph').forEach(function(ph){
+          if((ph.style.clipPath||'').indexOf('12%')===-1) return;
+          pending++;
+          if(stuck(ph, true)) ph.style.clipPath='none';
+        });
+        /* stop only when nothing on the page is still waiting to reveal,
+           or after two minutes as an absolute cap */
+        if(pending===0 || runs>=100) clearInterval(timer);
+      }, 1200);
+    })();
 
     /* ---------- magnetic buttons, fine pointers only ---------- */
     if(fine && hasGsap && !reduced){
