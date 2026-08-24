@@ -2,7 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js")
+/* Self-heal a photo that fails to load. A browser or CDN edge holding a
+   broken cached response would otherwise show a broken-image icon forever,
+   because a reload re-reads the same cached entry. Retrying with a fresh
+   query string is a different cache key, so it bypasses the bad copy. One
+   retry per image, capture phase because img errors do not bubble. */
+window.addEventListener("error", function (ev) {
+  var el = ev.target;
+  if (!el || el.tagName !== "IMG" || el.dataset.retried) return;
+  el.dataset.retried = "1";
+  var base = el.src.split("?")[0];
+  el.removeAttribute("srcset");
+  var p = el.parentNode;
+  if (p && p.tagName === "PICTURE") {
+    var s = p.getElementsByTagName("source");
+    while (s.length) p.removeChild(s[0]);
+  }
+  el.src = base + "?r=" + Date.now();
+}, true)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>8291 Procida Isle Ln Windermere FL | Saltwater Pool Home</title>
 <meta name="description" content="One story 4 bed, 3 bath saltwater pool home in Windermere Isle, Horizon West. Gas heated pool, 9 kW solar, smart home. $775,000. Book a private tour.">
