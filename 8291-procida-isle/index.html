@@ -11,11 +11,11 @@
 <meta property="og:description" content="One story saltwater pool home in Windermere Isle. 4 bed, 3 bath, 2,224 SF. $775,000.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.kizloteam.com/8291-procida-isle/">
-<meta property="og:image" content="https://www.kizloteam.com/img/og-home-hero.jpg">
+<meta property="og:image" content="https://www.kizloteam.com/8291-procida-isle/img/og-procida.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.kizloteam.com/img/og-home-hero.jpg">
+<meta name="twitter:image" content="https://www.kizloteam.com/8291-procida-isle/img/og-procida.jpg">
 <meta property="og:locale" content="en_US">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
@@ -36,6 +36,11 @@
     "floorSize": { "@type": "QuantitativeValue", "value": 2224, "unitCode": "FTK" },
     "yearBuilt": 2019
   },
+  "image": [
+    "https://www.kizloteam.com/8291-procida-isle/img/hero-pool-dusk-2048.jpg",
+    "https://www.kizloteam.com/8291-procida-isle/img/front-twilight-1400.jpg",
+    "https://www.kizloteam.com/8291-procida-isle/img/great-room-1400.jpg"
+  ],
   "offers": { "@type": "Offer", "price": 775000, "priceCurrency": "USD", "availability": "https://schema.org/InStock" },
   "provider": { "@type": "RealEstateAgent", "name": "The Kizlo Team - Realtors", "telephone": "+18139923073", "email": "thekizloteam@kw.com", "url": "https://www.kizloteam.com" }
 }
@@ -43,6 +48,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..500;1,9..144,200..500&family=Hanken+Grotesk:wght@300..600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" type="image/avif" imagesrcset="img/hero-pool-dusk-1100.avif 1100w, img/hero-pool-dusk-2048.avif 2048w" imagesizes="100vw">
 <style>
   :root {
     --black:#100E0B; --char:#17150F; --panel:#1E1B15; --panel2:#242019;
@@ -81,20 +87,6 @@
   .progress { position:fixed; top:0; left:0; right:0; height:2px; z-index:70; pointer-events:none; }
   .progress i { display:block; height:100%; background:var(--gold); transform-origin:0 50%; transform:scaleX(0); }
 
-  /* bespoke cursor: a gold diamond, desktop fine-pointers only.
-     Two layers so the dot snaps and the ring trails. */
-  .curw { position:fixed; top:0; left:0; z-index:130; pointer-events:none; display:none; }
-  html.cursor-on .curw { display:block; }
-  html.cursor-on, html.cursor-on a, html.cursor-on button, html.cursor-on .ph, html.cursor-on label { cursor:none; }
-  .cur-dot { display:block; width:5px; height:5px; background:var(--gold); transform:translate(-50%,-50%) rotate(45deg); }
-  .cur-ring { display:flex; align-items:center; justify-content:center; width:34px; height:34px;
-    border:1px solid rgba(200,155,102,.5); transform:translate(-50%,-50%) rotate(45deg);
-    transition:width .35s var(--ease), height .35s var(--ease), border-color .35s, background-color .35s; }
-  .cur-ring i { font-style:normal; transform:rotate(-45deg); font-size:.55rem; letter-spacing:.18em; text-transform:uppercase; color:var(--black); opacity:0; transition:opacity .25s; font-weight:600; white-space:nowrap; }
-  #curRing.link .cur-ring { width:48px; height:48px; border-color:var(--gold); }
-  #curRing.act .cur-ring { width:88px; height:88px; background:var(--gold); border-color:var(--gold); }
-  #curRing.act .cur-ring i { opacity:1; }
-
   /* nav */
   nav { position:fixed; top:0; left:0; right:0; z-index:60; padding:1.2rem 0; transition:background .4s var(--ease), box-shadow .4s var(--ease), transform .55s var(--ease); }
   nav.scrolled { background:rgba(16,14,11,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--hair); }
@@ -112,7 +104,8 @@
       radial-gradient(120% 90% at 70% 20%, #2A251B 0%, #17140E 45%, #100E0B 100%);
     display:flex; align-items:center; justify-content:center;
   }
-  .hero-media .ph-label { position:absolute; top:32%; left:50%; transform:translate(-50%,-50%); }
+  .hero-media picture, .hero-media img { position:absolute; inset:0; width:100%; height:100%; }
+  .hero-media img { object-fit:cover; object-position:center 62%; }
   .hero-num { position:absolute; right:3vw; top:10%; font-family:'Fraunces',serif; font-weight:220; font-size:clamp(9rem,24vw,23rem); line-height:1; color:transparent; -webkit-text-stroke:1px rgba(200,155,102,.16); user-select:none; pointer-events:none; letter-spacing:-.02em; }
   .hero-media::after { content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(16,14,11,.92) 0%, rgba(16,14,11,.25) 45%, rgba(16,14,11,.45) 100%); }
   .hero-inner { position:relative; z-index:2; width:100%; }
@@ -155,13 +148,14 @@
      awaiting the shoot, not unfinished gray boxes. */
   .ph { background:radial-gradient(120% 100% at 30% 0%, #1D1912 0%, #14110C 60%, #100E0B 100%); border:1px solid var(--hair); display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
   .ph::before { content:""; position:absolute; inset:12px; border:1px solid rgba(200,155,102,.14); pointer-events:none; z-index:2; }
-  .ph .mark { position:absolute; top:50%; left:50%; width:9px; height:9px; border:1px solid var(--gold-dim); transform:translate(-50%,-50%) rotate(45deg); opacity:.7; }
-  .ph .sheen { position:absolute; inset:0; background:linear-gradient(115deg,transparent 40%,rgba(245,240,228,.05) 50%,transparent 60%); transform:translateX(-130%); transition:transform 1.2s var(--ease); z-index:1; pointer-events:none; }
+  .ph picture, .ph > img { position:absolute; inset:0; width:100%; height:100%; }
+  .ph img { object-fit:cover; width:100%; height:100%; transition:transform 1.2s var(--ease); }
+  .ph:hover img { transform:scale(1.04); }
+  .ph .sheen { position:absolute; inset:0; background:linear-gradient(115deg,transparent 40%,rgba(245,240,228,.07) 50%,transparent 60%); transform:translateX(-130%); transition:transform 1.2s var(--ease); z-index:1; pointer-events:none; }
   .ph:hover .sheen { transform:translateX(130%); }
-  .ph .cap { position:absolute; left:1.35rem; bottom:1.05rem; z-index:3; display:flex; align-items:baseline; gap:.8rem; }
+  .ph .cap { position:absolute; left:12px; bottom:12px; z-index:3; display:flex; align-items:baseline; gap:.8rem; background:rgba(16,14,11,.78); border:1px solid rgba(200,155,102,.25); padding:.5rem .9rem .45rem; }
   .ph .cap .no { font-family:'Fraunces',serif; font-style:italic; font-weight:300; color:var(--gold); font-size:.9rem; letter-spacing:.02em; }
   .ph .cap .cl { font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#8F856E; font-weight:500; }
-  .ph-label, .ph span { font-size:.65rem; letter-spacing:.24em; text-transform:uppercase; color:#6E6552; font-weight:500; text-align:center; padding:1rem; }
   .r43 { aspect-ratio:4/3; } .r45 { aspect-ratio:4/5; } .r219 { aspect-ratio:21/9; }
 
   /* stats band */
@@ -207,6 +201,12 @@
   .dl li { padding:.75rem 0; border-bottom:1px solid var(--hair); font-size:.93rem; color:var(--dim); }
   .dl li:last-child { border-bottom:none; }
   .dl li strong { color:var(--text); font-weight:500; }
+
+  /* 3d tour */
+  .tour-embed { position:relative; aspect-ratio:21/9; border:1px solid var(--hair); background:var(--panel); margin-top:3rem; }
+  .tour-embed::before { content:""; position:absolute; inset:12px; border:1px solid rgba(200,155,102,.14); pointer-events:none; z-index:2; }
+  .tour-embed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+  @media(max-width:700px){ .tour-embed { aspect-ratio:4/3; } }
 
   /* dims */
   .dims { max-width:620px; margin-top:3rem; }
@@ -314,7 +314,7 @@
     .js .mask > span { transform:none; }
     .sticky-cta { transition:none; }
     .grain { animation:none; }
-    .curw { display:none !important; }
+    .ph:hover img { transform:none; }
     .ph .sheen { display:none; }
     .num-item { transition:none; }
   }
@@ -326,8 +326,6 @@
 
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" aria-hidden="true"><i id="progbar"></i></div>
-<div class="curw" id="curRing" aria-hidden="true"><span class="cur-ring"><i id="curLabel">View</i></span></div>
-<div class="curw" id="curDot" aria-hidden="true"><span class="cur-dot"></span></div>
 
 <div class="preload" id="preload" aria-hidden="true">
   <div class="pl-veil"></div>
@@ -347,7 +345,10 @@
 
 <header class="hero">
   <div class="hero-media">
-    <div class="ph-label">Hero Photo · Twilight Saltwater Pool, Full Bleed<br>Estate home in Windermere Florida, Horizon West</div>
+    <picture>
+      <source type="image/avif" srcset="img/hero-pool-dusk-1100.avif 1100w, img/hero-pool-dusk-2048.avif 2048w" sizes="100vw">
+      <img src="img/hero-pool-dusk-2048.jpg" srcset="img/hero-pool-dusk-1100.jpg 1100w, img/hero-pool-dusk-2048.jpg 2048w" sizes="100vw" fetchpriority="high" alt="Gas heated saltwater pool, fire pit and covered pergola at dusk at 8291 Procida Isle Ln, Windermere Florida, Horizon West">
+    </picture>
     <div class="hero-num" aria-hidden="true">8291</div>
   </div>
   <div class="wrap hero-inner">
@@ -408,12 +409,30 @@
     <div class="eyebrow rv">Gallery</div>
     <h2 class="sec-title"><span class="mask"><span>The rooms, in <em>order.</em></span></span></h2>
     <div class="gal">
-      <div class="ph r43 g7 rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 01</i><i class="cl">Great Room</i></div></div>
-      <div class="ph r45 g5 g-off rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 02</i><i class="cl">Kitchen Island &amp; Pendants</i></div></div>
-      <div class="ph r45 g5 rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 03</i><i class="cl">Primary Suite</i></div></div>
-      <div class="ph r43 g7 g-off rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 04</i><i class="cl">Pool &amp; Natural Stone Deck</i></div></div>
-      <div class="ph r43 g7 rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 05</i><i class="cl">Covered Pergola at Dusk</i></div></div>
-      <div class="ph r45 g5 g-off rv"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 06</i><i class="cl">Front Elevation</i></div></div>
+      <div class="ph r43 g7 rv">
+        <picture><source type="image/avif" srcset="img/great-room-1400.avif"><img src="img/great-room-1400.jpg" loading="lazy" decoding="async" alt="Great room with wood look tile and pool view at 8291 Procida Isle Ln, Windermere Isle, Horizon West Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 01</i><i class="cl">Great Room</i></div>
+      </div>
+      <div class="ph r45 g5 g-off rv">
+        <picture><source type="image/avif" srcset="img/kitchen-island-1400.avif"><img src="img/kitchen-island-1400.jpg" loading="lazy" decoding="async" alt="Kitchen with granite island, pendant lighting and 42 inch cabinets at 8291 Procida Isle Ln, Windermere Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 02</i><i class="cl">Kitchen Island &amp; Pendants</i></div>
+      </div>
+      <div class="ph r45 g5 rv">
+        <picture><source type="image/avif" srcset="img/primary-suite-1400.avif"><img src="img/primary-suite-1400.jpg" loading="lazy" decoding="async" alt="Primary suite with tray ceiling at 8291 Procida Isle Ln, Windermere Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 03</i><i class="cl">Primary Suite</i></div>
+      </div>
+      <div class="ph r43 g7 g-off rv">
+        <picture><source type="image/avif" srcset="img/pool-stone-deck-1400.avif"><img src="img/pool-stone-deck-1400.jpg" loading="lazy" decoding="async" alt="Saltwater pool with in-water loungers and natural stone deck at 8291 Procida Isle Ln, Windermere Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 04</i><i class="cl">Pool &amp; Natural Stone Deck</i></div>
+      </div>
+      <div class="ph r43 g7 rv">
+        <picture><source type="image/avif" srcset="img/pool-after-dark-1400.avif"><img src="img/pool-after-dark-1400.jpg" loading="lazy" decoding="async" alt="Heated saltwater pool lit at night at 8291 Procida Isle Ln, Windermere Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 05</i><i class="cl">Poolside After Dark</i></div>
+      </div>
+      <div class="ph r45 g5 g-off rv">
+        <picture><source type="image/avif" srcset="img/front-twilight-1400.avif"><img src="img/front-twilight-1400.jpg" loading="lazy" decoding="async" alt="Stone front elevation at twilight, 8291 Procida Isle Ln, Windermere Isle, Horizon West Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 06</i><i class="cl">Front Elevation at Twilight</i></div>
+      </div>
     </div>
   </div>
 </section>
@@ -496,7 +515,9 @@
   <div class="wrap">
     <div class="eyebrow rv">Walk It From Anywhere</div>
     <h2 class="sec-title"><span class="mask"><span>Every room, from <em>any</em> room.</span></span></h2>
-    <div class="rv" style="margin-top:3rem;"><div class="ph r219"><i class="mark" aria-hidden="true"></i><i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 07</i><i class="cl">Immersive 3D Tour · Arrives With The Shoot</i></div></div></div>
+    <div class="rv"><div class="tour-embed">
+      <iframe src="https://www.zillow.com/view-imx/6a84593c-5f77-4a97-9a1c-d1eef940a70b?setAttribution=mls&amp;wl=true&amp;initialViewType=pano" title="Immersive 3D tour of 8291 Procida Isle Ln, Windermere FL" loading="lazy" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" allowfullscreen></iframe>
+    </div></div>
   </div>
 </section>
 
@@ -507,7 +528,7 @@
       <h2>See it <em>before</em> the open house crowd.</h2>
       <p class="sub">Showings are by appointment only. Tell us when works and we will confirm your private tour, usually the same day. Prefer to talk? Call or text 813 992 3073.</p>
       <div class="agent">
-        <div class="ph"><span>Photo<br>Vlad</span></div>
+        <div class="ph"><picture><source type="image/avif" srcset="/img/team-portrait-480.avif"><img src="/img/team-portrait-480.jpg" loading="lazy" alt="Vlad Kizlo and Anastasiia Zbihla, The Kizlo Team Realtors"></picture></div>
         <div>
           <div class="an">Vlad Kizlo &amp; Anastasiia Zbihla</div>
           <div class="al">The Kizlo Team · Keller Williams Realty At The Lakes · EN / UA</div>
@@ -721,27 +742,8 @@
       document.querySelectorAll('.mask > span').forEach(function(s){ s.style.transform='none'; });
     }
 
-    /* ---------- bespoke cursor + magnetic buttons, fine pointers only ---------- */
+    /* ---------- magnetic buttons, fine pointers only ---------- */
     if(fine && hasGsap && !reduced){
-      document.documentElement.classList.add('cursor-on');
-      gsap.set(['#curDot','#curRing'],{x:-100,y:-100});
-      var dX=gsap.quickTo('#curDot','x',{duration:.1,ease:'power3.out'}),
-          dY=gsap.quickTo('#curDot','y',{duration:.1,ease:'power3.out'}),
-          rX=gsap.quickTo('#curRing','x',{duration:.4,ease:'power3.out'}),
-          rY=gsap.quickTo('#curRing','y',{duration:.4,ease:'power3.out'});
-      window.addEventListener('pointermove',function(e){ dX(e.clientX); dY(e.clientY); rX(e.clientX); rY(e.clientY); });
-      var ring=document.getElementById('curRing'), curLabel=document.getElementById('curLabel');
-      document.addEventListener('mouseover',function(e){
-        if(!e.target.closest) return;
-        var g=e.target.closest('.gal .ph, .r219');
-        if(g){ curLabel.textContent = g.classList.contains('r219') ? '3D Tour' : 'View'; ring.classList.add('act'); }
-        else if(e.target.closest('a,button')) ring.classList.add('link');
-      });
-      document.addEventListener('mouseout',function(e){
-        if(!e.target.closest) return;
-        if(e.target.closest('.gal .ph, .r219')) ring.classList.remove('act');
-        if(e.target.closest('a,button')) ring.classList.remove('link');
-      });
       document.querySelectorAll('.btn-gold').forEach(function(b){
         b.addEventListener('pointermove',function(e){
           var r=b.getBoundingClientRect();
