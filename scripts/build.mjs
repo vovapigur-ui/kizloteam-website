@@ -321,7 +321,10 @@ function injectSchema(html, graph) {
     }
     return out;
   }
-  return html.replace(/([ \t]*)<\/head>/i, `${block}\n$1</head>`);
+  // Function replacer: `block` carries page copy that can contain `$1`, `$$`
+  // etc., which String.replace treats as substitution patterns in a string
+  // replacement and silently mangles.
+  return html.replace(/([ \t]*)<\/head>/i, (_m, indent) => `${block}\n${indent}</head>`);
 }
 
 function injectHreflang(file, html) {
@@ -334,7 +337,9 @@ function injectHreflang(file, html) {
 
   const replaced = replaceManaged(html, HREF_START, HREF_END, block);
   if (replaced) return replaced;
-  return html.replace(/([ \t]*)(<link rel="canonical"[^>]*>)/i, `$1$2\n${block}`);
+  // Function replacer for the same reason as injectSchema: `block` must be
+  // inserted verbatim, never interpreted as a substitution pattern.
+  return html.replace(/([ \t]*)(<link rel="canonical"[^>]*>)/i, (_m, indent, link) => `${indent}${link}\n${block}`);
 }
 
 // Keep the footer in step across every page. Two pages carry slightly
