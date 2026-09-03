@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.add("js")
+/* Self-heal a photo that fails to load. A browser or CDN edge holding a
+   broken cached response would otherwise show a broken-image icon forever,
+   because a reload re-reads the same cached entry. Retrying with a fresh
+   query string is a different cache key, so it bypasses the bad copy. One
+   retry per image, capture phase because img errors do not bubble. */
+window.addEventListener("error", function (ev) {
+  var el = ev.target;
+  if (!el || el.tagName !== "IMG" || el.dataset.retried) return;
+  el.dataset.retried = "1";
+  var base = el.src.split("?")[0];
+  el.removeAttribute("srcset");
+  var p = el.parentNode;
+  if (p && p.tagName === "PICTURE") {
+    var s = p.getElementsByTagName("source");
+    while (s.length) p.removeChild(s[0]);
+  }
+  el.src = base + "?r=" + Date.now();
+}, true)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3625 Waters Edge Dr Belle Isle FL | Waterfront Boat Dock</title>
+<meta name="description" content="One story 4 bed, 3 bath waterfront home in Belle Isle with a covered boat dock, outdoor fireplace and a new 2026 roof. 2,813 SF, boat ramp access. Book a private tour.">
+<link rel="canonical" href="https://www.kizloteam.com/3625-waters-edge/">
+<meta property="og:title" content="3625 Waters Edge Dr, Belle Isle FL 32812">
+<meta property="og:description" content="One story waterfront home in Belle Isle with a covered boat dock. 4 bed, 3 bath, 2,813 SF.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.kizloteam.com/3625-waters-edge/">
+<meta property="og:image" content="https://www.kizloteam.com/3625-waters-edge/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.kizloteam.com/3625-waters-edge/img/og-image.jpg">
+<meta property="og:locale" content="en_US">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#100E0B">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "RealEstateListing",
+  "name": "3625 Waters Edge Dr, Belle Isle, FL 32812",
+  "url": "https://www.kizloteam.com/3625-waters-edge/",
+  "datePosted": "2026-09-03",
+  "about": {
+    "@type": "SingleFamilyResidence",
+    "address": { "@type": "PostalAddress", "streetAddress": "3625 Waters Edge Dr", "addressLocality": "Belle Isle", "addressRegion": "FL", "postalCode": "32812", "addressCountry": "US" },
+    "numberOfBedrooms": 4,
+    "numberOfBathroomsTotal": 3,
+    "floorSize": { "@type": "QuantitativeValue", "value": 2813, "unitCode": "FTK" }
+  },
+  "image": [
+    "https://www.kizloteam.com/3625-waters-edge/img/hero-2048.jpg",
+    "https://www.kizloteam.com/3625-waters-edge/img/covered-boat-dock-1400.jpg",
+    "https://www.kizloteam.com/3625-waters-edge/img/great-room-1400.jpg"
+  ],
+  "offers": { "@type": "Offer", "priceCurrency": "USD", "availability": "https://schema.org/InStock" },
+  "provider": { "@type": "RealEstateAgent", "name": "The Kizlo Team - Realtors", "telephone": "+18139923073", "email": "thekizloteam@kw.com", "url": "https://www.kizloteam.com" }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..500;1,9..144,200..500&family=Hanken+Grotesk:wght@300..600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" imagesrcset="img/hero-1100.jpg 1100w, img/hero-2048.jpg 2048w" imagesizes="100vw">
+<style>
+  :root {
+    --black:#100E0B; --char:#17150F; --panel:#1E1B15; --panel2:#242019;
+    --hair:#332E25; --hair2:#3E382D;
+    --text:#D9D2C2; --dim:#9A917E; --white:#F5F0E4;
+    --gold:#C89B66; --gold-dim:#8A6D4B;
+    --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; background:var(--black); }
+  body { font-family:'Hanken Grotesk',sans-serif; font-weight:300; color:var(--text); background:var(--black); line-height:1.65; }
+  img { max-width:100%; display:block; }
+  a { color:inherit; }
+  ::selection { background:var(--gold); color:var(--black); }
+  .wrap { max-width:1440px; margin:0 auto; padding-left:5.5vw; padding-right:5.5vw; position:relative; z-index:1; }
+  section { padding:clamp(4.5rem,8vw,8.5rem) 0; }
+  .sec { position:relative; }
+  .skip { position:absolute; left:-9999px; }
+  .skip:focus { left:0; top:0; z-index:200; background:var(--gold); color:var(--black); padding:.8rem 1.4rem; }
+
+  .eyebrow { font-size:.6875rem; font-weight:500; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); }
+  .eyebrow::after { content:""; display:block; width:2.5rem; border-bottom:1px solid var(--hair2); margin-top:.65rem; }
+  .micro { font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); font-weight:500; }
+
+  /* film grain: the single cheapest thing that separates a page from a template.
+     Fixed, tiled SVG noise at ~4% with a stepped drift so it flickers like stock. */
+  .grain { position:fixed; inset:-100px; z-index:90; pointer-events:none; opacity:.042;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+    animation:grain 9s steps(6) infinite; }
+  @keyframes grain {
+    0%{transform:translate(0,0)} 20%{transform:translate(-42px,28px)} 40%{transform:translate(28px,-48px)}
+    60%{transform:translate(-28px,-18px)} 80%{transform:translate(42px,38px)} 100%{transform:translate(0,0)}
+  }
+
+  /* reading progress, a 2px gold hairline under the nav */
+  .progress { position:fixed; top:0; left:0; right:0; height:2px; z-index:70; pointer-events:none; }
+  .progress i { display:block; height:100%; background:var(--gold); transform-origin:0 50%; transform:scaleX(0); }
+
+  /* nav */
+  nav { position:fixed; top:0; left:0; right:0; z-index:60; padding:1.2rem 0; transition:background .4s var(--ease), box-shadow .4s var(--ease), transform .55s var(--ease); }
+  nav.scrolled { background:rgba(16,14,11,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--hair); }
+  nav.hide { transform:translateY(-100%); }
+  .nav-in { display:flex; align-items:center; justify-content:space-between; }
+  .wordmark { font-family:'Fraunces',serif; font-weight:380; font-size:1.1rem; color:var(--white); text-decoration:none; letter-spacing:.01em; }
+  .wordmark em { font-style:italic; }
+  .nav-cta { font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; font-weight:500; color:var(--gold); text-decoration:none; }
+
+  /* hero */
+  .hero { position:relative; min-height:100svh; display:flex; align-items:flex-end; padding:0 0 clamp(3rem,6vw,5rem) 0; overflow:hidden; }
+  .hero-media {
+    position:absolute; inset:0; z-index:0;
+    background:
+      radial-gradient(120% 90% at 70% 20%, #2A251B 0%, #17140E 45%, #100E0B 100%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .hero-media picture, .hero-media img { position:absolute; inset:0; width:100%; height:100%; }
+  .hero-media img { object-fit:cover; object-position:center 62%; }
+  .hero-num { position:absolute; right:3vw; top:10%; font-family:'Fraunces',serif; font-weight:220; font-size:clamp(9rem,24vw,23rem); line-height:1; color:transparent; -webkit-text-stroke:1px rgba(200,155,102,.16); user-select:none; pointer-events:none; letter-spacing:-.02em; }
+  .hero-media::after { content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(16,14,11,.92) 0%, rgba(16,14,11,.25) 45%, rgba(16,14,11,.45) 100%); }
+  .hero-inner { position:relative; z-index:2; width:100%; }
+  .hero .micro { color:#B7AD97; }
+  .hero h1 {
+    font-family:'Fraunces',serif; font-optical-sizing:auto; font-weight:230;
+    font-size:clamp(3rem,8.5vw,7.5rem); letter-spacing:-.01em; color:var(--white);
+    line-height:.98; margin-top:1rem; text-wrap:balance; max-width:14ch;
+  }
+  .hero h1 em { font-style:italic; font-weight:250; }
+  .hero-row { display:flex; flex-wrap:wrap; align-items:baseline; gap:1.5rem 3rem; margin-top:2rem; border-top:1px solid rgba(200,155,102,.35); padding-top:1.5rem; }
+  .price { font-family:'Fraunces',serif; font-weight:300; font-size:clamp(1.9rem,3.4vw,3rem); color:var(--gold); letter-spacing:.01em; font-variant-numeric:tabular-nums; }
+  .hero-cta { margin-left:auto; }
+
+  .btn-gold {
+    display:inline-block; background:var(--gold); color:var(--black); text-decoration:none;
+    font-weight:600; font-size:.75rem; letter-spacing:.18em; text-transform:uppercase;
+    padding:1.15rem 2.4rem; border:1px solid var(--gold); transition:background .3s var(--ease), color .3s var(--ease);
+    will-change:transform;
+  }
+  .btn-gold:hover { background:transparent; color:var(--gold); }
+  .btn-line {
+    display:inline-block; color:var(--white); text-decoration:none; font-size:.75rem;
+    letter-spacing:.18em; text-transform:uppercase; font-weight:500;
+    border-bottom:1px solid var(--gold); padding-bottom:5px;
+  }
+
+  /* section titles: big masked serif lines, the editorial scale the page lacked */
+  .sec-title { font-family:'Fraunces',serif; font-weight:255; font-size:clamp(2.1rem,4.6vw,3.9rem); color:var(--white); line-height:1.06; margin-top:1.2rem; letter-spacing:-.012em; text-wrap:balance; max-width:20ch; }
+  .sec-title em { font-style:italic; color:var(--gold); }
+  .mask { display:block; overflow:hidden; }
+  .mask > span { display:inline-block; will-change:transform; }
+  .js .mask > span { transform:translateY(115%); }
+
+  /* ghost numerals: huge outlined chapter numbers drifting behind each section */
+  .sec-num { position:absolute; top:clamp(.5rem,3vw,2.5rem); right:5.5vw; z-index:0; font-family:'Fraunces',serif; font-weight:250; font-size:clamp(6rem,15vw,14rem); line-height:1; color:transparent; -webkit-text-stroke:1px rgba(200,155,102,.12); pointer-events:none; user-select:none; letter-spacing:-.02em; }
+
+  /* placeholders as numbered plates: fine inner keyline, corner caption,
+     center registration mark, hover sheen. They read as intentional frames
+     awaiting the shoot, not unfinished gray boxes. */
+  .ph { background:radial-gradient(120% 100% at 30% 0%, #1D1912 0%, #14110C 60%, #100E0B 100%); border:1px solid var(--hair); display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+  .ph::before { content:""; position:absolute; inset:12px; border:1px solid rgba(200,155,102,.14); pointer-events:none; z-index:2; }
+  .ph picture, .ph > img { position:absolute; inset:0; width:100%; height:100%; }
+  .ph img { object-fit:cover; width:100%; height:100%; transition:transform 1.2s var(--ease); }
+  .ph:hover img { transform:scale(1.04); }
+  .ph .sheen { position:absolute; inset:0; background:linear-gradient(115deg,transparent 40%,rgba(245,240,228,.07) 50%,transparent 60%); transform:translateX(-130%); transition:transform 1.2s var(--ease); z-index:1; pointer-events:none; }
+  .ph:hover .sheen { transform:translateX(130%); }
+  .ph .cap { position:absolute; left:12px; bottom:12px; z-index:3; display:flex; align-items:baseline; gap:.8rem; background:rgba(16,14,11,.78); border:1px solid rgba(200,155,102,.25); padding:.5rem .9rem .45rem; }
+  .ph .cap .no { font-family:'Fraunces',serif; font-style:italic; font-weight:300; color:var(--gold); font-size:.9rem; letter-spacing:.02em; }
+  .ph .cap .cl { font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#8F856E; font-weight:500; }
+  .r43 { aspect-ratio:4/3; } .r45 { aspect-ratio:4/5; } .r219 { aspect-ratio:21/9; }
+
+  /* stats band */
+  .band { border-top:1px solid var(--hair); border-bottom:1px solid var(--hair); background:var(--char); }
+  .band .wrap { display:grid; grid-template-columns:repeat(5,1fr); }
+  .stat { padding:1.8rem 1.2rem 1.8rem 0; }
+  .stat + .stat { border-left:1px solid var(--hair); padding-left:1.2rem; }
+  .stat .v { font-family:'Fraunces',serif; font-weight:280; font-size:1.55rem; color:var(--white); }
+  .stat .k { margin-top:.35rem; }
+  @media(max-width:820px){
+    .band .wrap { grid-template-columns:repeat(2,1fr); }
+    .stat:nth-child(odd){ border-left:none; padding-left:0; }
+    .stat:nth-child(n+3){ border-top:1px solid var(--hair); }
+  }
+
+  /* story */
+  .split { display:grid; grid-template-columns:1fr; gap:3rem; }
+  @media(min-width:900px){ .split { grid-template-columns:5fr 6fr; gap:5.5rem; } }
+  .lede { font-family:'Fraunces',serif; font-weight:280; font-size:clamp(1.5rem,2.4vw,2.2rem); line-height:1.35; color:var(--white); text-wrap:balance; max-width:24ch; }
+  .lede em { font-style:italic; color:var(--gold); }
+  .body-copy { max-width:56ch; font-size:1.02rem; color:var(--text); }
+
+  /* gallery */
+  .gal { display:grid; grid-template-columns:repeat(12,1fr); gap:1.3rem; margin-top:3rem; }
+  .gal > .ph { grid-column:span 12; }
+  @media(min-width:820px){
+    .g7 { grid-column:span 7 !important; } .g5 { grid-column:span 5 !important; }
+    .g-off { transform:translateY(2.8rem); }
+  }
+
+  /* numbered */
+  .num-list { border-top:1px solid var(--hair); margin-top:3rem; }
+  .num-item { display:grid; grid-template-columns:4rem 1fr; gap:1.5rem; padding:1.8rem 0; border-bottom:1px solid var(--hair); align-items:baseline; transition:padding-left .5s var(--ease); }
+  .num-item:hover { padding-left:.6rem; }
+  .num { font-family:'Fraunces',serif; font-style:italic; color:var(--gold); font-size:1.15rem; }
+  .num-item h3 { font-family:'Fraunces',serif; font-weight:350; font-size:1.45rem; color:var(--white); letter-spacing:-.005em; }
+  .num-item p { margin-top:.5rem; max-width:62ch; color:var(--dim); }
+  .num-item p strong { color:var(--text); font-weight:500; }
+
+  /* details as a ruled ledger, not cards */
+  .details-grid { display:grid; grid-template-columns:1fr; gap:2.2rem 3.5rem; margin-top:3rem; }
+  @media(min-width:820px){ .details-grid { grid-template-columns:repeat(3,1fr); } }
+  .dl { border-top:1px solid var(--gold-dim); padding-top:1.6rem; }
+  .dl h3 { font-family:'Fraunces',serif; font-weight:330; font-size:1.35rem; color:var(--white); padding-bottom:.9rem; }
+  .dl h3 em { font-style:italic; color:var(--gold); font-size:.85rem; margin-right:.7rem; letter-spacing:.03em; }
+  .dl ul { list-style:none; }
+  .dl li { padding:.75rem 0; border-bottom:1px solid var(--hair); font-size:.93rem; color:var(--dim); }
+  .dl li:last-child { border-bottom:none; }
+  .dl li strong { color:var(--text); font-weight:500; }
+
+  /* 3d tour */
+  .tour-embed { position:relative; aspect-ratio:21/9; border:1px solid var(--hair); background:var(--panel); margin-top:3rem; }
+  .tour-embed::before { content:""; position:absolute; inset:12px; border:1px solid rgba(200,155,102,.14); pointer-events:none; z-index:2; }
+  .tour-embed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+  /* Zillow lays its widget out from the frame's SHAPE, not the screen: a
+     landscape frame splits pano and floor plan side by side, which at phone
+     width crushes both. A portrait frame gets the stacked layout Zillow uses
+     natively, with the walkthrough large and its hotspots tappable. */
+  @media(max-width:700px){
+    .tour-embed { aspect-ratio:auto; height:540px; max-height:78svh; }
+    /* the decorative inner keyline reads as clutter across a live tour */
+    .tour-embed::before { display:none; }
+  }
+
+  /* lead form */
+  .lead { background:var(--panel); border-top:1px solid var(--hair); border-bottom:1px solid var(--hair); }
+  .lead-grid { display:grid; grid-template-columns:1fr; gap:3.5rem; }
+  @media(min-width:900px){ .lead-grid { grid-template-columns:1fr 1fr; gap:6rem; } }
+  .lead h2 { font-family:'Fraunces',serif; font-weight:280; font-size:clamp(2rem,3.6vw,3.2rem); color:var(--white); line-height:1.08; margin-top:1.2rem; text-wrap:balance; }
+  .lead h2 em { font-style:italic; color:var(--gold); }
+  .lead p.sub { margin-top:1.3rem; color:var(--dim); max-width:44ch; }
+  .agent { display:flex; gap:1.1rem; margin-top:2.5rem; align-items:center; }
+  .agent .ph { width:64px; height:64px; flex:none; border-radius:0; }
+  .agent .ph::before { inset:4px; }
+  .agent .ph span { font-size:.5rem; padding:.2rem; letter-spacing:.1em; }
+  .agent .an { color:var(--white); font-weight:500; font-size:.95rem; }
+  .agent .al { font-size:.78rem; color:var(--dim); margin-top:2px; }
+
+  form { display:grid; gap:1rem; }
+  .f2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  /* Most traffic to a listing link is a phone. Two fields across a 375px
+     screen leaves ~166px each, which is tight for an email address. */
+  @media(max-width:560px){ .f2 { grid-template-columns:1fr; } }
+  label.fl { display:block; }
+  label.fl .lt { font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); font-weight:500; display:block; margin-bottom:.45rem; }
+  input[type=text], input[type=email], input[type=tel], select, textarea {
+    width:100%; font-family:inherit; font-size:1rem; font-weight:300; color:var(--white);
+    background:var(--char); border:1px solid var(--hair2); padding:.95rem 1rem; border-radius:0;
+    appearance:none; -webkit-appearance:none;
+  }
+  input:focus, select:focus, textarea:focus { outline:1px solid var(--gold); outline-offset:0; }
+  select { background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%); background-position:calc(100% - 20px) 50%, calc(100% - 15px) 50%; background-size:5px 5px; background-repeat:no-repeat; }
+  textarea { min-height:90px; resize:vertical; }
+  .consent { font-size:.72rem; color:#6E6552; line-height:1.5; }
+  form .btn-gold { width:100%; text-align:center; cursor:pointer; margin-top:.4rem; }
+  .form-ok { display:none; border:1px solid var(--gold); padding:1.6rem; color:var(--text); }
+  .form-ok.show { display:block; }
+  .form-ok strong { color:var(--gold); font-weight:600; }
+  .form-err { display:none; border:1px solid #A8543F; padding:1.2rem; color:var(--text); font-size:.9rem; }
+  .form-err.show { display:block; }
+  /* Honeypot: hidden from people, filled by bots. Not display:none, which some
+     bots skip; off-canvas so assistive tech ignores it via aria-hidden too. */
+  .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+
+  /* sticky cta */
+  .sticky-cta {
+    position:fixed; right:1.4rem; bottom:1.4rem; z-index:55;
+    opacity:0; pointer-events:none; transform:translateY(8px);
+    transition:opacity .4s var(--ease), transform .4s var(--ease);
+  }
+  .sticky-cta.show { opacity:1; pointer-events:auto; transform:none; }
+
+  /* footer */
+  footer { background:var(--black); color:#6E6552; padding:4.5rem 0 2.5rem 0; border-top:1px solid var(--hair); overflow:hidden; }
+  .foot-wordmark { font-family:'Fraunces',serif; font-weight:250; font-size:clamp(3.5rem,9vw,9.5rem); color:#2E2921; letter-spacing:-.02em; line-height:1; }
+  .foot-wordmark em { font-style:italic; }
+  .foot-meta { display:flex; flex-wrap:wrap; gap:1rem 2.5rem; margin-top:2.5rem; padding-top:1.6rem; border-top:1px solid var(--hair); font-size:.76rem; letter-spacing:.05em; }
+  .foot-meta a { color:var(--dim); text-decoration:none; }
+
+  /* motion layer */
+  .preload {
+    position:fixed; inset:0; z-index:100; background:var(--black);
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1rem;
+  }
+  .pl-veil { position:absolute; inset:0; background:var(--gold); transform:translateY(101%); z-index:3; }
+  .pl-center { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:1rem; }
+  .preload .pl-word { font-family:'Fraunces',serif; font-weight:250; font-size:clamp(1.6rem,4vw,3rem); color:var(--white); overflow:hidden; }
+  .preload .pl-word span { display:inline-block; transform:translateY(110%); }
+  .preload .pl-line { width:0; max-width:220px; border-bottom:1px solid var(--gold); }
+  html.motion-ready .preload { pointer-events:none; }
+
+  .hero-media { will-change:transform; transform-origin:center 30%; }
+  .hero h1 .word { display:inline-block; overflow:hidden; vertical-align:top; }
+  .hero h1 .word > span { display:inline-block; transform:translateY(112%); will-change:transform; }
+
+  /* marquee */
+  .marquee { overflow:hidden; border-top:1px solid var(--hair); border-bottom:1px solid var(--hair); background:var(--black); padding:1.1rem 0; }
+  .marquee-track { display:flex; gap:3.5rem; width:max-content; will-change:transform; }
+  .marquee-track span { font-family:'Fraunces',serif; font-weight:280; font-style:italic; font-size:1.05rem; color:var(--gold); white-space:nowrap; letter-spacing:.04em; }
+  .marquee-track span::after { content:"·"; margin-left:3.5rem; color:var(--gold-dim); }
+
+  .sec-title-mask { overflow:hidden; display:block; }
+
+  /* Without JS the page must still be readable: the preloader would otherwise
+     cover it forever and every .rv block would stay at opacity 0. So the
+     hidden states only apply once the js class is on <html>. */
+  .preload { display:none; }
+  .js .preload { display:flex; }
+  .rv { opacity:1; transform:none; }
+  .js .rv { opacity:0; transform:translateY(26px); transition:opacity 1s var(--ease), transform 1s var(--ease); }
+  .js .rv.in { opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .preload, .js .preload { display:none; }
+    .hero h1 .word > span { transform:none !important; }
+    .marquee-track { transform:none !important; }
+    .js .rv { opacity:1; transform:none; transition:none; }
+    .js .mask > span { transform:none; }
+    .sticky-cta { transition:none; }
+    .grain { animation:none; }
+    .ph:hover img { transform:none; }
+    .ph .sheen { display:none; }
+    .num-item { transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><i id="progbar"></i></div>
+
+<div class="preload" id="preload" aria-hidden="true">
+  <div class="pl-veil"></div>
+  <div class="pl-center">
+    <div class="pl-word"><span id="plw">3625 Waters Edge</span></div>
+    <div class="pl-line" id="pll"></div>
+  </div>
+
+</div>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="wordmark" href="https://www.kizloteam.com">The Kizlo <em>Team</em></a>
+    <a class="nav-cta" href="#tour">Book a Tour</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-media">
+    <picture>
+      <img src="img/hero-2048.jpg" srcset="img/hero-1100.jpg 1100w, img/hero-2048.jpg 2048w" sizes="100vw" fetchpriority="high" alt="Covered boat dock on the canal at sunset at 3625 Waters Edge Dr, Belle Isle Florida, Lake Conway">
+    </picture>
+    <div class="hero-num" aria-hidden="true">3625</div>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="micro rv">Belle Isle · Lake Conway · Private Listing Page</div>
+    <h1 class="rv">3625 Waters <em>Edge</em> Drive</h1>
+    <div class="hero-row rv">
+      <div class="price">Price on Request</div>
+      <div class="micro" style="color:#B7AD97;">4 Bed · 3 Bath · 2,813 SF · One Story · 2 Car Garage</div>
+      <div class="hero-cta"><a class="btn-gold" href="#tour">Book a Private Tour</a></div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="band">
+  <div class="wrap">
+    <div class="stat"><div class="v">Waterfront</div><div class="k micro">Covered Boat Dock · 24 x 11 Slip</div></div>
+    <div class="stat"><div class="v">New Roof</div><div class="k micro">Replaced in 2026</div></div>
+    <div class="stat"><div class="v">One Story</div><div class="k micro">All Bedrooms on the Main Floor</div></div>
+    <div class="stat"><div class="v">Fireplace</div><div class="k micro">Outdoor · Under the Covered Pergola</div></div>
+    <div class="stat"><div class="v">Boat Ramp</div><div class="k micro">Included With the HOA · $150 a Month</div></div>
+  </div>
+</div>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="mtrack">
+    <span>Waterfront</span><span>Covered Boat Dock</span><span>New Roof 2026</span><span>One Story</span><span>Outdoor Fireplace</span><span>Granite Kitchen</span><span>Hardwood Bedrooms</span><span>Boat Ramp Access</span><span>Paver Patio</span><span>Lake Conway</span>
+  </div>
+</div>
+
+<section class="sec">
+  <div class="sec-num" aria-hidden="true">01</div>
+  <div class="wrap split">
+    <div class="rv">
+      <div class="eyebrow">The Home</div>
+      <p class="lede" style="margin-top:1.5rem;">Four bedrooms on one floor, and the <em>water</em> at the end of the yard.</p>
+    </div>
+    <div class="rv">
+      <p class="body-copy">
+        Most houses in Belle Isle give you the layout or the water. This one gives you both.
+        Inside, all four bedrooms sit on one floor, with tile through the living areas and
+        hardwood in the bedrooms. The kitchen has granite counters, an island with pendant
+        lights and seating for four, and stainless Samsung and Whirlpool appliances. Out back,
+        a covered pergola on pavers with a brick fireplace, then the lawn runs down to a
+        covered boat dock with a 24 by 11 foot slip on a canal to Lake Conway.
+      </p>
+      <p class="body-copy" style="margin-top:1.2rem;">
+        The roof was replaced in 2026. The washer, dryer and refrigerator stay. The HOA is
+        $150 a month and includes a boat ramp. Bring the boat and move in.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0;">
+  <div class="sec-num" aria-hidden="true">02</div>
+  <div class="wrap">
+    <div class="eyebrow rv">Gallery</div>
+    <h2 class="sec-title"><span class="mask"><span>Have a <em>look</em> around.</span></span></h2>
+    <div class="gal">
+      <div class="ph r43 g7 rv">
+        <picture><img src="img/great-room-1400.jpg" decoding="async" alt="Great room with tile floors, fireplace and kitchen bar at 3625 Waters Edge Dr, Belle Isle Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 01</i><i class="cl">Great Room</i></div>
+      </div>
+      <div class="ph r45 g5 g-off rv">
+        <picture><img src="img/kitchen-island-1400.jpg" decoding="async" alt="Kitchen with granite island, pendant lighting and stainless appliances at 3625 Waters Edge Dr, Belle Isle Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 02</i><i class="cl">Kitchen Island &amp; Pendants</i></div>
+      </div>
+      <div class="ph r45 g5 rv">
+        <picture><img src="img/primary-suite-1400.jpg" decoding="async" alt="Primary suite with hardwood floors and vaulted ceiling at 3625 Waters Edge Dr, Belle Isle Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 03</i><i class="cl">Primary Suite</i></div>
+      </div>
+      <div class="ph r43 g7 g-off rv">
+        <picture><img src="img/outdoor-fireplace-at-dusk-1400.jpg" decoding="async" alt="Covered pergola with brick fireplace and paver patio at dusk at 3625 Waters Edge Dr, Belle Isle Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 04</i><i class="cl">Outdoor Fireplace at Dusk</i></div>
+      </div>
+      <div class="ph r43 g7 rv">
+        <picture><img src="img/covered-boat-dock-1400.jpg" decoding="async" alt="Covered boat dock on the canal to Lake Conway at 3625 Waters Edge Dr, Belle Isle Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 05</i><i class="cl">Covered Boat Dock</i></div>
+      </div>
+      <div class="ph r45 g5 g-off rv">
+        <picture><img src="img/front-elevation-1400.jpg" decoding="async" alt="Front elevation with paver driveway and 2 car garage at 3625 Waters Edge Dr, Belle Isle Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 06</i><i class="cl">Front Elevation</i></div>
+      </div>
+      <div class="ph r43 g7 rv">
+        <picture><img src="img/from-above-1400.jpg" decoding="async" alt="Aerial view of the home, boat dock and canal at 3625 Waters Edge Dr, Belle Isle Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 07</i><i class="cl">From Above</i></div>
+      </div>
+      <div class="ph r45 g5 g-off rv">
+        <picture><img src="img/primary-bath-1400.jpg" decoding="async" alt="Primary bath with dual vanity, soaking tub and frameless glass shower at 3625 Waters Edge Dr, Belle Isle Florida"></picture>
+        <i class="sheen" aria-hidden="true"></i><div class="cap"><i class="no">N&deg; 08</i><i class="cl">Primary Bath</i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:2rem;">
+  <div class="sec-num" aria-hidden="true">03</div>
+  <div class="wrap">
+    <div class="eyebrow rv">Why This One</div>
+    <h2 class="sec-title"><span class="mask"><span>Four things worth <em>knowing.</em></span></span></h2>
+    <div class="num-list">
+      <div class="num-item rv"><div class="num">01</div><div><h3>Start at the water</h3><p>A <strong>covered boat dock</strong> at the end of the lawn with a 24 by 11 foot slip, so the boat lives at the house, not at a marina. The canal takes you out to Lake Conway. You walk out the back door and you are on the water.</p></div></div>
+      <div class="num-item rv"><div class="num">02</div><div><h3>Everything on one floor</h3><p>No stairs. All four bedrooms, all three baths and the laundry room with its own sink sit on a single level. Hardwood in every bedroom. The primary bath has a <strong>dual vanity, a soaking tub and a frameless glass shower</strong>.</p></div></div>
+      <div class="num-item rv"><div class="num">03</div><div><h3>The outdoor room is already built</h3><p>A covered pergola on a paver patio with a <strong>brick fireplace</strong>, ceiling fans and string lights, steps from the kitchen doors. Dinner outside is the routine, not the occasion.</p></div></div>
+      <div class="num-item rv"><div class="num">04</div><div><h3>The numbers check out</h3><p>A <strong>new roof in 2026</strong>. No CDD. HOA dues are $150 a month and include the <strong>boat ramp</strong>. The washer, dryer and refrigerator stay, and the seller is ready to close at the end of September.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:2rem;">
+  <div class="sec-num" aria-hidden="true">04</div>
+  <div class="wrap">
+    <div class="eyebrow rv">The Details</div>
+    <h2 class="sec-title"><span class="mask"><span>The <em>full</em> list.</span></span></h2>
+    <div class="details-grid">
+      <div class="dl rv">
+        <h3><em>N&deg; 01</em>Kitchen</h3>
+        <ul>
+          <li><strong>Granite counters</strong>, island, bar seating for 4</li>
+          <li><strong>36 inch cabinets</strong></li>
+          <li><strong>Stainless</strong> Samsung and Whirlpool appliances</li>
+          <li><strong>Refrigerator</strong> conveys</li>
+          <li>Pendant lighting over the island</li>
+        </ul>
+      </div>
+      <div class="dl rv">
+        <h3><em>N&deg; 02</em>Inside</h3>
+        <ul>
+          <li><strong>Tile</strong> through the main living areas</li>
+          <li><strong>Hardwood</strong> in all four bedrooms</li>
+          <li>Dual vanity, tub, frameless glass shower</li>
+          <li>Laundry room with sink · washer and dryer convey</li>
+          <li>One story · 2 car garage</li>
+        </ul>
+      </div>
+      <div class="dl rv">
+        <h3><em>N&deg; 03</em>Outdoor &amp; Water</h3>
+        <ul>
+          <li><strong>Covered boat dock</strong>, 24 x 11 slip</li>
+          <li><strong>Covered pergola</strong> with brick fireplace</li>
+          <li>Paver patio and paver driveway</li>
+          <li>New roof 2026</li>
+          <li>HOA $150 a month with boat ramp · No CDD</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:2rem;">
+  <div class="sec-num" aria-hidden="true">05</div>
+  <div class="wrap">
+    <div class="eyebrow rv">3D Tour</div>
+    <h2 class="sec-title"><span class="mask"><span>Walk through it right <em>now.</em></span></span></h2>
+    <div class="rv">
+      <div class="tour-embed">
+        <iframe src="https://www.zillow.com/view-imx/f6ccb241-08e9-4683-a9bd-0894cc21223b?setAttribution=mls&amp;wl=true&amp;initialViewType=pano" title="Immersive 3D tour of 3625 Waters Edge Dr, Belle Isle FL" loading="lazy" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tour" class="lead">
+  <div class="wrap lead-grid">
+    <div class="rv">
+      <div class="eyebrow">Private Showings</div>
+      <h2>Come see it in <em>person.</em></h2>
+      <p class="sub">Showings are private and by appointment. Tell us what day and time work for you and we will set it up, usually the same day. Rather talk to a person? Call or text 813 992 3073.</p>
+      <div class="agent">
+        <div class="ph"><picture><img src="/img/team-portrait-480.jpg" alt="Vlad Kizlo and Anastasiia Zbihla, The Kizlo Team Realtors"></picture></div>
+        <div>
+          <div class="an">Vlad Kizlo &amp; Anastasiia Zbihla</div>
+          <div class="al">The Kizlo Team · Keller Williams Realty At The Lakes · EN / UA</div>
+        </div>
+      </div>
+    </div>
+    <div class="rv">
+      <form id="leadform" method="POST" action="https://kizlohq.onrender.com/api/public/website-lead">
+        <input type="hidden" name="interest" value="buying">
+        <input type="hidden" name="page" value="/3625-waters-edge/">
+        <div class="f2">
+          <label class="fl"><span class="lt">First Name</span><input type="text" name="first_name" required autocomplete="given-name"></label>
+          <label class="fl"><span class="lt">Last Name</span><input type="text" name="last_name" required autocomplete="family-name"></label>
+        </div>
+        <div class="f2">
+          <label class="fl"><span class="lt">Phone</span><input type="tel" name="phone" required autocomplete="tel"></label>
+          <label class="fl"><span class="lt">Email</span><input type="email" name="email" required autocomplete="email"></label>
+        </div>
+        <label class="fl"><span class="lt">I would like to</span>
+          <select name="request">
+            <option>Schedule a private tour</option>
+            <option>Get the full photo set and floor plan</option>
+            <option>Ask a question about this home</option>
+            <option>Talk about financing options</option>
+          </select>
+        </label>
+        <label class="fl"><span class="lt">Message (optional)</span><textarea name="note" placeholder="Preferred day and time, questions, anything else"></textarea></label>
+        <div class="hp" aria-hidden="true"><label>Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
+        <p class="consent">By submitting you agree to be contacted by The Kizlo Team about this property. No spam, no lists, just this home.</p>
+        <button class="btn-gold" type="submit">Book a Private Tour</button>
+        <div class="form-ok" id="formok" role="status" aria-live="polite"><strong>Got it.</strong> We will call or text you shortly to set up your tour. Need it faster? Call or text 813 992 3073.</div>
+        <div class="form-err" id="formerr" role="status" aria-live="polite">Something went wrong sending that. Please call or text 813 992 3073, or email thekizloteam@kw.com.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-wordmark rv">The Kizlo <em>Team</em></div>
+    <div class="foot-meta">
+      <span>Vlad Kizlo SL3475553 · Anastasiia Zbihla SL3469407</span>
+      <a href="tel:8139923073">813 992 3073</a>
+      <a href="mailto:thekizloteam@kw.com">thekizloteam@kw.com</a>
+      <a href="https://www.kizloteam.com">kizloteam.com</a>
+      <span>Keller Williams Realty At The Lakes · Equal Housing Opportunity</span>
+    </div>
+  </div>
+</footer>
+
+<div class="sticky-cta" id="sticky"><a class="btn-gold" href="#tour">Book a Private Tour</a></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  (function(){
+    var ENDPOINT = "https://kizlohq.onrender.com/api/public/website-lead";
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+    var hasGsap = typeof gsap !== 'undefined';
+
+    /* Failsafe: GSAP comes from a CDN, so if it is blocked or the load event
+       never fires the preloader would sit over the whole page forever.
+       It must NOT fire once the intro has started: ripping the preloader out
+       from under a running timeline kills the rest of it, which left the
+       headline stuck in its hidden state. */
+    var introStarted=false;
+    function showEverything(){
+      var p=document.getElementById('preload');
+      if(p && p.parentNode) p.parentNode.removeChild(p);
+      document.querySelectorAll('.hero h1 .word > span').forEach(function(s){ s.style.transform='none'; });
+      document.querySelectorAll('.mask > span').forEach(function(s){ s.style.transform='none'; });
+      document.querySelectorAll('.rv').forEach(function(e){e.classList.add('in');});
+    }
+    setTimeout(function(){ if(!introStarted) showEverything(); }, 3500);
+
+    /* ---------- nav + sticky cta + progress ---------- */
+    var nav=document.getElementById('nav'), sticky=document.getElementById('sticky'),
+        hero=document.querySelector('.hero'), prog=document.getElementById('progbar'),
+        lastNavY=window.scrollY||0;
+    function onScroll(){
+      var y=window.scrollY||0;
+      nav.classList.toggle('scrolled', y>40);
+      /* premium standard: nav retreats while reading down, returns on any scroll up */
+      if(y>700 && y>lastNavY+2) nav.classList.add('hide');
+      else if(y<lastNavY-2 || y<=700) nav.classList.remove('hide');
+      lastNavY=y;
+      var dh=document.documentElement.scrollHeight-window.innerHeight;
+      if(prog) prog.style.transform='scaleX('+(dh>0 ? y/dh : 0)+')';
+      var past=hero? y>hero.offsetHeight*0.7 : y>500;
+      var lead=document.getElementById('tour').getBoundingClientRect();
+      sticky.classList.toggle('show', past && lead.top>window.innerHeight);
+    }
+    window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+    /* ---------- split hero headline into word masks ---------- */
+    var h1=document.querySelector('.hero h1');
+    if(h1 && hasGsap && !reduced){
+      var parts=[];
+      h1.childNodes.forEach(function(n){
+        if(n.nodeType===3){ n.textContent.split(' ').forEach(function(w){ if(w.trim()) parts.push({t:w, em:false}); }); }
+        else if(n.nodeType===1){ parts.push({t:n.textContent, em:true}); }
+      });
+      h1.innerHTML='';
+      parts.forEach(function(p,i){
+        var wrap=document.createElement('span'); wrap.className='word';
+        var inner=document.createElement('span');
+        inner.innerHTML = p.em ? '<em>'+p.t+'</em>' : p.t;
+        wrap.appendChild(inner); h1.appendChild(wrap);
+        if(i<parts.length-1) h1.appendChild(document.createTextNode(' '));
+      });
+    }
+
+    /* ---------- preloader + hero intro ---------- */
+    var pre=document.getElementById('preload');
+    function heroIntro(){
+      introStarted=true;
+      if(!hasGsap || reduced){ showEverything(); return; }
+      var pn=document.getElementById('pricenum'), po={v:0};
+      var tl=gsap.timeline();
+      tl.to('#plw',{y:0,duration:.9,ease:'power4.out'},0)
+        .to('#pll',{width:220,duration:.7,ease:'power2.inOut'},'-=.3')
+        /* two-stage exit: a gold sheet floods up over the black, then the whole
+           preloader lifts away, so the reveal reads as a curtain, not a fade */
+        .to('.pl-veil',{y:0,duration:.65,ease:'power4.inOut',delay:.1})
+        .to(pre,{yPercent:-100,duration:.9,ease:'power4.inOut',onComplete:function(){ if(pre.parentNode) pre.parentNode.removeChild(pre); }},'-=.05')
+        .from('.hero-media',{scale:1.14,duration:2.2,ease:'power2.out'},'-=.9')
+        /* fromTo, not from: these elements sit at opacity 0 under the .rv rule
+           when the timeline is built, so from() would record 0 as the end
+           value and animate 0 to 0, leaving them invisible forever */
+        .fromTo('.hero-num',{opacity:0,y:40},{opacity:1,y:0,duration:1.6,ease:'power3.out'},'-=2')
+        .to('.hero h1 .word > span',{y:0,duration:1.1,ease:'power4.out',stagger:.07},'-=1.8')
+        .fromTo('.hero .micro',{opacity:0,y:14},{opacity:1,y:0,duration:.8,ease:'power3.out'},'-=.9')
+        .fromTo('.hero-row',{opacity:0,y:18},{opacity:1,y:0,duration:.9,ease:'power3.out'},'-=.6');
+      document.querySelectorAll('.hero .rv').forEach(function(e){e.classList.add('in');});
+    }
+    if(document.readyState==='complete') heroIntro(); else window.addEventListener('load', heroIntro);
+
+    /* ---------- scroll motion ---------- */
+    if(hasGsap && !reduced){
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* GSAP drives the reveals from here on; the CSS transition on .rv is the
+         no-JS fallback and would otherwise chase and lag every GSAP write */
+      document.querySelectorAll('.rv').forEach(function(e){ e.style.transition='none'; });
+
+      gsap.to('.hero-media',{yPercent:18,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+      gsap.to('.hero-inner',{yPercent:-10,opacity:.25,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+
+      var track=document.getElementById('mtrack'), mtl=null;
+      if(track){ track.innerHTML+=track.innerHTML;
+        mtl=gsap.to(track,{xPercent:-50,duration:36,ease:'none',repeat:-1});
+      }
+
+      gsap.utils.toArray('.rv').forEach(function(el){
+        if(el.closest('.hero')) return;
+        gsap.fromTo(el,{opacity:0,y:34},{opacity:1,y:0,duration:1.1,ease:'power3.out',
+          scrollTrigger:{trigger:el,start:'top 86%',once:true},
+          onStart:function(){el.classList.add('in');}});
+      });
+
+      /* section titles rise out of their masks */
+      gsap.utils.toArray('.sec-title .mask > span').forEach(function(sp){
+        gsap.to(sp,{y:0,duration:1.15,ease:'power4.out',
+          scrollTrigger:{trigger:sp.closest('.sec-title'),start:'top 88%',once:true}});
+      });
+
+      /* ghost chapter numerals drift slower than the page */
+      gsap.utils.toArray('.sec-num').forEach(function(n){
+        gsap.fromTo(n,{yPercent:24},{yPercent:-24,ease:'none',
+          scrollTrigger:{trigger:n.parentElement,start:'top bottom',end:'bottom top',scrub:true}});
+      });
+
+      gsap.utils.toArray('.gal .ph').forEach(function(ph){
+        gsap.fromTo(ph,{clipPath:'inset(12% 6% 12% 6%)'},{clipPath:'inset(0% 0% 0% 0%)',duration:1.2,ease:'power3.out',
+          scrollTrigger:{trigger:ph,start:'top 85%',once:true}});
+        gsap.fromTo(ph,{y:24},{y:-24,ease:'none',scrollTrigger:{trigger:ph,start:'top bottom',end:'bottom top',scrub:true}});
+      });
+
+      gsap.utils.toArray('.num-item').forEach(function(it){
+        gsap.from(it.querySelector('.num'),{x:-18,opacity:0,duration:.8,ease:'power3.out',
+          scrollTrigger:{trigger:it,start:'top 85%',once:true}});
+      });
+
+      gsap.from('.band .stat',{y:26,opacity:0,stagger:.1,duration:.9,ease:'power3.out',
+        scrollTrigger:{trigger:'.band',start:'top 88%',once:true}});
+
+      /* scroll velocity feeds the marquee speed and a faint shear on the
+         gallery frames, so the page physically responds to how you move it */
+      var lastY=window.scrollY||0, vel=0,
+          skewSet=gsap.quickSetter('.gal .ph','skewY','deg');
+      gsap.ticker.add(function(){
+        var y=window.scrollY||0; vel += ((y-lastY)-vel)*.12; lastY=y;
+        if(mtl) mtl.timeScale(1+Math.min(Math.abs(vel)/30,2.5));
+        skewSet(Math.max(-1.2,Math.min(1.2,vel*.05)));
+      });
+    } else {
+      document.querySelectorAll('.rv').forEach(function(e){e.classList.add('in');});
+      document.querySelectorAll('.mask > span').forEach(function(s){ s.style.transform='none'; });
+    }
+
+    /* ---------- reveal watchdog ----------
+       Belt and braces for phones: if an element that should have revealed is
+       sitting ON SCREEN but still hidden after two consecutive checks, its
+       animation is not coming (stalled trigger, throttled webview, content
+       blocker, stale cached script). Force it visible. When everything works
+       nothing here ever matches, because revealed elements fail the tests. */
+    (function(){
+      var runs=0;
+      function offY(el){
+        var t=getComputedStyle(el).transform;
+        if(!t || t==='none') return 0;
+        var m=t.match(/matrix\(([^)]+)\)/);
+        return m ? Math.abs(parseFloat(m[1].split(',')[5])||0) : 0;
+      }
+      function stuck(el, hidden){
+        var r=el.getBoundingClientRect();
+        var vh=window.innerHeight||800;
+        if(!(r.top<vh && r.bottom>0) || !hidden){ el.__wd=0; return false; }
+        el.__wd=(el.__wd||0)+1;
+        return el.__wd>=2;
+      }
+      var timer=setInterval(function(){
+        runs++;
+        var pending=0;
+        document.querySelectorAll('.rv').forEach(function(el){
+          if(parseFloat(getComputedStyle(el).opacity)>=0.5) return;
+          pending++;
+          if(stuck(el, true)){
+            el.classList.add('in'); el.style.transition='none';
+            el.style.opacity='1'; el.style.transform='none';
+          }
+        });
+        document.querySelectorAll('.mask > span, .hero h1 .word > span').forEach(function(s){
+          if(offY(s)<=4) return;
+          pending++;
+          if(stuck(s, true)) s.style.transform='none';
+        });
+        document.querySelectorAll('.gal .ph').forEach(function(ph){
+          if((ph.style.clipPath||'').indexOf('12%')===-1) return;
+          pending++;
+          if(stuck(ph, true)) ph.style.clipPath='none';
+        });
+        /* The price odometer freezes mid-count if the browser suspends the
+           page during the intro (seen live: a stuck "$252,838"). Well after
+           the intro window, snap it to the real price. */
+        /* stop only when nothing is waiting to reveal AND the price check has
+           had its window, or after two minutes as an absolute cap */
+        if((pending===0 && runs>=6) || runs>=100) clearInterval(timer);
+      }, 1200);
+    })();
+
+    /* ---------- magnetic buttons, fine pointers only ---------- */
+    if(fine && hasGsap && !reduced){
+      document.querySelectorAll('.btn-gold').forEach(function(b){
+        b.addEventListener('pointermove',function(e){
+          var r=b.getBoundingClientRect();
+          gsap.to(b,{x:(e.clientX-r.left-r.width/2)*.18,y:(e.clientY-r.top-r.height/2)*.35,duration:.4,ease:'power3.out'});
+        });
+        b.addEventListener('pointerleave',function(){ gsap.to(b,{x:0,y:0,duration:.7,ease:'power3.out'}); });
+      });
+    }
+
+    /* ---------- lead form ----------
+       Posts to the same Kizlo HQ endpoint the rest of the site uses, so this
+       lands in the CRM with a task rather than opening the visitor's mail app.
+       The dropdown and free text are merged into `message`, because the
+       endpoint only stores a fixed set of fields. */
+    var form=document.getElementById('leadform'),
+        ok=document.getElementById('formok'),
+        err=document.getElementById('formerr');
+
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      err.classList.remove('show');
+      var btn=form.querySelector('button[type=submit]');
+      btn.disabled=true;
+
+      var fd=new FormData(form), data={};
+      fd.forEach(function(v,k){ data[k]=v; });
+      data.name=[data.first_name,data.last_name].filter(Boolean).join(' ');
+      data.message = data.note ? (data.request+': '+data.note) : data.request;
+      delete data.request; delete data.note;
+
+      fetch(ENDPOINT,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(data)
+      }).then(function(r){
+        if(!r.ok) throw new Error('bad status '+r.status);
+        return r.json();
+      }).then(function(){
+        form.querySelectorAll('.f2,label.fl,.consent,button').forEach(function(el){ el.style.display='none'; });
+        ok.classList.add('show');
+      }).catch(function(){
+        btn.disabled=false;
+        err.classList.add('show');
+      });
+    });
+  })();
+</script>
+</body>
+</html>
