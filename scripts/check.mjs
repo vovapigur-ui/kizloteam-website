@@ -13,7 +13,7 @@ import { textOf } from "./lib/html.mjs";
 import { AGENCY_ID, ANASTASIIA_ID, HREFLANG_CLUSTERS, RATING, SITE, SKIP, VLAD_ID } from "./lib/site-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const HOME_TITLE = "The Kizlo Team | West Orlando Realtors - Windermere, Winter Garden, Horizon West";
+const HOME_TITLE = "Windermere & Winter Garden Realtors | The Kizlo Team";
 
 const failures = [];
 const warnings = [];
@@ -35,6 +35,13 @@ function htmlFiles(dir = ROOT) {
 const files = htmlFiles().filter((f) => !SKIP.has(f));
 const pages = new Map(files.map((f) => [f, readFileSync(join(ROOT, f), "utf8")]));
 
+// Listing pages carry their own RealEstateListing JSON-LD and are skipped by
+// build.mjs, so the generator's schema shape is not expected of them. Every
+// other check (consent, footer, skip link) still applies.
+const listingPages = new Set(
+  [...pages].filter(([, h]) => /"RealEstateListing"/.test(h) && !h.includes("<!-- schema:start")).map(([f]) => f)
+);
+
 /* ------------------------------------------------- 1. JSON-LD parses */
 
 const graphs = new Map();
@@ -47,6 +54,10 @@ for (const [file, html] of pages) {
   if (blocks.length > 1) fail(file, `${blocks.length} JSON-LD blocks, expected 1`);
   try {
     const parsed = JSON.parse(blocks[0][1]);
+    if (listingPages.has(file)) {
+      if (parsed["@type"] !== "RealEstateListing") fail(file, "listing page JSON-LD is not a RealEstateListing");
+      continue;
+    }
     if (!Array.isArray(parsed["@graph"])) fail(file, "JSON-LD has no @graph array");
     graphs.set(file, parsed["@graph"] || []);
   } catch (err) {
@@ -59,6 +70,7 @@ const nodeOf = (file, type) => (graphs.get(file) || []).find((n) => n["@type"] =
 /* ------------------------------- 2. site-wide agency on every page */
 
 for (const file of files) {
+  if (listingPages.has(file)) continue;
   const agencyNode = nodeOf(file, "RealEstateAgent");
   if (!agencyNode) {
     fail(file, "missing site-wide RealEstateAgent node");

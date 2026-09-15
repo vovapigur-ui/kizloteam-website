@@ -1,6 +1,6 @@
 ---
 title: "Privacy Policy | The Kizlo Team"
-description: "How The Kizlo Team collects, uses, and protects your personal information when you use kizloteam.com."
+description: "Privacy Policy for kizloteam.com: what The Kizlo Team collects when you contact us, how we use it, how texting consent works, and how to ask us to delete it."
 slug: privacy-policy
 date: 2026-08-17
 eyebrow: Legal

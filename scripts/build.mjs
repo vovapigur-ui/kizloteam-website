@@ -447,8 +447,20 @@ const all = htmlFiles();
 const files = all.filter((f) => !SKIP.has(f));
 const pages = new Map();
 
+// Listing pages are built by the kizlo-listing-site skill with their own
+// design, footer and RealEstateListing JSON-LD. Running the site chrome over
+// them replaced that schema with the generic agency graph (Procida lost its
+// listing markup this way on 2026-08-25), so they are left exactly as written.
+const ownsListingSchema = (html) =>
+  /<script type="application\/ld\+json">[\s\S]*?"RealEstateListing"[\s\S]*?<\/script>/.test(html) &&
+  !html.includes("<!-- schema:start");
+
 for (const file of files) {
   const original = readFileSync(join(ROOT, file), "utf8");
+  if (ownsListingSchema(original)) {
+    pages.set(file, original);
+    continue;
+  }
   let html = ensureFooter(file, original);
   html = injectHreflang(file, html);
   html = injectSchema(html, graphFor(file, html, published));

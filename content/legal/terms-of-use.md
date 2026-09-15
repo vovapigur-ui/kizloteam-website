@@ -1,6 +1,6 @@
 ---
 title: "Terms of Use | The Kizlo Team"
-description: "The terms that govern your use of kizloteam.com, operated by The Kizlo Team, Realtors with Keller Williams Realty At The Lakes."
+description: "Terms of Use for kizloteam.com, run by The Kizlo Team, Realtors with Keller Williams Realty At The Lakes. What the site offers, what it is not, and the rules."
 slug: terms-of-use
 date: 2026-08-17
 eyebrow: Legal
