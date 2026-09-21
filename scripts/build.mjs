@@ -102,7 +102,7 @@ function renderPost(post) {
 
     <section class="section section--tight">
       <div class="wrap grid">
-        <div style="grid-column: 2 / span 8;" class="reveal">
+        <div style="grid-column: 2 / span 8;" class="prose reveal">
         ${renderMarkdown(post.body)}
         </div>
       </div>
