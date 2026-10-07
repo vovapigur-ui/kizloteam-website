@@ -366,6 +366,8 @@ p { max-width: 62ch; }
 .card--lg { grid-column: span 7; }
 .card--sm { grid-column: span 5; }
 .card--sm .frame { margin-top: clamp(1.25rem, 2.5vw, 2.75rem); }
+.card--half { grid-column: span 6; }
+.card--half .frame { margin-top: 0; }
 
 .card .frame img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
 .card--tall .frame img { aspect-ratio: 4 / 5; }
