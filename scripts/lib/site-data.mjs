@@ -151,3 +151,18 @@ export const SKIP = new Set([
   "google62632eb78b18f226.html",
   "russian-ukrainian-realtor-orlando/index.html",
 ]);
+
+// Google Analytics 4 and Microsoft Clarity, injected into every page by
+// scripts/build.mjs. Both IDs belong to vova.pigur@gmail.com.
+export const ANALYTICS = {
+  ga4: "G-04CL90Q593",
+  clarity: "yv6ysre0py",
+};
+
+// Pages that never get analytics: the internal studio tool and the Google
+// verification file. Instant redirect stubs are skipped by detection instead,
+// since tracking them would count one visit twice.
+export const NO_ANALYTICS = new Set([
+  "studio/index.html",
+  "google62632eb78b18f226.html",
+]);

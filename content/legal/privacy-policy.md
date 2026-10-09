@@ -9,7 +9,7 @@ draft: false
 
 # Privacy Policy
 
-**Effective date: August 17, 2026**
+**Effective date: October 9, 2026**
 
 This Privacy Policy explains how The Kizlo Team ("we," "us," "our"), a real estate team affiliated with Keller Williams Realty At The Lakes, collects, uses, and protects your information when you visit kizloteam.com (the "Site") or communicate with us.
 
@@ -17,7 +17,9 @@ This Privacy Policy explains how The Kizlo Team ("we," "us," "our"), a real esta
 
 **Information you provide.** When you fill out a form on the Site, request a home valuation, sign up for market updates, or contact us, we may collect your name, email address, phone number, property address, and any details you include in your message.
 
-**Information collected automatically.** Like most websites, we collect standard technical data when you visit: IP address, browser type, device type, pages viewed, and how you arrived at the Site. This is collected through our hosting and security providers, as described below.
+**Information collected automatically.** Like most websites, we collect standard technical data when you visit: IP address, browser type, device type, pages viewed, and how you arrived at the Site. This is collected through our hosting and security providers and through the analytics tools described below.
+
+**Your visit history on the Site.** Your browser keeps a short record of the pages you view on the Site and how you first arrived (for example, from a search engine or a link we sent). This record stays on your device. If you submit a form, it is sent along with your inquiry so we can understand what you were looking for.
 
 ## How We Use Your Information
 
@@ -29,15 +31,20 @@ If you provide your phone number and consent to receive text messages from us, w
 
 ## How We Share Information
 
-We do not sell your personal information. We share it only with: service providers who help us operate (such as our CRM, email, and website hosting providers, who may use it only to provide services to us), our brokerage as required in the course of a real estate transaction, other parties to a transaction when you direct us to (such as lenders, title companies, and inspectors), and legal authorities when required by law.
+We do not sell your personal information. We share it only with: service providers who help us operate (such as our CRM, email, website hosting, and website analytics providers, who may use it only to provide services to us), our brokerage as required in the course of a real estate transaction, other parties to a transaction when you direct us to (such as lenders, title companies, and inspectors), and legal authorities when required by law.
 
 ## Cookies and Analytics
 
-The Site does not run Google Analytics or any comparable analytics or advertising tool, and it sets no tracking or advertising cookies of its own. Our hosting and security providers may set a small number of cookies needed to serve pages and protect the Site from abuse, and they log standard request data such as your IP address. Typefaces are loaded from Google Fonts, which receives your IP address as part of delivering them. You can control cookies through your browser settings, though disabling them may affect some Site features. If we add analytics in future, we will update this section before we do.
+We use two analytics tools to understand how visitors find and use the Site:
+
+- **Google Analytics** shows us how visitors arrive at the Site, which pages they read, and when a form is submitted. We do not send your name, email address, or phone number to Google Analytics. Google's use of this data is described in [Google's Privacy Policy](https://policies.google.com/privacy), and you can opt out with the [Google Analytics opt-out browser add-on](https://tools.google.com/dlpage/gaoptout).
+- **Microsoft Clarity** records how visitors interact with our pages, including clicks, scrolling, and mouse movement, through session recordings and heatmaps. Clarity hides what you type into form fields. If you submit a form, we tag your visit in Clarity with your email address or phone number so we can see the visit that led to your inquiry. Clarity scrambles (hashes) that identifier in your browser before it is sent, so Microsoft does not receive it in readable form. Microsoft's use of this data is described in the [Microsoft Privacy Statement](https://privacy.microsoft.com/privacystatement).
+
+Both tools set cookies and collect data such as pages viewed, device and browser type, approximate location, and IP address. Our hosting and security providers may also set a small number of cookies needed to serve pages and protect the Site from abuse, and they log standard request data such as your IP address. Typefaces are loaded from Google Fonts, which receives your IP address as part of delivering them. You can block or delete cookies through your browser settings, though disabling them may affect some Site features.
 
 ## Do Not Track
 
-Some browsers send Do Not Track signals. The Site does not currently respond to Do Not Track signals. If we add chat, session analytics, or similar tools that record interactions with the Site, we will disclose them in this policy.
+Some browsers send Do Not Track signals. The Site does not currently respond to Do Not Track signals. The analytics and session recording tools we use are described under Cookies and Analytics above.
 
 ## Third-Party Sites
 

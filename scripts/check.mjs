@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 import { breadcrumbs, canonicalOf, faqs, images, langOf, reviews, titleOf } from "./lib/extract.mjs";
 import { textOf } from "./lib/html.mjs";
-import { AGENCY_ID, ANASTASIIA_ID, HREFLANG_CLUSTERS, RATING, SITE, SKIP, VLAD_ID } from "./lib/site-data.mjs";
+import { AGENCY_ID, ANALYTICS, ANASTASIIA_ID, HREFLANG_CLUSTERS, NO_ANALYTICS, RATING, SITE, SKIP, VLAD_ID } from "./lib/site-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const HOME_TITLE = "Windermere & Winter Garden Realtors | The Kizlo Team";
@@ -349,6 +349,20 @@ for (const [file, html] of pages) {
       : [join(ROOT, target), join(ROOT, target, "index.html")];
     if (!candidates.some((c) => existsSync(c))) fail(file, `dead internal link: ${target}`);
   }
+}
+
+/* ------------------------- 15. analytics on every page */
+
+// SKIP pages are excluded from `pages`, but 404 and the Ukrainian page still
+// need analytics, so this reads every file. A page built outside build.mjs
+// (a new listing, say) fails here until `npm run build` adds the block.
+for (const file of htmlFiles()) {
+  if (NO_ANALYTICS.has(file)) continue;
+  const html = readFileSync(join(ROOT, file), "utf8");
+  if (/<meta http-equiv="refresh"/i.test(html)) continue;
+  if (!html.includes(`gtag/js?id=${ANALYTICS.ga4}`)) fail(file, "missing Google Analytics (run npm run build)");
+  if (!html.includes(`"${ANALYTICS.clarity}"`)) fail(file, "missing Microsoft Clarity (run npm run build)");
+  if (!html.includes('src="/js/track.js"')) fail(file, "missing /js/track.js (run npm run build)");
 }
 
 /* ------------------------------------------------------ report */
