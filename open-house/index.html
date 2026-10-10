@@ -208,6 +208,7 @@
         <div class="host-stats">
           <div><p class="num" id="stat-today">0</p><p class="micro">Signed in today on this iPad</p></div>
           <div><p class="num" id="stat-pending">0</p><p class="micro">Waiting to send</p></div>
+          <div><p class="num" id="stat-held">0</p><p class="micro">Not accepted, kept here</p></div>
         </div>
         <div class="host-actions">
           <button class="btn" type="button" id="host-resume">Back to sign in</button>
@@ -410,7 +411,8 @@
         alt: "Saltwater pool and fire table at dusk at 8291 Procida Isle Ln, Windermere, Florida"
       }
     };
-    var KEY_HOME = "kz_oh_home", KEY_QUEUE = "kz_oh_queue", KEY_COUNT = "kz_oh_count";
+    var KEY_HOME = "kz_oh_home", KEY_QUEUE = "kz_oh_queue", KEY_COUNT = "kz_oh_count", KEY_HELD = "kz_oh_held";
+    var LOADED_AT = Date.now(), REFRESH_MS = 15 * 60 * 1000;
     var IDLE_MS = 90 * 1000, DONE_MS = 10 * 1000, TIMEOUT_MS = 15 * 1000;
 
     var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -468,6 +470,7 @@
       $("#install").hidden = isInstalled();
       $("#stat-today").textContent = todayCount();
       $("#stat-pending").textContent = (store(KEY_QUEUE) || []).length;
+      $("#stat-held").textContent = (store(KEY_HELD) || []).length;
       show("setup");
     }
 
@@ -483,7 +486,11 @@
       el.addEventListener("contextmenu", function (e) { e.preventDefault(); });
     });
     $("#host-resume").addEventListener("click", function () { if (home) { resetForm(); show("welcome"); } });
-    $("#host-retry").addEventListener("click", function () { flushQueue().then(function () { renderSetup(true); }); });
+    $("#host-retry").addEventListener("click", function () {
+      var held = store(KEY_HELD) || [];
+      if (held.length) { store(KEY_QUEUE, (store(KEY_QUEUE) || []).concat(held)); store(KEY_HELD, []); }
+      flushQueue().then(function () { renderSetup(true); });
+    });
 
     /* ---------- welcome ---------- */
     $("#welcome").addEventListener("click", function () { goStep(1); show("form"); });
@@ -609,8 +616,12 @@
       flushing = true;
       var p = q[0];
       return post(p).then(function (res) {
-        // 4xx (bad data) will never succeed on retry; drop it rather than block the queue.
-        if (res.status < 500 && res.status !== 429) { var rest = (store(KEY_QUEUE) || []).slice(1); store(KEY_QUEUE, rest); }
+        // Success leaves the queue. A 4xx won't succeed by retrying, so it moves to
+        // the held list (never deleted) where the host panel can resend it later.
+        if (res.status < 500 && res.status !== 429) {
+          var rest = (store(KEY_QUEUE) || []).slice(1); store(KEY_QUEUE, rest);
+          if (res.status >= 400) { var held = store(KEY_HELD) || []; held.push(p); store(KEY_HELD, held); }
+        }
         flushing = false;
         if (res.status < 500 && res.status !== 429) return flushQueue();
       }, function () { flushing = false; });
@@ -637,21 +648,20 @@
       var btn = $("#submit"); btn.disabled = true; btn.textContent = "Signing in";
       var p = payload(), first = p.first_name;
       post(p).then(function (res) {
+        // A sign-in is never lost: anything the server didn't accept is kept on
+        // this iPad (waiting or held) and the guest still gets their thank-you.
         if (res.status >= 500 || res.status === 429) { enqueue(p); finish(first, false); return; }
-        if (res.status >= 400) {
-          busy = false; btn.disabled = false; btn.textContent = "Sign in";
-          var se = $("#submit-err");
-          var msg = String((res.body && res.body.error) || "Something didn't go through").trim();
-          if (!/[.!?]$/.test(msg)) msg += ".";
-          se.textContent = msg + " Please check your details, or ask us for a hand.";
-          se.classList.add("is-on");
-          return;
-        }
+        if (res.status >= 400) { var held = store(KEY_HELD) || []; held.push(p); store(KEY_HELD, held); finish(first, false); return; }
         finish(first, !!(res.body && res.body.texted));
       }, function () { enqueue(p); finish(first, false); });
     });
 
     $("#done-btn").addEventListener("click", function () { show("welcome"); });
+
+    /* ---------- stay current: an iPad left open all day picks up fixes on its own ---------- */
+    setInterval(function () {
+      if (Date.now() - LOADED_AT > REFRESH_MS && $("#welcome").classList.contains("is-on") && !flushing) location.reload();
+    }, 60 * 1000);
 
     /* ---------- keep the CRM awake so the first guest isn't kept waiting ---------- */
     function wake() { try { fetch(WAKE_URL, { mode: "no-cors", cache: "no-store" }).catch(function () {}); } catch (e) {} }
