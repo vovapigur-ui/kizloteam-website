@@ -13,6 +13,7 @@
   <meta name="theme-color" content="#23211C">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/open-house/manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Hanken+Grotesk:wght@300..600&display=swap" rel="stylesheet">
@@ -172,6 +173,11 @@
     .host-stats .micro { margin-top: 0.6rem; }
     .host-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
     .btn--line { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+    .install { margin-top: 2.5rem; background: var(--espresso); color: rgba(250,247,242,0.8); padding: clamp(1.5rem, 3vw, 2.25rem); max-width: 46rem; }
+    .install .micro { color: var(--bronze-on-dark); }
+    .install-title { font-family: var(--serif); font-size: 1.6rem; color: var(--ivory); margin-top: 0.6rem; line-height: 1.2; }
+    .install ol { margin: 1.1rem 0 0 1.2rem; display: grid; gap: 0.6rem; }
+    .install strong { color: var(--ivory); font-weight: 500; }
     .setup-note { margin-top: 2rem; font-size: 0.9rem; color: var(--muted); max-width: 44em; }
 
     @media (orientation: portrait), (max-width: 900px) {
@@ -208,7 +214,16 @@
           <button class="btn btn--line" type="button" id="host-retry">Send waiting sign-ins now</button>
         </div>
       </div>
-      <p class="setup-note">Tip: in Safari, tap Share, then Add to Home Screen. The sign-in then opens full screen, with no address bar. To come back here during the open house, press and hold The Kizlo Team name in the top left corner for two seconds.</p>
+      <div class="install" id="install" hidden>
+        <p class="micro">Not full screen yet</p>
+        <p class="install-title">Install it as an app for full screen.</p>
+        <ol>
+          <li>Open <strong>kizloteam.com/open-house</strong> in <strong>Safari</strong>. Chrome on iPad can't install apps; Apple only allows Safari to.</li>
+          <li>Tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>, then <strong>Add</strong>.</li>
+          <li>Close Safari and open <strong>Open House</strong> from the home screen. It runs full screen, with no address bar or tabs.</li>
+        </ol>
+      </div>
+      <p class="setup-note">During the open house, press and hold The Kizlo Team name in the top left corner for two seconds to come back here.</p>
     </div>
   </section>
 
@@ -267,9 +282,9 @@
               <p class="err">Please enter a 10 digit mobile number.</p>
             </div>
             <div class="field full" data-field="email">
-              <label for="email">Email <span class="opt">(optional)</span></label>
+              <label for="email">Email</label>
               <input id="email" name="email" type="email" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">
-              <p class="err">That email doesn't look quite right.</p>
+              <p class="err">Please enter your email address.</p>
             </div>
           </div>
           <div class="actions">
@@ -403,6 +418,10 @@
     function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
 
     var form = $("#signin");
+    function isInstalled() {
+      return window.navigator.standalone === true ||
+        (window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches));
+    }
     var home = null, step = 1, idleTimer = null, doneTimer = null, busy = false;
 
     /* ---------- screens ---------- */
@@ -446,6 +465,7 @@
         wrap.appendChild(b);
       });
       $("#host-extra").hidden = !asHost;
+      $("#install").hidden = isInstalled();
       $("#stat-today").textContent = todayCount();
       $("#stat-pending").textContent = (store(KEY_QUEUE) || []).length;
       show("setup");
@@ -502,8 +522,7 @@
       ok = setErr("first_name", !val("first_name")) && ok;
       ok = setErr("last_name", !val("last_name")) && ok;
       ok = setErr("phone", digits(val("phone")).length !== 10) && ok;
-      var em = val("email");
-      ok = setErr("email", em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) && ok;
+      ok = setErr("email", !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val("email"))) && ok;
       if (!ok) { var first = $(".has-error input", form); if (first) first.focus(); }
       return ok;
     }

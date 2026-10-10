@@ -1,0 +1,14 @@
+{
+  "name": "Open House · The Kizlo Team",
+  "short_name": "Open House",
+  "description": "Open-house sign-in for The Kizlo Team.",
+  "start_url": "/open-house/",
+  "scope": "/open-house/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#23211C",
+  "theme_color": "#23211C",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
