@@ -276,7 +276,9 @@ for (const slug of ["privacy-policy", "terms-of-use", "accessibility"]) {
   if (!pages.has(`${slug}/index.html`)) fail(`${slug}/index.html`, "legal page missing");
 }
 
-const allHtml = htmlFiles().filter((f) => !f.startsWith("studio/") && !f.startsWith("google"));
+// The studio tool and the open-house iPad kiosk are internal full-screen
+// tools with their own chrome, not site pages.
+const allHtml = htmlFiles().filter((f) => !f.startsWith("studio/") && !f.startsWith("open-house/") && !f.startsWith("google"));
 for (const file of allHtml) {
   const html = pages.get(file) || readFileSync(join(ROOT, file), "utf8");
   if (file === "russian-ukrainian-realtor-orlando/index.html") continue; // retired-URL stub

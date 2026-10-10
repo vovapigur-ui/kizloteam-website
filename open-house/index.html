@@ -132,7 +132,9 @@
     .consent { margin-top: 1.6rem; font-size: 0.78rem; line-height: 1.65; color: var(--muted); max-width: 46em; }
     .consent a { color: var(--bronze); border-bottom: 1px solid var(--bronze); text-decoration: none; }
     .hp { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-    .legal { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--hairline); font-size: 0.7rem; letter-spacing: 0.04em; color: var(--muted); }
+    .legal { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; margin-top: 2.5rem; padding-top: 1.25rem;
+      border-top: 1px solid var(--hairline); font-size: 0.7rem; letter-spacing: 0.04em; color: var(--muted); }
+    .legal img { flex: none; height: 32px; width: auto; filter: brightness(0); opacity: 0.6; } /* the shared mark is drawn ivory for the dark site footer */
 
     /* ── Done ──────────────────────────────────────────────── */
     #done { background: var(--espresso); color: var(--ivory); display: flex; align-items: center; }
@@ -349,11 +351,14 @@
             <button class="btn" type="submit" id="submit">Sign in</button>
           </div>
           <p class="submit-err" id="submit-err" role="alert"></p>
-          <p class="consent">By submitting, you agree that The Kizlo Team may contact you about your inquiry by phone, text or email, including messages sent using an automatic telephone dialing system. Consent is not a condition of purchase. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. See our <a href="/privacy-policy/" tabindex="-1">Privacy Policy</a>.</p>
+          <p class="consent">By submitting, you agree that The Kizlo Team may contact you about your inquiry by phone, text or email, including messages sent using an automatic telephone dialing system. Consent is not a condition of purchase. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. See our <a href="/privacy-policy/" target="_blank" rel="noopener" tabindex="-1">Privacy Policy</a>.</p>
         </div>
       </form>
 
-      <p class="legal">The Kizlo Team · Keller Williams Realty At The Lakes · Vlad Kizlo, Lic. SL3475553 · Anastasiia Zbihla, Lic. SL3469407 · Equal Housing Opportunity</p>
+      <div class="legal">
+        <p>The Kizlo Team · Keller Williams Realty At The Lakes · Vlad Kizlo, Lic. SL3475553 · Anastasiia Zbihla, Lic. SL3469407. Each office is independently owned and operated.</p>
+        <img src="/img/equal-housing-opportunity.svg" alt="Equal Housing Opportunity" width="130" height="32">
+      </div>
     </div>
   </section>
 
