@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Open House | The Kizlo Team</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Open House">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#23211C">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Hanken+Grotesk:wght@300..600&display=swap" rel="stylesheet">
+  <style>
+    /* Open-house sign-in kiosk for iPad. Self-contained: no site header, no
+       analytics, nothing a visitor can wander off to. Tokens match
+       /css/main.css exactly. */
+    :root {
+      --ivory: #FAF7F2; --ivory-2: #F3EFE8; --ink: #1C1A17; --body: #4A463F;
+      --muted: #6E6659; --hairline: #E3DED4; --bronze: #8A6D4B; --bronze-on-dark: #AD885E;
+      --espresso: #23211C; --hairline-dark: #3A362F;
+      --serif: "Fraunces", Georgia, serif;
+      --sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --pad: clamp(1.5rem, 4.5vw, 4rem);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+    body {
+      background: var(--espresso); color: var(--body); font-family: var(--sans); font-size: 17px;
+      line-height: 1.55; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+    }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--bronze); outline-offset: 3px; }
+    h1, h2, .serif { font-family: var(--serif); font-weight: 360; font-variation-settings: "opsz" 144; color: var(--ink); letter-spacing: -0.015em; line-height: 1.04; }
+    em { font-style: italic; font-weight: 340; }
+    .eyebrow { display: block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bronze); }
+    .eyebrow::after { content: ""; display: block; width: 2.5rem; height: 1px; background: var(--hairline); margin-top: 1rem; }
+    .micro { font-size: 0.75rem; font-weight: 450; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
+    .screen { position: fixed; inset: 0; opacity: 0; visibility: hidden; transition: opacity 0.7s var(--ease), visibility 0s linear 0.7s; }
+    .screen.is-on { opacity: 1; visibility: visible; transition: opacity 0.7s var(--ease), visibility 0s; }
+
+    /* ── Welcome ───────────────────────────────────────────── */
+    #welcome { background: var(--espresso); color: var(--ivory); cursor: pointer; }
+    .hero-img { position: absolute; inset: 0; overflow: hidden; }
+    .hero-img img, .side img { opacity: 0; }
+    .hero-img img.is-loaded, .side img.is-loaded { opacity: 1; }
+    .hero-img img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); transition: opacity 1.2s var(--ease), transform 14s var(--ease); }
+    #welcome.is-on .hero-img img { transform: scale(1); }
+    .hero-shade { position: absolute; inset: 0; background: rgba(20, 18, 15, 0.30); }
+    .topbar { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start;
+      padding: calc(env(safe-area-inset-top) + 1.75rem) var(--pad) 0; z-index: 3; }
+    .wordmark { font-family: var(--serif); font-size: 1.45rem; font-weight: 400; font-variation-settings: "opsz" 40; color: var(--ivory); line-height: 1.1; text-align: left; }
+    .wordmark span { display: block; font-family: var(--sans); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.34em; text-transform: uppercase; color: rgba(250,247,242,0.75); margin-top: 0.35rem; }
+    .topbar .micro { color: rgba(250,247,242,0.85); padding-top: 0.4rem; }
+    .welcome-card { position: absolute; left: var(--pad); right: var(--pad); bottom: calc(env(safe-area-inset-bottom) + var(--pad));
+      max-width: 46rem; background: var(--espresso); padding: clamp(2rem, 4vw, 3.25rem); z-index: 2; }
+    .welcome-card .eyebrow { color: var(--bronze-on-dark); }
+    .welcome-card .eyebrow::after { background: var(--hairline-dark); }
+    .welcome-card h1 { color: var(--ivory); font-size: clamp(2.6rem, 6vw, 4.6rem); margin-top: 1.4rem; }
+    .welcome-card .spec { margin-top: 1.1rem; color: rgba(250,247,242,0.72); letter-spacing: 0.14em; font-size: 0.8rem; text-transform: uppercase; }
+    .cta { display: inline-flex; align-items: center; gap: 1rem; margin-top: 2.1rem; background: var(--ivory); color: var(--ink);
+      padding: 1.25rem 2.1rem; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; }
+    .cta .arrow { display: inline-block; width: 1.6rem; height: 1px; background: currentColor; position: relative; transition: transform 0.6s var(--ease); }
+    .cta .arrow::after { content: ""; position: absolute; right: 0; top: -4px; width: 9px; height: 9px; border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: rotate(45deg); }
+    .welcome-card > * { opacity: 0; transform: translateY(18px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+    #welcome.is-on .welcome-card > * { opacity: 1; transform: none; }
+    #welcome.is-on .welcome-card > *:nth-child(2) { transition-delay: 0.08s; }
+    #welcome.is-on .welcome-card > *:nth-child(3) { transition-delay: 0.16s; }
+    #welcome.is-on .welcome-card > *:nth-child(4) { transition-delay: 0.24s; }
+    .breathe { animation: breathe 2.8s var(--ease) infinite; }
+    @keyframes breathe { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+
+    /* ── Form ──────────────────────────────────────────────── */
+    #form { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); background: var(--ivory); }
+    .side { position: relative; overflow: hidden; background: var(--espresso); }
+    .side img { width: 100%; height: 100%; object-fit: cover; transition: opacity 1.2s var(--ease); }
+    .side .side-card { position: absolute; left: 0; right: 0; bottom: 0; background: var(--espresso); padding: 1.6rem var(--pad) calc(env(safe-area-inset-bottom) + 1.6rem); }
+    .side .side-card .serif { color: var(--ivory); font-size: clamp(1.4rem, 2.4vw, 2rem); }
+    .side .side-card .micro { color: rgba(250,247,242,0.7); margin-top: 0.5rem; }
+    .pane { position: relative; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      padding: calc(env(safe-area-inset-top) + 1.75rem) var(--pad) calc(env(safe-area-inset-bottom) + 2.5rem); }
+    .pane-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--hairline); }
+    .pane-top .wordmark { color: var(--ink); font-size: 1.15rem; }
+    .back { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding: 0.75rem 0 0.75rem 1rem; }
+    .stepcount { font-family: var(--serif); color: var(--bronze); font-size: 1.05rem; letter-spacing: 0.06em; }
+    .step { display: none; }
+    .step.is-on { display: block; animation: rise 0.7s var(--ease); }
+    @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    .step h2 { font-size: clamp(2.1rem, 4.4vw, 3.3rem); margin-top: 2rem; }
+    .step .lead { margin-top: 0.9rem; color: var(--body); max-width: 34em; }
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1.9rem 1.75rem; margin-top: 2.25rem; }
+    .full { grid-column: 1 / -1; }
+    .field label, .q-label { display: block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.55rem; }
+    .field label .opt { text-transform: none; letter-spacing: 0; font-weight: 400; }
+    .field input { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--hairline); border-radius: 0;
+      padding: 0.55rem 0 0.7rem; font-family: var(--serif); font-size: 1.75rem; font-weight: 360; color: var(--ink);
+      transition: border-color 0.3s var(--ease); -webkit-appearance: none; appearance: none; }
+    .field input::placeholder { color: #B8B0A3; }
+    .field input:focus { outline: none; border-bottom-color: var(--bronze); }
+    .field.has-error input { border-bottom-color: #A8362F; }
+    .err { display: none; font-size: 0.85rem; color: #A8362F; margin-top: 0.45rem; }
+    .has-error .err { display: block; }
+    .q { margin-top: 2.1rem; }
+    .q.is-hidden { display: none; }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+    .chip { position: relative; }
+    .chip input { position: absolute; opacity: 0; pointer-events: none; }
+    .chip span { display: inline-flex; align-items: center; min-height: 3.6rem; padding: 0.9rem 1.45rem; border: 1px solid var(--hairline);
+      background: var(--ivory); color: var(--ink); font-size: 1.02rem; transition: background 0.35s var(--ease), color 0.35s var(--ease), border-color 0.35s var(--ease); }
+    .chip input:checked + span { background: var(--espresso); color: var(--ivory); border-color: var(--espresso); }
+    .chip input:focus-visible + span { outline: 2px solid var(--bronze); outline-offset: 3px; }
+    .q.has-error .chips span { border-color: #A8362F; }
+    .agent-name { margin-top: 1.25rem; max-width: 30rem; display: none; }
+    .agent-name.is-on { display: block; animation: rise 0.6s var(--ease); }
+    .actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 2.75rem; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 1rem; min-height: 4rem; padding: 1.15rem 2.4rem;
+      background: var(--espresso); color: var(--ivory); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      transition: background 0.35s var(--ease), opacity 0.35s var(--ease); }
+    .btn:active { background: var(--ink); }
+    .btn[disabled] { opacity: 0.5; }
+    .submit-err { display: none; margin-top: 1.1rem; color: #A8362F; font-size: 0.95rem; }
+    .submit-err.is-on { display: block; }
+    .consent { margin-top: 1.6rem; font-size: 0.78rem; line-height: 1.65; color: var(--muted); max-width: 46em; }
+    .consent a { color: var(--bronze); border-bottom: 1px solid var(--bronze); text-decoration: none; }
+    .hp { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .legal { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--hairline); font-size: 0.7rem; letter-spacing: 0.04em; color: var(--muted); }
+
+    /* ── Done ──────────────────────────────────────────────── */
+    #done { background: var(--espresso); color: var(--ivory); display: flex; align-items: center; }
+    .done-wrap { width: 100%; padding: var(--pad); max-width: 60rem; }
+    #done .eyebrow { color: var(--bronze-on-dark); }
+    #done .eyebrow::after { background: var(--hairline-dark); }
+    #done h1 { color: var(--ivory); font-size: clamp(3rem, 7vw, 5.4rem); margin-top: 1.6rem; }
+    #done .lede { font-family: var(--serif); font-weight: 350; font-variation-settings: "opsz" 60; font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+      line-height: 1.4; color: rgba(250,247,242,0.86); margin-top: 1.6rem; max-width: 30em; }
+    .done-foot { display: flex; align-items: center; gap: 2rem; margin-top: 3rem; flex-wrap: wrap; }
+    .done-foot .btn { background: var(--ivory); color: var(--ink); }
+    .timer { flex: 1 1 12rem; max-width: 18rem; height: 1px; background: var(--hairline-dark); position: relative; overflow: hidden; }
+    .timer i { position: absolute; inset: 0; background: var(--bronze-on-dark); transform-origin: left; transform: scaleX(1); }
+    #done.is-on .timer i { transform: scaleX(0); transition: transform 10s linear; }
+    #done .done-wrap > * { opacity: 0; transform: translateY(18px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+    #done.is-on .done-wrap > * { opacity: 1; transform: none; }
+    #done.is-on .done-wrap > *:nth-child(2) { transition-delay: 0.1s; }
+    #done.is-on .done-wrap > *:nth-child(3) { transition-delay: 0.2s; }
+    #done.is-on .done-wrap > *:nth-child(4) { transition-delay: 0.3s; }
+
+    /* ── Setup / host panel ───────────────────────────────── */
+    #setup { background: var(--ivory); overflow-y: auto; }
+    .setup-wrap { padding: calc(env(safe-area-inset-top) + 2.5rem) var(--pad) 3rem; max-width: 70rem; }
+    .setup-wrap h1 { font-size: clamp(2.4rem, 5vw, 3.8rem); margin-top: 1.5rem; }
+    .homes { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; margin-top: 2.5rem; }
+    .home { text-align: left; display: block; }
+    .home .frame { aspect-ratio: 4 / 3; overflow: hidden; background: var(--ivory-2); }
+    .home .frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+    .home:active .frame img { transform: scale(1.04); }
+    .home .cap { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1rem; margin-top: 1rem; border-top: 1px solid var(--hairline); }
+    .home .cap .serif { font-size: 1.5rem; }
+    .home.is-current .cap .micro { color: var(--bronze); }
+    .host-stats { display: flex; gap: 3rem; flex-wrap: wrap; margin-top: 2.5rem; padding: 1.5rem 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+    .host-stats .num { font-family: var(--serif); font-size: 2.4rem; color: var(--ink); font-variation-settings: "opsz" 144; line-height: 1; }
+    .host-stats .micro { margin-top: 0.6rem; }
+    .host-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+    .btn--line { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+    .setup-note { margin-top: 2rem; font-size: 0.9rem; color: var(--muted); max-width: 44em; }
+
+    @media (orientation: portrait), (max-width: 900px) {
+      #form { grid-template-columns: 1fr; grid-template-rows: 26vh 1fr; grid-template-rows: 26dvh 1fr; }
+      .side .side-card { padding-bottom: 1.25rem; }
+      .side .side-card .serif { font-size: 1.5rem; }
+    }
+    @media (max-width: 640px) {
+      .fields { grid-template-columns: 1fr; }
+      .homes { grid-template-columns: 1fr; }
+      .welcome-card h1 { font-size: 2.4rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .welcome-card > *, #done .done-wrap > * { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1 · Choose the property (first launch, or from the host panel) -->
+  <section class="screen" id="setup" aria-label="Choose the open house">
+    <div class="setup-wrap">
+      <span class="eyebrow">Open House Setup</span>
+      <h1>Which home is <em>open today?</em></h1>
+      <div class="homes" id="homes"></div>
+      <div id="host-extra" hidden>
+        <div class="host-stats">
+          <div><p class="num" id="stat-today">0</p><p class="micro">Signed in today on this iPad</p></div>
+          <div><p class="num" id="stat-pending">0</p><p class="micro">Waiting to send</p></div>
+        </div>
+        <div class="host-actions">
+          <button class="btn" type="button" id="host-resume">Back to sign in</button>
+          <button class="btn btn--line" type="button" id="host-retry">Send waiting sign-ins now</button>
+        </div>
+      </div>
+      <p class="setup-note">Tip: in Safari, tap Share, then Add to Home Screen. The sign-in then opens full screen, with no address bar. To come back here during the open house, press and hold The Kizlo Team name in the top left corner for two seconds.</p>
+    </div>
+  </section>
+
+  <!-- 2 · Welcome -->
+  <section class="screen" id="welcome" aria-label="Welcome">
+    <div class="hero-img"><img id="welcome-img" alt="" decoding="async"></div>
+    <div class="hero-shade"></div>
+    <div class="topbar">
+      <button class="wordmark" type="button" data-host>The Kizlo Team<span>Keller Williams Realty At The Lakes</span></button>
+      <p class="micro">Open House · Today</p>
+    </div>
+    <div class="welcome-card">
+      <span class="eyebrow">Welcome</span>
+      <h1 id="welcome-title"></h1>
+      <p class="spec" id="welcome-spec"></p>
+      <button class="cta" type="button" id="start">Sign in to tour the home <span class="arrow breathe" aria-hidden="true"></span></button>
+    </div>
+  </section>
+
+  <!-- 3 · Sign-in form -->
+  <section class="screen" id="form" aria-label="Sign in">
+    <div class="side">
+      <img id="side-img" alt="" decoding="async">
+      <div class="side-card">
+        <p class="serif" id="side-title"></p>
+        <p class="micro" id="side-spec"></p>
+      </div>
+    </div>
+    <div class="pane" id="pane">
+      <div class="pane-top">
+        <button class="wordmark" type="button" data-host>The Kizlo Team</button>
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+          <span class="stepcount" id="stepcount">01 / 02</span>
+          <button class="back" type="button" id="back">Back</button>
+        </div>
+      </div>
+
+      <form id="signin" novalidate autocomplete="off">
+        <div class="step is-on" data-step="1">
+          <h2>Welcome in. <em>Who's visiting?</em></h2>
+          <p class="lead">Two quick screens, then enjoy the home. We'll text you the photos and details so you have them after you leave.</p>
+          <div class="fields">
+            <div class="field" data-field="first_name">
+              <label for="first_name">First name</label>
+              <input id="first_name" name="first_name" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="next">
+              <p class="err">Please add your first name.</p>
+            </div>
+            <div class="field" data-field="last_name">
+              <label for="last_name">Last name</label>
+              <input id="last_name" name="last_name" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="next">
+              <p class="err">Please add your last name.</p>
+            </div>
+            <div class="field full" data-field="phone">
+              <label for="phone">Mobile number</label>
+              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="off" placeholder="(407) 555-0100" enterkeyhint="next">
+              <p class="err">Please enter a 10 digit mobile number.</p>
+            </div>
+            <div class="field full" data-field="email">
+              <label for="email">Email <span class="opt">(optional)</span></label>
+              <input id="email" name="email" type="email" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">
+              <p class="err">That email doesn't look quite right.</p>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn" type="button" id="next">Continue</button>
+          </div>
+        </div>
+
+        <div class="step" data-step="2">
+          <h2>A few quick <em>questions.</em></h2>
+          <p class="lead">Tap whatever fits. It helps us point you to the right homes.</p>
+
+          <div class="q" data-q="visit_reason">
+            <p class="q-label" id="ql-reason">What brings you in today?</p>
+            <div class="chips" role="radiogroup" aria-labelledby="ql-reason">
+              <label class="chip"><input type="radio" name="visit_reason" value="buy"><span>Looking to buy</span></label>
+              <label class="chip"><input type="radio" name="visit_reason" value="neighbor"><span>I live nearby</span></label>
+              <label class="chip"><input type="radio" name="visit_reason" value="sell"><span>Thinking of selling</span></label>
+              <label class="chip"><input type="radio" name="visit_reason" value="browse"><span>Just browsing</span></label>
+            </div>
+            <p class="err">Please choose one.</p>
+          </div>
+
+          <div class="q" data-q="has_agent">
+            <p class="q-label" id="ql-agent">Are you working with a real estate agent?</p>
+            <div class="chips" role="radiogroup" aria-labelledby="ql-agent">
+              <label class="chip"><input type="radio" name="has_agent" value="no"><span>No</span></label>
+              <label class="chip"><input type="radio" name="has_agent" value="yes"><span>Yes</span></label>
+            </div>
+            <p class="err">Please choose one.</p>
+            <div class="field agent-name" id="agent-name">
+              <label for="agent_name">Your agent's name <span class="opt">(optional)</span></label>
+              <input id="agent_name" name="agent_name" type="text" autocomplete="off" autocapitalize="words" spellcheck="false">
+            </div>
+          </div>
+
+          <div class="q buyer-only" data-q="timeline">
+            <p class="q-label" id="ql-timeline">When are you hoping to move?</p>
+            <div class="chips" role="radiogroup" aria-labelledby="ql-timeline">
+              <label class="chip"><input type="radio" name="timeline" value="Within 3 months"><span>Within 3 months</span></label>
+              <label class="chip"><input type="radio" name="timeline" value="3 to 6 months"><span>3 to 6 months</span></label>
+              <label class="chip"><input type="radio" name="timeline" value="6 to 12 months"><span>6 to 12 months</span></label>
+              <label class="chip"><input type="radio" name="timeline" value="Not sure yet"><span>Not sure yet</span></label>
+            </div>
+          </div>
+
+          <div class="q buyer-only" data-q="financing">
+            <p class="q-label" id="ql-financing">How are you planning to buy?</p>
+            <div class="chips" role="radiogroup" aria-labelledby="ql-financing">
+              <label class="chip"><input type="radio" name="financing" value="Pre-approved"><span>Pre-approved</span></label>
+              <label class="chip"><input type="radio" name="financing" value="Cash"><span>Cash</span></label>
+              <label class="chip"><input type="radio" name="financing" value="Need a lender"><span>Need a lender</span></label>
+              <label class="chip"><input type="radio" name="financing" value="Not sure yet"><span>Not sure yet</span></label>
+            </div>
+          </div>
+
+          <div class="q buyer-only" data-q="home_to_sell">
+            <p class="q-label" id="ql-sell">Do you have a home to sell first?</p>
+            <div class="chips" role="radiogroup" aria-labelledby="ql-sell">
+              <label class="chip"><input type="radio" name="home_to_sell" value="Yes"><span>Yes</span></label>
+              <label class="chip"><input type="radio" name="home_to_sell" value="No"><span>No</span></label>
+              <label class="chip"><input type="radio" name="home_to_sell" value="I rent"><span>I rent</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-q="heard_from">
+            <p class="q-label" id="ql-heard">How did you hear about today?</p>
+            <div class="chips" role="radiogroup" aria-labelledby="ql-heard">
+              <label class="chip"><input type="radio" name="heard_from" value="Sign"><span>A sign</span></label>
+              <label class="chip"><input type="radio" name="heard_from" value="Zillow or Realtor.com"><span>Zillow or Realtor.com</span></label>
+              <label class="chip"><input type="radio" name="heard_from" value="Social media"><span>Social media</span></label>
+              <label class="chip"><input type="radio" name="heard_from" value="Friend or neighbor"><span>Friend or neighbor</span></label>
+              <label class="chip"><input type="radio" name="heard_from" value="Other"><span>Other</span></label>
+            </div>
+          </div>
+
+          <div class="hp" aria-hidden="true"><label for="company">Company</label><input id="company" name="company" type="text" tabindex="-1" autocomplete="off"></div>
+
+          <div class="actions">
+            <button class="btn" type="submit" id="submit">Sign in</button>
+          </div>
+          <p class="submit-err" id="submit-err" role="alert"></p>
+          <p class="consent">By submitting, you agree that The Kizlo Team may contact you about your inquiry by phone, text or email, including messages sent using an automatic telephone dialing system. Consent is not a condition of purchase. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. See our <a href="/privacy-policy/" tabindex="-1">Privacy Policy</a>.</p>
+        </div>
+      </form>
+
+      <p class="legal">The Kizlo Team · Keller Williams Realty At The Lakes · Vlad Kizlo, Lic. SL3475553 · Anastasiia Zbihla, Lic. SL3469407 · Equal Housing Opportunity</p>
+    </div>
+  </section>
+
+  <!-- 4 · Thank you -->
+  <section class="screen" id="done" aria-label="Signed in" aria-live="polite">
+    <div class="done-wrap">
+      <span class="eyebrow">You're signed in</span>
+      <h1 id="done-title">Thank you.</h1>
+      <p class="lede" id="done-lede"></p>
+      <div class="done-foot">
+        <button class="btn" type="button" id="done-btn">Done</button>
+        <span class="timer" aria-hidden="true"><i></i></span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+  (function () {
+    "use strict";
+
+    var ENDPOINT = "https://kizlohq.onrender.com/api/public/open-house";
+    var WAKE_URL = "https://kizlohq.onrender.com/api/version";
+    var HOMES = {
+      "3625-waters-edge": {
+        title: "3625 Waters Edge <em>Drive</em>", plain: "3625 Waters Edge Dr",
+        spec: "Belle Isle · 4 bed · 3 bath · 2,813 sq ft · $1,250,000",
+        img: "/3625-waters-edge/img/hero-2048.jpg",
+        alt: "Covered boat dock at twilight at 3625 Waters Edge Dr, Belle Isle, Florida"
+      },
+      "8291-procida-isle": {
+        title: "8291 Procida Isle <em>Lane</em>", plain: "8291 Procida Isle Ln",
+        spec: "Windermere · 4 bed · 3 bath · 2,224 sq ft · $775,000",
+        img: "/8291-procida-isle/img/hero-pool-dusk-2048.jpg",
+        alt: "Saltwater pool and fire table at dusk at 8291 Procida Isle Ln, Windermere, Florida"
+      }
+    };
+    var KEY_HOME = "kz_oh_home", KEY_QUEUE = "kz_oh_queue", KEY_COUNT = "kz_oh_count";
+    var IDLE_MS = 90 * 1000, DONE_MS = 10 * 1000, TIMEOUT_MS = 15 * 1000;
+
+    var $ = function (s, r) { return (r || document).querySelector(s); };
+    var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+    function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+
+    var form = $("#signin");
+    var home = null, step = 1, idleTimer = null, doneTimer = null, busy = false;
+
+    /* ---------- screens ---------- */
+    function show(id) {
+      $$(".screen").forEach(function (s) { s.classList.toggle("is-on", s.id === id); });
+      clearTimeout(idleTimer); clearTimeout(doneTimer);
+      if (id === "form") armIdle();
+    }
+
+    function setHome(slug) {
+      home = HOMES[slug] ? slug : null;
+      if (!home) return false;
+      store(KEY_HOME, home);
+      var h = HOMES[home];
+      $("#welcome-title").innerHTML = h.title;
+      $("#welcome-spec").textContent = h.spec;
+      $("#side-title").textContent = h.plain;
+      $("#side-spec").textContent = h.spec;
+      ["#welcome-img", "#side-img"].forEach(function (sel) {
+        var i = $(sel);
+        if (i.getAttribute("src") === h.img) return;
+        i.classList.remove("is-loaded");
+        i.onload = function () { i.classList.add("is-loaded"); };
+        i.src = h.img; i.alt = h.alt;
+        if (i.complete && i.naturalWidth) i.classList.add("is-loaded");
+      });
+      try { history.replaceState(null, "", "?home=" + home); } catch (e) {}
+      return true;
+    }
+
+    function renderSetup(asHost) {
+      var wrap = $("#homes");
+      wrap.innerHTML = "";
+      Object.keys(HOMES).forEach(function (slug) {
+        var h = HOMES[slug];
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "home" + (slug === home ? " is-current" : "");
+        b.innerHTML = '<div class="frame"><img alt="" src="' + h.img + '"></div><div class="cap"><p class="serif">' + h.plain +
+          '</p><p class="micro">' + (slug === home ? "Open now" : "Choose") + "</p></div>";
+        b.addEventListener("click", function () { setHome(slug); resetForm(); show("welcome"); });
+        wrap.appendChild(b);
+      });
+      $("#host-extra").hidden = !asHost;
+      $("#stat-today").textContent = todayCount();
+      $("#stat-pending").textContent = (store(KEY_QUEUE) || []).length;
+      show("setup");
+    }
+
+    /* ---------- host access: press and hold the wordmark ---------- */
+    $$("[data-host]").forEach(function (el) {
+      var t = null;
+      var start = function (e) { e.stopPropagation(); t = setTimeout(function () { renderSetup(true); }, 2000); };
+      var cancel = function () { clearTimeout(t); };
+      el.addEventListener("touchstart", start, { passive: true });
+      el.addEventListener("mousedown", start);
+      ["touchend", "touchcancel", "mouseup", "mouseleave"].forEach(function (ev) { el.addEventListener(ev, cancel); });
+      el.addEventListener("click", function (e) { e.stopPropagation(); });
+      el.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    });
+    $("#host-resume").addEventListener("click", function () { if (home) { resetForm(); show("welcome"); } });
+    $("#host-retry").addEventListener("click", function () { flushQueue().then(function () { renderSetup(true); }); });
+
+    /* ---------- welcome ---------- */
+    $("#welcome").addEventListener("click", function () { goStep(1); show("form"); });
+
+    /* ---------- form steps ---------- */
+    function goStep(n) {
+      step = n;
+      $$(".step").forEach(function (s) { s.classList.toggle("is-on", +s.getAttribute("data-step") === n); });
+      $("#stepcount").textContent = "0" + n + " / 02";
+      $("#pane").scrollTop = 0;
+    }
+    $("#back").addEventListener("click", function () {
+      if (step === 2) goStep(1); else { resetForm(); show("welcome"); }
+    });
+
+    function digits(v) { var d = String(v || "").replace(/\D/g, ""); if (d.length === 11 && d[0] === "1") d = d.slice(1); return d; }
+    var phone = $("#phone");
+    phone.addEventListener("input", function () {
+      var d = digits(phone.value).slice(0, 10), out = d;
+      if (d.length > 6) out = "(" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6);
+      else if (d.length > 3) out = "(" + d.slice(0, 3) + ") " + d.slice(3);
+      else if (d.length) out = "(" + d;
+      phone.value = out;
+    });
+
+    function setErr(name, on) {
+      var el = $('[data-field="' + name + '"]') || $('[data-q="' + name + '"]');
+      if (el) el.classList.toggle("has-error", !!on);
+      return !on;
+    }
+    function val(name) { var el = form.elements[name]; return el ? String(el.value || "").trim() : ""; }
+    function radio(name) { var c = $('input[name="' + name + '"]:checked', form); return c ? c.value : ""; }
+
+    function validStep1() {
+      var ok = true;
+      ok = setErr("first_name", !val("first_name")) && ok;
+      ok = setErr("last_name", !val("last_name")) && ok;
+      ok = setErr("phone", digits(val("phone")).length !== 10) && ok;
+      var em = val("email");
+      ok = setErr("email", em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) && ok;
+      if (!ok) { var first = $(".has-error input", form); if (first) first.focus(); }
+      return ok;
+    }
+    function validStep2() {
+      var ok = setErr("visit_reason", !radio("visit_reason"));
+      ok = setErr("has_agent", !radio("has_agent")) && ok;
+      if (!ok) { var q = $(".q.has-error"); if (q) q.scrollIntoView({ behavior: "smooth", block: "center" }); }
+      return ok;
+    }
+
+    $$(".field input", form).forEach(function (i) {
+      i.addEventListener("input", function () { var f = i.closest(".field"); if (f) f.classList.remove("has-error"); });
+      i.addEventListener("focus", function () { setTimeout(function () { i.scrollIntoView({ block: "center", behavior: "smooth" }); }, 250); });
+    });
+    ["first_name", "last_name", "phone"].forEach(function (n, idx, arr) {
+      form.elements[n].addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); var nx = arr[idx + 1] ? form.elements[arr[idx + 1]] : form.elements.email; nx.focus(); }
+      });
+    });
+    form.elements.email.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); $("#next").click(); } });
+
+    $("#next").addEventListener("click", function () { if (validStep1()) { document.activeElement && document.activeElement.blur(); goStep(2); } });
+
+    form.addEventListener("change", function (e) {
+      var t = e.target;
+      if (t.type === "radio") { var q = t.closest(".q"); if (q) q.classList.remove("has-error"); }
+      if (t.name === "has_agent") $("#agent-name").classList.toggle("is-on", t.value === "yes");
+      if (t.name === "visit_reason") {
+        var buyer = t.value === "buy" || t.value === "browse";
+        $$(".buyer-only").forEach(function (q) {
+          q.classList.toggle("is-hidden", !buyer);
+          if (!buyer) $$("input", q).forEach(function (i) { i.checked = false; });
+        });
+      }
+    });
+
+    /* ---------- idle reset: a half-filled form never waits for the next guest ---------- */
+    function armIdle() { clearTimeout(idleTimer); idleTimer = setTimeout(function () { resetForm(); show("welcome"); }, IDLE_MS); }
+    ["touchstart", "keydown", "input", "scroll"].forEach(function (ev) {
+      document.addEventListener(ev, function () { if ($("#form").classList.contains("is-on")) armIdle(); }, { passive: true, capture: true });
+    });
+
+    function resetForm() {
+      form.reset(); busy = false;
+      $("#submit").disabled = false; $("#submit").textContent = "Sign in";
+      $$(".has-error").forEach(function (e) { e.classList.remove("has-error"); });
+      $("#agent-name").classList.remove("is-on");
+      $("#submit-err").classList.remove("is-on");
+      $$(".buyer-only").forEach(function (q) { q.classList.remove("is-hidden"); });
+      goStep(1);
+    }
+
+    /* ---------- submit, with an offline queue ---------- */
+    function payload() {
+      var p = { listing: home, first_name: val("first_name"), last_name: val("last_name"), phone: digits(val("phone")),
+        email: val("email"), visit_reason: radio("visit_reason"), has_agent: radio("has_agent"),
+        agent_name: radio("has_agent") === "yes" ? val("agent_name") : "", timeline: radio("timeline"),
+        financing: radio("financing"), home_to_sell: radio("home_to_sell"), heard_from: radio("heard_from"), company: val("company") };
+      return p;
+    }
+
+    function post(p) {
+      var ctrl = "AbortController" in window ? new AbortController() : null;
+      var t = ctrl ? setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS) : null;
+      return fetch(ENDPOINT, {
+        method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(p), signal: ctrl ? ctrl.signal : undefined
+      }).then(function (r) {
+        clearTimeout(t);
+        return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, body: j }; });
+      }, function (err) { clearTimeout(t); throw err; });
+    }
+
+    function todayKey() { var d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+    function todayCount() { var c = store(KEY_COUNT) || {}; return c.day === todayKey() ? c.n : 0; }
+    function bumpCount() { store(KEY_COUNT, { day: todayKey(), n: todayCount() + 1 }); }
+
+    function enqueue(p) { var q = store(KEY_QUEUE) || []; q.push(p); store(KEY_QUEUE, q); }
+    var flushing = false;
+    function flushQueue() {
+      if (flushing) return Promise.resolve();
+      var q = store(KEY_QUEUE) || [];
+      if (!q.length) return Promise.resolve();
+      flushing = true;
+      var p = q[0];
+      return post(p).then(function (res) {
+        // 4xx (bad data) will never succeed on retry; drop it rather than block the queue.
+        if (res.status < 500 && res.status !== 429) { var rest = (store(KEY_QUEUE) || []).slice(1); store(KEY_QUEUE, rest); }
+        flushing = false;
+        if (res.status < 500 && res.status !== 429) return flushQueue();
+      }, function () { flushing = false; });
+    }
+    setInterval(flushQueue, 30 * 1000);
+    window.addEventListener("online", flushQueue);
+
+    function finish(firstName, texted) {
+      bumpCount();
+      $("#done-title").innerHTML = "Welcome, <em>" + escapeHtml(firstName) + ".</em>";
+      $("#done-lede").textContent = texted
+        ? "Enjoy the home. We just texted you the photos and details, so everything is on your phone when you leave."
+        : "Enjoy the home. We'll text you the photos and details shortly, so everything is on your phone when you leave.";
+      resetForm();
+      show("done");
+      doneTimer = setTimeout(function () { show("welcome"); }, DONE_MS);
+    }
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (busy || !validStep2()) return;
+      busy = true;
+      var btn = $("#submit"); btn.disabled = true; btn.textContent = "Signing in";
+      var p = payload(), first = p.first_name;
+      post(p).then(function (res) {
+        if (res.status >= 500 || res.status === 429) { enqueue(p); finish(first, false); return; }
+        if (res.status >= 400) {
+          busy = false; btn.disabled = false; btn.textContent = "Sign in";
+          var se = $("#submit-err");
+          var msg = String((res.body && res.body.error) || "Something didn't go through").trim();
+          if (!/[.!?]$/.test(msg)) msg += ".";
+          se.textContent = msg + " Please check your details, or ask us for a hand.";
+          se.classList.add("is-on");
+          return;
+        }
+        finish(first, !!(res.body && res.body.texted));
+      }, function () { enqueue(p); finish(first, false); });
+    });
+
+    $("#done-btn").addEventListener("click", function () { show("welcome"); });
+
+    /* ---------- keep the CRM awake so the first guest isn't kept waiting ---------- */
+    function wake() { try { fetch(WAKE_URL, { mode: "no-cors", cache: "no-store" }).catch(function () {}); } catch (e) {} }
+    wake(); setInterval(wake, 4 * 60 * 1000);
+
+    /* ---------- boot: warm both listing photos so no guest ever sees a blank screen ---------- */
+    Object.keys(HOMES).forEach(function (k) { var im = new Image(); im.src = HOMES[k].img; });
+
+    var fromUrl = new URLSearchParams(location.search).get("home");
+    if (setHome(fromUrl) || setHome(store(KEY_HOME))) show("welcome");
+    else renderSetup(false);
+    flushQueue();
+  })();
+  </script>
+</body>
+</html>

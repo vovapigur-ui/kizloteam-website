@@ -147,6 +147,7 @@ export const HREFLANG_CLUSTERS = [
 // Pages that are intentionally not part of the generated-schema pass.
 export const SKIP = new Set([
   "studio/index.html",
+  "open-house/index.html",
   "404.html",
   "google62632eb78b18f226.html",
   "russian-ukrainian-realtor-orlando/index.html",
@@ -159,10 +160,13 @@ export const ANALYTICS = {
   clarity: "yv6ysre0py",
 };
 
-// Pages that never get analytics: the internal studio tool and the Google
-// verification file. Instant redirect stubs are skipped by detection instead,
+// Pages that never get analytics: the internal studio tool, the open-house
+// kiosk and the Google verification file. Instant redirect stubs are skipped by detection instead,
 // since tracking them would count one visit twice.
 export const NO_ANALYTICS = new Set([
+  // The open-house iPad: every guest on one device would read as one
+  // returning visitor and skew the site numbers.
+  "open-house/index.html",
   "studio/index.html",
   "google62632eb78b18f226.html",
 ]);
