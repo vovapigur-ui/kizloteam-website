@@ -396,6 +396,7 @@
     "use strict";
 
     var ENDPOINT = "https://kizlohq.onrender.com/api/public/open-house";
+    var PARTIAL_URL = "https://kizlohq.onrender.com/api/public/open-house/partial";
     var WAKE_URL = "https://kizlohq.onrender.com/api/version";
     var HOMES = {
       "3625-waters-edge": {
@@ -477,7 +478,7 @@
     /* ---------- host access: press and hold the wordmark ---------- */
     $$("[data-host]").forEach(function (el) {
       var t = null;
-      var start = function (e) { e.stopPropagation(); t = setTimeout(function () { renderSetup(true); }, 2000); };
+      var start = function (e) { e.stopPropagation(); t = setTimeout(function () { abandon(); renderSetup(true); }, 2000); };
       var cancel = function () { clearTimeout(t); };
       el.addEventListener("touchstart", start, { passive: true });
       el.addEventListener("mousedown", start);
@@ -493,7 +494,7 @@
     });
 
     /* ---------- welcome ---------- */
-    $("#welcome").addEventListener("click", function () { goStep(1); show("form"); });
+    $("#welcome").addEventListener("click", function () { newSession(); goStep(1); show("form"); });
 
     /* ---------- form steps ---------- */
     function goStep(n) {
@@ -503,7 +504,7 @@
       $("#pane").scrollTop = 0;
     }
     $("#back").addEventListener("click", function () {
-      if (step === 2) goStep(1); else { resetForm(); show("welcome"); }
+      if (step === 2) goStep(1); else { abandon(); resetForm(); show("welcome"); }
     });
 
     function digits(v) { var d = String(v || "").replace(/\D/g, ""); if (d.length === 11 && d[0] === "1") d = d.slice(1); return d; }
@@ -551,10 +552,11 @@
     });
     form.elements.email.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); $("#next").click(); } });
 
-    $("#next").addEventListener("click", function () { if (validStep1()) { document.activeElement && document.activeElement.blur(); goStep(2); } });
+    $("#next").addEventListener("click", function () { if (validStep1()) { document.activeElement && document.activeElement.blur(); savePartial("contact"); goStep(2); } });
 
     form.addEventListener("change", function (e) {
       var t = e.target;
+      if (step === 2) saveSoon();
       if (t.type === "radio") { var q = t.closest(".q"); if (q) q.classList.remove("has-error"); }
       if (t.name === "has_agent") $("#agent-name").classList.toggle("is-on", t.value === "yes");
       if (t.name === "visit_reason") {
@@ -567,7 +569,7 @@
     });
 
     /* ---------- idle reset: a half-filled form never waits for the next guest ---------- */
-    function armIdle() { clearTimeout(idleTimer); idleTimer = setTimeout(function () { resetForm(); show("welcome"); }, IDLE_MS); }
+    function armIdle() { clearTimeout(idleTimer); idleTimer = setTimeout(function () { abandon(); resetForm(); show("welcome"); }, IDLE_MS); }
     ["touchstart", "keydown", "input", "scroll"].forEach(function (ev) {
       document.addEventListener(ev, function () { if ($("#form").classList.contains("is-on")) armIdle(); }, { passive: true, capture: true });
     });
@@ -591,10 +593,10 @@
       return p;
     }
 
-    function post(p) {
+    function post(p, url) {
       var ctrl = "AbortController" in window ? new AbortController() : null;
       var t = ctrl ? setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS) : null;
-      return fetch(ENDPOINT, {
+      return fetch(url || (p && p.step ? PARTIAL_URL : ENDPOINT), {
         method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify(p), signal: ctrl ? ctrl.signal : undefined
       }).then(function (r) {
@@ -602,6 +604,30 @@
         return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, body: j }; });
       }, function (err) { clearTimeout(t); throw err; });
     }
+
+    /* ---------- save as you go: every screen, every answer, and walking away ----------
+       Each guest visit gets a session id. Partial saves go to Kizlo HQ, which
+       records the guest without texting them; only the full sign-in texts. */
+    var sessionId = null, saveTimer = null, lastSave = Promise.resolve();
+    function newSession() {
+      sessionId = "oh-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+    }
+    function hasAnything(p) { return !!(p.first_name || p.last_name || digits(p.phone).length >= 7 || p.email); }
+    function savePartial(stepName) {
+      clearTimeout(saveTimer);
+      if (!sessionId || !home) return;
+      var p = payload(); p.session_id = sessionId; p.step = stepName;
+      if (!hasAnything(p)) return;
+      lastSave = post(p).then(function (res) {
+        if (res.status >= 500 || res.status === 429) enqueue(p);
+      }, function () { enqueue(p); });
+    }
+    function saveSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(function () { savePartial("answers"); }, 1200); }
+    function abandon() {
+      if ($("#form").classList.contains("is-on")) savePartial("left");
+      sessionId = null;
+    }
+    $("#agent_name").addEventListener("input", saveSoon);
 
     function todayKey() { var d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
     function todayCount() { var c = store(KEY_COUNT) || {}; return c.day === todayKey() ? c.n : 0; }
@@ -646,8 +672,12 @@
       if (busy || !validStep2()) return;
       busy = true;
       var btn = $("#submit"); btn.disabled = true; btn.textContent = "Signing in";
+      clearTimeout(saveTimer);
       var p = payload(), first = p.first_name;
-      post(p).then(function (res) {
+      p.session_id = sessionId;
+      var waitForSave = Promise.race([lastSave, new Promise(function (r) { setTimeout(r, 4000); })]);
+      sessionId = null;
+      waitForSave.then(function () { return post(p, ENDPOINT); }).then(function (res) {
         // A sign-in is never lost: anything the server didn't accept is kept on
         // this iPad (waiting or held) and the guest still gets their thank-you.
         if (res.status >= 500 || res.status === 429) { enqueue(p); finish(first, false); return; }
