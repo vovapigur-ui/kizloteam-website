@@ -1,7 +1,8 @@
 ---
-title: West Orlando Housing Market Report, September 2026
-description: Windermere, Winter Garden, Horizon West and Clermont home prices, days on market and inventory, from August 2026 data. Ask us what it means for your home.
+title: West Orlando Home Prices Sept 2026: Windermere to Clermont
+description: Windermere $707K, Winter Garden $567K, Horizon West $590K, Clermont $453K. August 2026 medians, days on market and what they mean if you sell this fall.
 date: 2026-09-21
+updated: 2026-10-19
 eyebrow: Market Report · September 2026
 summary: Prices held, homes took longer to sell, and rates climbed back toward 7 percent. Here is what the August 2026 numbers say about Windermere, Winter Garden, Horizon West and Clermont.
 draft: false

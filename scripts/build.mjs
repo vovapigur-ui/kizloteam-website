@@ -346,6 +346,12 @@ function injectHreflang(file, html) {
 
 function injectAnalytics(html) {
   const block = `${ANALYTICS_START}
+  <script>
+    // Only the live domain reports. localhost, file previews and Render
+    // preview URLs stay out of GA4 and Clarity so the numbers are visitors only.
+    window.__kzLive = /(^|\\.)kizloteam\\.com$/.test(location.hostname);
+    if (!window.__kzLive) window["ga-disable-${ANALYTICS.ga4}"] = true;
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=${ANALYTICS.ga4}"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -354,7 +360,7 @@ function injectAnalytics(html) {
     gtag("config", "${ANALYTICS.ga4}");
   </script>
   <script>
-    (function(c,l,a,r,i,t,y){
+    if (window.__kzLive) (function(c,l,a,r,i,t,y){
       c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
       t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
