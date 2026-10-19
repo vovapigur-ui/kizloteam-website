@@ -84,6 +84,22 @@
     }
   }, true);
 
+  // Phone and email taps are leads too. Counted once per tap, with the page
+  // they happened on, so GA4 can treat phone_call as a key event.
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!a) return;
+    var href = String(a.getAttribute("href") || "");
+    var name = href.indexOf("tel:") === 0 ? "phone_call"
+             : href.indexOf("mailto:") === 0 ? "email_click"
+             : href.indexOf("sms:") === 0 ? "text_click" : "";
+    if (!name) return;
+    if (typeof window.gtag === "function") {
+      window.gtag("event", name, { link_page: location.pathname, link_text: (a.textContent || "").trim().slice(0, 60) });
+    }
+    if (typeof window.clarity === "function") window.clarity("event", name);
+  }, true);
+
   // Each form has its own submit handler (js/main.js, the listing pages), so
   // the conversion is counted where they all meet: a successful response from
   // the lead endpoint.
