@@ -1,0 +1,31 @@
+name: IndexNow ping
+
+# After each push to main, Render deploys the site. This job waits for the deploy
+# (scripts/indexnow.mjs polls the live key file) and then tells Bing and the other
+# IndexNow engines which pages changed.
+on:
+  push:
+    branches: [main]
+    paths: ["**/*.html", "sitemap.xml"]
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Give Render time to deploy
+        run: sleep 90
+      - name: Ping IndexNow
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            node scripts/indexnow.mjs --all
+          else
+            node scripts/indexnow.mjs "${{ github.event.before }}" "${{ github.sha }}"
+          fi
