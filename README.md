@@ -72,13 +72,13 @@ It prints the visible text of every page against git and lists exactly which wor
 
 1. PHOTOS. The site currently uses licensed Unsplash placeholders. Swap them for your own listing photos and a real team portrait. Every spot is marked with a `REPLACE` comment in the HTML. Keep photos bright, daylight, warm and consistently edited. The two portrait blocks on /about/ (VK and AK monograms) are waiting for your headshots.
 2. CONTACT FORM. Create a free account at formspree.io, create a form, and replace `YOUR_FORM_ID` in /contact/index.html. Takes 5 minutes. Until then the form will not send.
-3. VERIFY FACTS. I used only verified data: 4.9 stars / 120 Google reviews, 100+ closings, $35M+ volume, license numbers SL3475553 and SL3469407, address 7107 Beek St, phone 813 992 3073, email thekizloteam@kw.com. Check that all of it is how you want it published. Note: Anastasiia's license records show the surname Zbihla; the site uses "Anastasiia Kizlo" to match your marketing. Confirm that choice.
+3. VERIFY FACTS. I used only verified data: 4.9 stars / 127 Google reviews, 100+ closings, $35M+ volume, license numbers SL3475553 and SL3469407, address 7107 Beek St, phone 813 992 3073, email thekizloteam@kw.com. Check that all of it is how you want it published. Note: Anastasiia's license records show the surname Zbihla; the site uses "Anastasiia Kizlo" to match your marketing. Confirm that choice.
 4. TESTIMONIALS. All quotes are real Google reviews (Ayla H., Scott B., Crystal G. plus two review summary lines). Swap or add as you collect more.
 
 ## After launch (SEO checklist)
 
 1. Google Search Console: verify the domain, submit sitemap.xml.
-2. Google Business Profile: set the website field to your homepage. Your GBP is already strong (4.9, 120 reviews) and the site links back to it.
+2. Google Business Profile: set the website field to your homepage. Your GBP is already strong (4.9, 127 reviews) and the site links back to it.
 3. Keep the market numbers fresh. Each community page says "Updated August 2026". Update the medians monthly and change the date. Dated first-party local data is what gets cited by Google AI Overviews.
 4. NAP consistency: make sure Zillow, Realtor.com, Facebook and every directory show exactly "The Kizlo Team - Realtors", 7107 Beek St, Windermere, FL 34786, 813 992 3073.
 5. Growth pages to add next (same template as the community pages): /communities/hamlin/, /communities/isleworth/, /communities/keenes-pointe/, and a monthly /market-report/ page.

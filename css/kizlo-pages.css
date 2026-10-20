@@ -133,8 +133,6 @@ h1 em, h2 em, h3 em { font-style: normal; }
 .section .data-table td { font: 400 var(--fs-table)/1.5 var(--sans); text-align: left; }
 .data-table td:last-child, .data-table th:last-child { padding-right: 0; }
 /* Price cells: <td class="num">, right-aligned Bodoni with tabular figures. */
-.data-table th.num, .data-table td.num, .section .data-table td.num { text-align: right; }
-.data-table td.num, .section .data-table td.num { font: 400 var(--fs-cell-num)/1.2 var(--display); color: var(--text); font-variant-numeric: lining-nums tabular-nums; }
 
 /* Stats on inner pages */
 .section .stats { border: 0; }
@@ -298,16 +296,7 @@ h1:lang(uk), h2:lang(uk), h3:lang(uk), .display:lang(uk), summary:lang(uk) { fon
   .page-hero .hero__actions { flex-direction: column; align-items: stretch; }
   .page-hero .hero__actions .btn { width: 100%; }
 }
-/* Tablet and phone: a .data-table--stack turns each row into a labelled two-column card. */
-@media (max-width: 960px) {
-  .data-table--stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
-  .data-table--stack tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; padding: 18px 0; border-bottom: 1px solid var(--rule); } /* taste-skill-ignore: 1px Hairline between stacked rows */
-  .data-table--stack th, .data-table--stack td, .section .data-table--stack td { display: block; padding: 0; border: 0; text-align: left; }
-  .data-table--stack tbody th { grid-column: 1 / -1; }
-  .data-table--stack td::before { content: attr(data-label); display: block; margin-bottom: 4px; font: 400 var(--fs-label)/1.3 var(--sans); color: var(--text-2); }
-  .data-table--stack td.num, .section .data-table--stack td.num { text-align: left; }
-  .section:has(.form-panel) { padding-bottom: 0; }
-}
+/* .data-table--stack and td.num moved to css/kizlo.css (2026-10-20) */
 @media (min-width: 601px) and (max-width: 960px) {
   .cta-band__actions { max-width: 340px; }
   .areas > .area:last-child:nth-child(odd) { grid-column: 1 / -1; }

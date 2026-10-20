@@ -806,3 +806,29 @@ h1, .display { font-weight: 450; } /* hairlines of the W hold at 1x */
 .area :focus-visible { outline-color: var(--gold); }
 @media (max-width: 600px) { .areas > div.area { min-height: 300px; } }
 .areas > div.area::before { background: linear-gradient(to top, rgba(6, 8, 10, 0.9) 0%, rgba(6, 8, 10, 0.72) 50%, rgba(6, 8, 10, 0.3) 85%); } /* taste-skill-ignore: neutral scrim over photography */
+
+/* Full active-listings list under the featured listing cards */
+.listings-all__title { margin: clamp(48px, 6vw, 80px) 0 20px; font-size: var(--fs-section, 2rem); }
+
+/* Numeric cells and stacked tables (moved from kizlo-pages.css; the home listings table uses them) */
+.data-table th.num, .data-table td.num, .section .data-table td.num { text-align: right; }
+.data-table td.num, .section .data-table td.num { font: 400 var(--fs-cell-num)/1.2 var(--display); color: var(--text); font-variant-numeric: lining-nums tabular-nums; }
+/* Tablet and phone: a .data-table--stack turns each row into a labelled two-column card. */
+@media (max-width: 960px) {
+  .data-table--stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .data-table--stack tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; padding: 18px 0; border-bottom: 1px solid var(--rule); } /* taste-skill-ignore: 1px Hairline between stacked rows */
+  .data-table--stack th, .data-table--stack td, .section .data-table--stack td { display: block; padding: 0; border: 0; text-align: left; }
+  .data-table--stack tbody th { grid-column: 1 / -1; }
+  .data-table--stack td::before { content: attr(data-label); display: block; margin-bottom: 4px; font: 400 var(--fs-label)/1.3 var(--sans); color: var(--text-2); }
+  .data-table--stack td.num, .section .data-table--stack td.num { text-align: left; }
+  .section:has(.form-panel) { padding-bottom: 0; }
+}
+/* In mixed tables only numeric cells use display numerals; text cells read as body text */
+.data-table--stack td:not(.num), .section .data-table--stack td:not(.num) { font: 400 1rem/1.5 var(--sans); text-align: left; color: var(--text-2); }
+.data-table--stack tbody th { font: 500 1.02rem/1.4 var(--sans); color: var(--text); }
+.data-table--stack tbody th a { color: var(--text); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 4px; }
+.data-table--stack .num { white-space: nowrap; }
+@media (min-width: 961px) {
+  .data-table--stack th, .data-table--stack td { padding-right: 28px; }
+  .data-table--stack tr > :last-child { padding-right: 0; }
+}

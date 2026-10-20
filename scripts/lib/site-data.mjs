@@ -18,7 +18,7 @@ export const TEAM_IMAGE = `${SITE}/img/team-portrait-960.jpg`;
 // (see sameAs below), which is the authoritative fix for the office location.
 export const GEO = { latitude: 28.4632431, longitude: -81.5821345 };
 
-export const RATING = { ratingValue: "4.9", reviewCount: "120" };
+export const RATING = { ratingValue: "4.9", reviewCount: "127" };
 
 export const agency = () => ({
   "@type": "RealEstateAgent",
@@ -71,7 +71,7 @@ export const agency = () => ({
   employee: [{ "@id": VLAD_ID }, { "@id": ANASTASIIA_ID }],
   // aggregateRating is deliberately NOT here. Google treats review markup on a
   // business's own site as self-serving, so the rating is attached only on
-  // /reviews/, where all 120 reviews' worth of quotes are actually visible.
+  // /reviews/, where all 127 reviews' worth of quotes are actually visible.
   sameAs: [
     "https://www.google.com/maps/place/The+Kizlo+Team+-+Realtors+-+Windermere%2FWinter+Garden/@28.4632431,-81.5821345,17z",
     "https://www.instagram.com/thekizloteam_realestate",
