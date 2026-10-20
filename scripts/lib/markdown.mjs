@@ -19,19 +19,48 @@ export function parseFrontMatter(source) {
   return { data, body: source.slice(m[0].length) };
 }
 
+// Typographic quotes for visible text: “ ” ‘ ’. Runs on escaped text, so a
+// double quote arrives as &quot;. Link targets and code spans are left alone.
+// A quote opens at the start, after a space, a bracket, a dash, a slash or a
+// Markdown emphasis marker; everywhere else it closes (or is an apostrophe).
+function smartQuotes(escaped) {
+  return escaped.replace(/\]\([^)\s]+\)|`[^`]*`|&quot;|'/g, (m, offset, str) => {
+    if (m !== "&quot;" && m !== "'") return m;
+    const prev = offset === 0 ? "" : str[offset - 1];
+    const opening = prev === "" || /[\s(\[{\u2014\u2013\-/*_]/.test(prev);
+    if (m === "&quot;") return opening ? "\u201c" : "\u201d";
+    return opening ? "\u2018" : "\u2019";
+  });
+}
+
 function inline(text) {
-  return escapeHtml(text)
+  return smartQuotes(escapeHtml(text))
     .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, href) => {
       const external = /^https?:\/\//i.test(href);
-      const rel = external ? ' target="_blank" rel="noopener"' : "";
-      return `<a href="${href}"${rel} style="border-bottom: 1px solid var(--bronze);">${label}</a>`;
+      return external
+        ? `<a href="${href}" target="_blank" rel="noopener">${label}<span class="visually-hidden"> (opens in a new tab)</span></a>`
+        : `<a href="${href}">${label}</a>`;
     })
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/(^|[\s(])\*([^*]+)\*/g, "$1<em>$2</em>")
     .replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 
-function renderTable(rows) {
+// Plain text of a Markdown cell, for attributes (aria-label, data-label): no
+// markup, no typographic quotes.
+function plain(text) {
+  return escapeHtml(
+    text
+      .replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1")
+      .replace(/[*`]/g, "")
+      .trim()
+  );
+}
+
+// A table is a labelled, keyboard-scrollable region. Its caption is the
+// heading it sits under (visually hidden, since that heading is on screen),
+// and every data cell carries its column header so phones can stack the rows.
+function renderTable(rows, caption) {
   const cells = (row) =>
     row
       .replace(/^\|/, "")
@@ -40,11 +69,18 @@ function renderTable(rows) {
       .map((c) => c.trim());
   const header = cells(rows[0]);
   const body = rows.slice(2).map(cells);
+  const name = caption ? plain(caption) : plain(header.join(", "));
   const head = header.map((c) => `<th scope="col">${inline(c)}</th>`).join("");
   const trs = body
-    .map((r) => `<tr>${r.map((c, i) => (i === 0 ? `<th scope="row">${inline(c)}</th>` : `<td>${inline(c)}</td>`)).join("")}</tr>`)
+    .map(
+      (r) =>
+        `<tr>${r
+          .map((c, i) => (i === 0 ? `<th scope="row">${inline(c)}</th>` : `<td data-label="${plain(header[i] || "")}">${inline(c)}</td>`))
+          .join("")}</tr>`
+    )
     .join("\n            ");
-  return `<div class="table-scroll">\n          <table class="data-table">\n            <thead><tr>${head}</tr></thead>\n            <tbody>\n            ${trs}\n            </tbody>\n          </table>\n        </div>`;
+  const cap = caption ? `\n            <caption class="visually-hidden">${inline(caption)}</caption>` : "";
+  return `<div class="table-scroll" tabindex="0" role="region" aria-label="${name}">\n          <table class="data-table data-table--stack">${cap}\n            <thead><tr>${head}</tr></thead>\n            <tbody>\n            ${trs}\n            </tbody>\n          </table>\n        </div>`;
 }
 
 // Pulls the leading `# Heading` off a document. The page template already
@@ -59,6 +95,7 @@ export function renderMarkdown(body) {
   const lines = body.replace(/\r\n/g, "\n").split("\n");
   const out = [];
   let i = 0;
+  let lastHeading = null;
 
   const flushList = (ordered) => {
     const items = [];
@@ -86,6 +123,7 @@ export function renderMarkdown(body) {
     const heading = /^(#{2,4})\s+(.*)$/.exec(line);
     if (heading) {
       const level = heading[1].length;
+      lastHeading = heading[2];
       out.push(`<h${level}>${inline(heading[2])}</h${level}>`);
       i += 1;
       continue;
@@ -107,7 +145,7 @@ export function renderMarkdown(body) {
         i += 1;
       }
       if (rows.length >= 3) {
-        out.push(renderTable(rows));
+        out.push(renderTable(rows, lastHeading));
         continue;
       }
       out.push(`<p>${inline(rows.join(" "))}</p>`);

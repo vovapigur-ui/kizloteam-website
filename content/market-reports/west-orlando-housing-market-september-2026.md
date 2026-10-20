@@ -1,10 +1,13 @@
 ---
 title: West Orlando Home Prices Sept 2026: Windermere to Clermont
-description: Windermere $707K, Winter Garden $567K, Horizon West $590K, Clermont $453K. August 2026 medians, days on market and what they mean if you sell this fall.
+headline: West Orlando Market, September 2026
+description: Windermere $707K, Winter Garden $567K, Horizon West $590K, Clermont $453K. August 2026 prices, days on market and what they mean if you sell this fall.
 date: 2026-09-21
-updated: 2026-10-19
-eyebrow: Market Report · September 2026
+updated: 2026-09-21
 summary: Prices held, homes took longer to sell, and rates climbed back toward 7 percent. Here is what the August 2026 numbers say about Windermere, Winter Garden, Horizon West and Clermont.
+cover: winter-garden
+figures: $400,676 | Orlando metro median sale price (ORRA, August 2026); 64 | Days on market (ORRA, August 2026); 4.9 | Months of supply (ORRA, August 2026); 6.95% | 30 year fixed rate (Freddie Mac, September 17, 2026)
+tiles: windermere | $707,000 typical value · Zillow, August 2026; winter-garden | $567,000 typical value · Zillow, August 2026; horizon-west | $589,610 median sale price · Redfin, 3 months to August 2026; clermont | $453,350 median sale price · Redfin, 3 months to August 2026
 draft: false
 ---
 
@@ -70,13 +73,15 @@ Of the 2,478 sales, 1,929 were single family homes at a $436,456 median and 549 
 
 Freddie Mac's weekly survey had the 30 year fixed at 6.95 percent on September 17, 2026, up from 6.76 percent the week before and 6.26 percent a year earlier. ORRA cited rates near 6.7 percent through August. Every quarter point changes what a buyer can carry, which is why builder rate buydowns are doing so much work in Horizon West right now.
 
-## What we would do with this
+## What to do with this
 
-If you are selling: price to the last 60 days of closed sales on your street, not to the spring headlines, and have the house fully ready before it goes live. In a market with 4.9 months of supply, the first two weeks decide the outcome.
+**If you are selling.** Price to the last 60 days of closed sales on your street, not to the spring headlines, and have the house fully ready before it goes live. In a market with 4.9 months of supply, the first two weeks decide the outcome.
 
-If you are buying: you have more room than you did in spring. Nearly every metric here says homes are taking longer, and a home past 30 days is a home where the seller is listening. Get fully approved first so you can move when the right one shows up.
+**If you are buying.** You have more room than you did in spring. Nearly every metric here says homes are taking longer, and a home past 30 days is a home where the seller is listening. Get fully approved first so you can move when the right one shows up.
 
-If you are weighing new construction against resale, run both. Some months the builder incentive wins, some months the three year old resale down the street does.
+**If you are weighing new construction against resale.** Run both. Some months the builder incentive wins, some months the three year old resale down the street does.
+
+Ask us what the September numbers mean for your home: [request a valuation](/home-valuation/) or call [(813) 992-3073](tel:+18139923073). We answer the same day.
 
 ## Sources
 
@@ -85,5 +90,3 @@ If you are weighing new construction against resale, run both. Some months the b
 - Orlando metro: Orlando Regional REALTOR Association, August 2026 market report, released September 14, 2026
 - Mortgage rates: Freddie Mac Primary Mortgage Market Survey, September 17, 2026
 - New construction pricing: builder websites, as listed in our [Horizon West new construction guide](/communities/horizon-west/new-construction/)
-
-Want to know what these numbers mean for your address? [Request a free valuation](/home-valuation/) or call us at 813 992 3073.

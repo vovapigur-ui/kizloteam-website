@@ -8,8 +8,10 @@ import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { applyChrome, chromeFiles, currentNavHref, pagePath } from "./lib/chrome.mjs";
 import { breadcrumbs, canonicalOf, faqs, images, langOf, reviews, titleOf } from "./lib/extract.mjs";
 import { textOf } from "./lib/html.mjs";
+import { checkContent } from "./lib/content-rules.mjs";
 import { AGENCY_ID, ANALYTICS, ANASTASIIA_ID, HREFLANG_CLUSTERS, NO_ANALYTICS, RATING, SITE, SKIP, VLAD_ID } from "./lib/site-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,7 +26,7 @@ const warn = (message) => warnings.push(message);
 function htmlFiles(dir = ROOT) {
   const out = [];
   for (const entry of readdirSync(dir)) {
-    if (entry === ".git" || entry === "node_modules" || entry === "scripts" || entry === "content") continue;
+    if (entry.startsWith(".") || entry === "node_modules" || entry === "scripts" || entry === "content") continue;
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) out.push(...htmlFiles(full));
     else if (entry.endsWith(".html")) out.push(relative(ROOT, full));
@@ -163,6 +165,9 @@ let imageCount = 0;
 for (const [file, html] of pages) {
   for (const img of images(html)) {
     imageCount += 1;
+    // An image explicitly marked decorative (alt="" plus aria-hidden="true" or role="presentation") is allowed an empty alt.
+    const decorative = img.alt === "" && /\s(aria-hidden="true"|role="presentation")/.test(img.tag);
+    if (decorative) continue;
     if (!img.alt || !img.alt.trim()) fail(file, `<img src="${img.src}"> has no alt text`);
     else if (BAD_ALT.test(img.alt)) fail(file, `alt text starts with a filler prefix: "${img.alt}"`);
     else if (img.alt.trim().length < 12) fail(file, `alt text too thin: "${img.alt}"`);
@@ -237,7 +242,11 @@ const CONSENT_TEXT =
   "Msg & data rates may apply. Reply STOP to opt out, HELP for help. See our Privacy Policy.";
 
 for (const [file, html] of pages) {
-  const forms = [...html.matchAll(/<form\b[^>]*>/gi)];
+  // Every form that collects personal data needs the consent line: data-lead-form forms and any
+  // other POST form (the listing pages' #leadform). A GET search form (find-a-home) does not.
+  const forms = [...html.matchAll(/<form\b[^>]*>/gi)].filter(
+    ([tag]) => /\bdata-lead-form\b/i.test(tag) || !/\bmethod\s*=\s*["']?get\b/i.test(tag)
+  );
   if (forms.length === 0) continue;
 
   const consents = [...html.matchAll(/<p class="form-consent">([\s\S]*?)<\/p>/g)];
@@ -298,11 +307,28 @@ for (const file of allHtml) {
   if (!html.includes('class="skip-link" href="#main"')) fail(file, "no skip link (WCAG 2.4.1)");
   if (!/<main\b[^>]*\bid="main"/.test(html)) fail(file, 'no <main id="main"> for the skip link to target');
 
-  // 4.1.2 — aria-current must name the page you are actually on.
-  for (const m of html.matchAll(/<a href="([^"]+)"[^>]*aria-current="page"/g)) {
-    const canonical = canonicalOf(html);
-    if (canonical && !canonical.endsWith(m[1])) {
-      fail(file, `aria-current="page" on ${m[1]}, which is not this page`);
+  // 4.1.2 — aria-current must name where you actually are. In the primary
+  // nav that is the link whose href is the longest prefix of this page's
+  // path (Communities on every /communities/* page); anywhere else it must
+  // point at this page itself.
+  {
+    const path = pagePath(file);
+    const header = (/<header class="site-header[\s\S]*?<\/header>/.exec(html) || [""])[0];
+    const nav = (/<nav class="site-nav" id="nav"[\s\S]*?<\/nav>/.exec(header) || [""])[0];
+    const expected = nav ? currentNavHref(header, path) : null;
+    for (const m of html.matchAll(/<a\b[^>]*\baria-current="page"[^>]*>/g)) {
+      const href = (/\bhref="([^"]*)"/.exec(m[0]) || [])[1] || "";
+      const inNav = nav.includes(m[0]);
+      if (inNav ? href !== expected : href !== path) {
+        fail(file, `aria-current="page" on ${href || "a link without href"}, which is not this page or its section`);
+      }
+    }
+    if (expected) {
+      for (const m of nav.matchAll(/<a\b[^>]*>/g)) {
+        if ((/\bhref="([^"]*)"/.exec(m[0]) || [])[1] === expected && !m[0].includes('aria-current="page"')) {
+          fail(file, `nav link ${expected} is this page's section but is not marked aria-current="page"`);
+        }
+      }
     }
   }
 
@@ -329,15 +355,72 @@ for (const file of allHtml) {
   }
 }
 
-// Contrast regression guard: --bronze fails AA as small text on every
-// background the site uses, so it must never be a `color` for text again.
+// Header and footer drift: every page on the 2026 design system carries the
+// skip link, header, footer and head font links exactly as lib/chrome.mjs
+// builds them from scripts/lib/partials. A hand edit to one page's copy, or a
+// partial edit that was never synced, fails here.
 {
-  const css = readFileSync(join(ROOT, "css", "main.css"), "utf8");
-  for (const m of css.matchAll(/^(.*)color:\s*var\(--bronze\)\s*;/gm)) {
-    // accent-color paints a checkbox, border/outline/fill paint UI: all
-    // non-text, which WCAG holds to 3:1, and --bronze clears that everywhere.
-    if (/border|background|outline|fill|stroke|accent/.test(m[1])) continue;
-    fail("css/main.css", `--bronze used as text colour (fails WCAG AA): ${m[0].trim()}`);
+  const regions = (html) => ({
+    "skip link and header": (/<a class="skip-link"[\s\S]*?<\/header>/.exec(html) || [""])[0],
+    footer: (/<footer class="site-footer[\s\S]*?<\/footer>/.exec(html) || [""])[0],
+    "head (font links, og:site_name)": (/<head>[\s\S]*?<\/head>/.exec(html) || [""])[0],
+  });
+  for (const file of chromeFiles()) {
+    const html = pages.get(file) || readFileSync(join(ROOT, file), "utf8");
+    let expected;
+    try {
+      expected = applyChrome(file, html);
+    } catch (err) {
+      fail(file, err.message);
+      continue;
+    }
+    if (expected === html) continue;
+    const have = regions(html);
+    const want = regions(expected);
+    const drifted = Object.keys(want).filter((k) => have[k] !== want[k]);
+    fail(file, `site chrome drifted from scripts/lib/partials (${drifted.join(", ") || "script tag"}); run node scripts/sync-chrome.mjs`);
+  }
+}
+
+// Contrast regression guards.
+// 1. --bronze fails AA as small text on every background the site uses, so it
+//    must never be a `color` for text again (main.css still serves /guide/ and
+//    the internal tools; the 2026 sheets alias --bronze for old inline styles).
+// 2. Brass (--gold) is text on dark grounds only (DESIGN.md, The Ink Twin Rule):
+//    on white or Warm Stone it measures 2.3:1. Every rule that sets it as a text
+//    colour must be scoped to a dark ground, or be one of the components below
+//    that only ever sit on one (or that a light-ground rule overrides).
+{
+  const rules = (css) => [...css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  for (const sheet of ["css/main.css", "css/kizlo.css", "css/kizlo-pages.css"]) {
+    if (!existsSync(join(ROOT, sheet))) continue;
+    const css = readFileSync(join(ROOT, sheet), "utf8");
+    for (const m of css.matchAll(/^(.*)color:\s*var\(--bronze\)\s*;/gm)) {
+      // accent-color paints a checkbox, border/outline/fill paint UI: all
+      // non-text, which WCAG holds to 3:1, and --bronze clears that everywhere.
+      if (/border|background|outline|fill|stroke|accent/.test(m[1])) continue;
+      fail(sheet, `--bronze used as text colour (fails WCAG AA): ${m[0].trim()}`);
+    }
+  }
+  // A dark block, its elements (__) and modifiers (--).
+  const DARK_GROUND = /\.(night|hero|page-hero|claim|closing|cta-band|site-header|site-footer|nav-more|breadcrumbs|stats--photo|quote|reviews)(__[\w-]+)?(--[\w-]+)?(?![\w-])|\.footer-[\w-]+|\.nav-open\b/;
+  const ON_DARK_ONLY = [
+    ".btn:hover", // inverts on dark; light grounds and form panels override it to Midnight
+    ".arrow-link--light", // the opt-in dark-ground modifier
+    ".header-call", ".wm--", ".hero__pause", // header, wordmark and home hero
+    ".stars", ".area__go", // drawn graphics (3:1 non-text), on dark bands and photo tiles
+    ".stat__num", // kizlo-pages.css switches it to Brass Ink on light sections
+    ".listing__tag", ".listing__status", // Midnight chips
+    ".reviews__num", ".quote-nav", // the Midnight reviews band
+  ];
+  for (const sheet of ["css/kizlo.css", "css/kizlo-pages.css"]) {
+    for (const m of rules(readFileSync(join(ROOT, sheet), "utf8"))) {
+      if (!/(^|[;\s])color:\s*var\(--gold\)/.test(m[2])) continue;
+      for (const sel of m[1].split(",").map((x) => x.trim()).filter(Boolean)) {
+        if (DARK_GROUND.test(sel) || ON_DARK_ONLY.some((c) => sel.includes(c))) continue;
+        fail(sheet, `brass (--gold) as text outside a dark ground (2.3:1 on white): ${sel}; use --gold-ink, or scope it to a dark section`);
+      }
+    }
   }
 }
 
@@ -366,6 +449,10 @@ for (const file of htmlFiles()) {
   if (!html.includes(`"${ANALYTICS.clarity}"`)) fail(file, "missing Microsoft Clarity (run npm run build)");
   if (!html.includes('src="/js/track.js"')) fail(file, "missing /js/track.js (run npm run build)");
 }
+
+/* ---- 16-19. verbatim quotes, report markup, photo use, fair housing */
+
+checkContent({ pages, graphs, fail, warn });
 
 /* ------------------------------------------------------ report */
 

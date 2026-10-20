@@ -100,7 +100,7 @@
     if (typeof window.clarity === "function") window.clarity("event", name);
   }, true);
 
-  // Each form has its own submit handler (js/main.js, the listing pages), so
+  // Each form has its own submit handler (js/kizlo.js, the listing pages), so
   // the conversion is counted where they all meet: a successful response from
   // the lead endpoint.
   if (typeof window.fetch === "function") {

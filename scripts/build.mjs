@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Regenerates everything that is derived from page content: JSON-LD, hreflang,
-// the market-report pages and sitemap.xml.
+// Regenerates everything that is derived from page content: the site chrome
+// (skip link, header, footer, head fonts; see lib/chrome.mjs), JSON-LD,
+// hreflang, the market-report pages and sitemap.xml.
 //
 // The site itself stays a plain static site with no deploy-time build. This
 // script runs locally and its output is committed, so Render keeps serving
@@ -9,12 +10,15 @@
 //   npm run build
 
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync, statSync } from "node:fs";
-import { join, dirname, relative } from "node:path";
+import { join, dirname, relative, sep } from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
+import { syncChrome } from "./lib/chrome.mjs";
 import { breadcrumbs, canonicalOf, faqs, reviews } from "./lib/extract.mjs";
-import { escapeHtml } from "./lib/html.mjs";
+import { escapeHtml, textOf } from "./lib/html.mjs";
 import { parseFrontMatter, renderMarkdown, splitH1 } from "./lib/markdown.mjs";
+import { loadPosts, postUrl, renderIndex, renderPost } from "./lib/reports.mjs";
 import { agency, people, ANALYTICS, HREFLANG_CLUSTERS, NO_ANALYTICS, RATING, SITE, SKIP, VLAD_ID, AGENCY_ID } from "./lib/site-data.mjs";
 import { breadcrumbNav, page } from "./lib/template.mjs";
 
@@ -33,7 +37,7 @@ const log = [];
 function htmlFiles(dir = ROOT) {
   const out = [];
   for (const entry of readdirSync(dir)) {
-    if (entry === ".git" || entry === "node_modules" || entry === "scripts" || entry === "content") continue;
+    if (entry.startsWith(".") || entry === "node_modules" || entry === "scripts" || entry === "content") continue;
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) out.push(...htmlFiles(full));
     else if (entry.endsWith(".html")) out.push(relative(ROOT, full));
@@ -42,128 +46,6 @@ function htmlFiles(dir = ROOT) {
 }
 
 /* --------------------------------------------------------- market reports */
-
-const CONTENT_DIR = join(ROOT, "content", "market-reports");
-
-function loadPosts() {
-  if (!existsSync(CONTENT_DIR)) return [];
-  return readdirSync(CONTENT_DIR)
-    // `_`-prefixed files and the README are notes, not posts.
-    .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
-    .map((file) => {
-      const { data, body } = parseFrontMatter(readFileSync(join(CONTENT_DIR, file), "utf8"));
-      const slug = data.slug || file.replace(/\.md$/, "");
-      const missing = [];
-      for (const key of ["title", "description", "date"]) if (!data[key]) missing.push(key);
-      if (missing.length) throw new Error(`content/market-reports/${file}: missing front matter ${missing.join(", ")}`);
-      return {
-        file,
-        slug,
-        draft: data.draft === true,
-        title: data.title,
-        description: data.description,
-        date: data.date,
-        updated: data.updated || data.date,
-        eyebrow: data.eyebrow || "Market Report",
-        summary: data.summary || data.description,
-        image: data.image || `${SITE}/img/og-windermere-wide.jpg`,
-        body,
-      };
-    })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
-}
-
-function postUrl(slug) {
-  return `${SITE}/market-reports/${slug}/`;
-}
-
-function longDate(iso) {
-  const [y, m, d] = iso.split("-").map(Number);
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  return `${months[m - 1]} ${d}, ${y}`;
-}
-
-function renderPost(post) {
-  const trail = [
-    { name: "Home", href: "/" },
-    { name: "Market Reports", href: "/market-reports/" },
-    { name: post.title },
-  ];
-  const body = `${breadcrumbNav(trail)}
-
-    <section class="page-hero">
-      <div class="wrap">
-        <span class="eyebrow">${escapeHtml(post.eyebrow)}</span>
-        <h1>${escapeHtml(post.title)}</h1>
-        <p class="lede">${escapeHtml(post.summary)}</p>
-        <p class="micro" style="margin-top: 2rem;">Published <time datetime="${post.date}">${longDate(post.date)}</time>${
-    post.updated !== post.date ? ` · Updated <time datetime="${post.updated}">${longDate(post.updated)}</time>` : ""
-  } · By Vlad Kizlo</p>
-      </div>
-    </section>
-
-    <section class="section section--tight">
-      <div class="wrap grid">
-        <div style="grid-column: 2 / span 8;" class="prose reveal">
-        ${renderMarkdown(post.body)}
-        </div>
-      </div>
-    </section>`;
-
-  return page({
-    title: post.title,
-    description: post.description,
-    canonical: postUrl(post.slug),
-    ogImage: post.image,
-    body,
-  });
-}
-
-function renderIndex(posts) {
-  const trail = [{ name: "Home", href: "/" }, { name: "Market Reports" }];
-  const list = posts.length
-    ? posts
-        .map(
-          (p, i) => `        <article class="card card--sm reveal${i % 2 ? " reveal-d1" : ""}" style="grid-column: ${i % 2 ? "7 / span 5" : "1 / span 5"};">
-          <div class="caption">
-            <p class="micro"><time datetime="${p.date}">${longDate(p.date)}</time></p>
-            <h2 class="card__title"><a href="/market-reports/${p.slug}/">${escapeHtml(p.title)}</a></h2>
-            <p style="margin-top: 1rem;">${escapeHtml(p.summary)}</p>
-            <p style="margin-top: 1.5rem;"><a class="text-link" href="/market-reports/${p.slug}/">Read the report</a></p>
-          </div>
-        </article>`
-        )
-        .join("\n")
-    : `        <div style="grid-column: 2 / span 8;" class="reveal">
-          <p class="lede">The next report is being written. In the meantime, every community guide carries current medians for its own area.</p>
-          <p style="margin-top: 2rem;"><a class="text-link" href="/communities/">Browse the community guides</a></p>
-        </div>`;
-
-  const body = `${breadcrumbNav(trail)}
-
-    <section class="page-hero">
-      <div class="wrap">
-        <span class="eyebrow">Market Reports</span>
-        <h1>What West Orlando <em>actually did</em> this month.</h1>
-        <p class="lede">Medians, inventory and days on market for Windermere, Winter Garden, Horizon West and Clermont, pulled from the MLS and written up in plain language.</p>
-      </div>
-    </section>
-
-    <section class="section section--tight">
-      <div class="wrap editorial-grid">
-${list}
-      </div>
-    </section>`;
-
-  return page({
-    title: "West Orlando Market Reports | The Kizlo Team",
-    description:
-      "Monthly Windermere, Winter Garden, Horizon West and Clermont housing market reports from The Kizlo Team. Medians, inventory and days on market, explained.",
-    canonical: `${SITE}/market-reports/`,
-    ogImage: `${SITE}/img/og-windermere-wide.jpg`,
-    body,
-  });
-}
 
 function buildMarketReports(posts) {
   const published = posts.filter((p) => !p.draft);
@@ -174,7 +56,7 @@ function buildMarketReports(posts) {
   for (const post of published) {
     const dir = join(ROOT, "market-reports", post.slug);
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, "index.html"), renderPost(post));
+    writeFileSync(join(dir, "index.html"), renderPost(post, published));
     log.push(`market-reports: wrote /market-reports/${post.slug}/`);
   }
   for (const post of posts.filter((p) => p.draft)) {
@@ -220,14 +102,13 @@ function buildLegal(docs) {
 
     <section class="page-hero">
       <div class="wrap">
-        <span class="eyebrow">${escapeHtml(doc.eyebrow)}</span>
         <h1>${escapeHtml(doc.heading)}</h1>
       </div>
     </section>
 
     <section class="section section--tight">
       <div class="wrap grid">
-        <div style="grid-column: 2 / span 8;" class="prose">
+        <div class="longread prose">
         ${renderMarkdown(doc.body)}
         </div>
       </div>
@@ -261,6 +142,18 @@ function graphFor(file, html, posts) {
 
   if (file === "about/index.html") graph.push(...people());
 
+  if (file === "index.html") {
+    graph.push({
+      "@type": "WebSite",
+      "@id": `${SITE}/#website`,
+      url: `${SITE}/`,
+      name: "The Kizlo Team",
+      alternateName: ["The Kizlo Team - Realtors", "Kizlo Team"],
+      publisher: { "@id": AGENCY_ID },
+      inLanguage: ["en-US", "uk-UA"],
+    });
+  }
+
   const crumbs = breadcrumbs(html);
   if (crumbs && crumbs.length > 1) graph.push({ "@type": "BreadcrumbList", itemListElement: crumbs });
 
@@ -280,10 +173,12 @@ function graphFor(file, html, posts) {
 
   const post = posts.find((p) => canonical === postUrl(p.slug));
   if (post) {
+    // headline is the visible h1; the longer search title rides along.
     graph.push({
       "@type": "BlogPosting",
       "@id": `${postUrl(post.slug)}#post`,
-      headline: post.title,
+      headline: post.headline,
+      ...(post.title !== post.headline ? { alternativeHeadline: post.title } : {}),
       description: post.description,
       image: post.image,
       datePublished: post.date,
@@ -293,6 +188,8 @@ function graphFor(file, html, posts) {
       mainEntityOfPage: postUrl(post.slug),
       inLanguage: "en-US",
     });
+    // The author, named on the page itself, not only by reference.
+    graph.push(people().find((person) => person["@id"] === VLAD_ID));
   }
 
   return { "@context": "https://schema.org", "@graph": graph };
@@ -344,6 +241,12 @@ function injectHreflang(file, html) {
   return html.replace(/([ \t]*)(<link rel="canonical"[^>]*>)/i, (_m, indent, link) => `${indent}${link}\n${block}`);
 }
 
+// Both queues exist from the first byte, so a phone tap or a lead sent before
+// either tag arrives is kept and replayed when it loads (js/track.js only
+// calls gtag and clarity). The tags themselves stay off the critical path:
+// Clarity, the behaviour study tool, loads once the document is parsed; GA4
+// waits for the load event and the web fonts, then an idle moment (at most
+// 2s), or the first pointerdown, keydown or scroll, whichever comes first.
 function injectAnalytics(html) {
   const block = `${ANALYTICS_START}
   <script>
@@ -351,20 +254,33 @@ function injectAnalytics(html) {
     // preview URLs stay out of GA4 and Clarity so the numbers are visitors only.
     window.__kzLive = /(^|\\.)kizloteam\\.com$/.test(location.hostname);
     if (!window.__kzLive) window["ga-disable-${ANALYTICS.ga4}"] = true;
-  </script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=${ANALYTICS.ga4}"></script>
-  <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag("js", new Date());
     gtag("config", "${ANALYTICS.ga4}");
-  </script>
-  <script>
-    if (window.__kzLive) (function(c,l,a,r,i,t,y){
-      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "${ANALYTICS.clarity}");
+    if (window.__kzLive) (function (w, d) {
+      w.clarity = w.clarity || function () { (w.clarity.q = w.clarity.q || []).push(arguments); };
+      function add(src) { var s = d.createElement("script"); s.async = true; s.src = src; d.head.appendChild(s); }
+      function clarity() { add("https://www.clarity.ms/tag/" + "${ANALYTICS.clarity}"); }
+      if (d.readyState === "loading") d.addEventListener("DOMContentLoaded", clarity, { once: true }); else clarity();
+      var sent = false, cues = ["pointerdown", "keydown", "scroll"];
+      function ga() {
+        if (sent) return;
+        sent = true;
+        cues.forEach(function (c) { w.removeEventListener(c, ga, true); });
+        add("https://www.googletagmanager.com/gtag/js?id=${ANALYTICS.ga4}");
+      }
+      cues.forEach(function (c) { w.addEventListener(c, ga, { capture: true, passive: true }); });
+      // The web fonts can land after load, and the headline repaints (the LCP) when they
+      // do, so the idle wait starts once they are in (or after 3s at most).
+      function idle() {
+        var fonts = d.fonts && d.fonts.ready ? d.fonts.ready : Promise.resolve();
+        Promise.race([fonts, new Promise(function (r) { setTimeout(r, 3000); })]).then(function () {
+          if (w.requestIdleCallback) w.requestIdleCallback(ga, { timeout: 2000 }); else setTimeout(ga, 200);
+        });
+      }
+      if (d.readyState === "complete") idle(); else w.addEventListener("load", idle, { once: true });
+    })(window, document);
   </script>
   <script src="/js/track.js" defer></script>
 ${ANALYTICS_END}`;
@@ -439,6 +355,37 @@ function ensureFooter(file, html) {
 
 /* ----------------------------------------------------------- sitemap */
 
+// lastmod moves only when what a reader sees changes: the visible text of
+// <main> (or of <body>, for a page without one) is compared with the last
+// commit. A changed or new page gets today; anything else keeps its previous
+// date, so a chrome, schema or analytics pass never looks like fresh content.
+const visibleText = (html) => {
+  const main = /<main\b[^>]*>([\s\S]*?)<\/main>/i.exec(html) || /<body\b[^>]*>([\s\S]*?)<\/body>/i.exec(html);
+  return textOf(main ? main[1] : html);
+};
+
+const GIT = (() => {
+  try {
+    execFileSync("git", ["rev-parse", "--verify", "HEAD"], { cwd: ROOT, stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
+function committedVersion(file) {
+  try {
+    return execFileSync("git", ["show", `HEAD:${file.split(sep).join("/")}`], {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+      maxBuffer: 64 * 1024 * 1024,
+    });
+  } catch {
+    return null;
+  }
+}
+
 function buildSitemap(files, pages) {
   const previous = new Map();
   const sitemapPath = join(ROOT, "sitemap.xml");
@@ -450,12 +397,19 @@ function buildSitemap(files, pages) {
   const today = new Date().toISOString().slice(0, 10);
 
   const urls = [];
+  let fresh = 0;
   for (const file of files) {
     const html = pages.get(file);
     if (/<meta name="robots" content="[^"]*noindex/i.test(html)) continue;
     const canonical = canonicalOf(html);
     if (!canonical) continue;
-    urls.push({ loc: canonical, lastmod: previous.get(canonical) || today });
+    let lastmod = previous.get(canonical) || today;
+    if (GIT) {
+      const committed = committedVersion(file);
+      if (committed === null || visibleText(committed) !== visibleText(html)) lastmod = today;
+    }
+    if (lastmod === today) fresh += 1;
+    urls.push({ loc: canonical, lastmod });
   }
   urls.sort((a, b) => (a.loc === `${SITE}/` ? -1 : b.loc === `${SITE}/` ? 1 : a.loc.localeCompare(b.loc)));
 
@@ -465,11 +419,15 @@ ${urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod></ur
 </urlset>
 `;
   writeFileSync(sitemapPath, xml);
-  log.push(`sitemap: ${urls.length} URLs`);
+  log.push(`sitemap: ${urls.length} URLs, ${fresh} dated ${today}${GIT ? "" : " (no git: dates kept)"}`);
   return urls;
 }
 
 /* -------------------------------------------------------------- main */
+
+// The chrome goes first, so every later pass reads pages that already carry
+// the current header and footer from scripts/lib/partials.
+for (const file of syncChrome()) log.push(`chrome: ${file}`);
 
 const posts = loadPosts();
 const published = buildMarketReports(posts);
@@ -487,9 +445,15 @@ const ownsListingSchema = (html) =>
   /<script type="application\/ld\+json">[\s\S]*?"RealEstateListing"[\s\S]*?<\/script>/.test(html) &&
   !html.includes("<!-- schema:start");
 
+// The single-listing sites, their old /listings/ redirect and the internal
+// tools are maintained outside the site redesign (lib/chrome.mjs leaves them
+// alone for the same reason). Once built they are read, never rewritten:
+// a site-wide schema or analytics change does not reach them.
+const FROZEN = /^(open-house|studio|3625-waters-edge|8291-procida-isle|listings)\//;
+
 for (const file of files) {
   const original = readFileSync(join(ROOT, file), "utf8");
-  if (ownsListingSchema(original)) {
+  if (ownsListingSchema(original) || (FROZEN.test(file) && original.includes(START))) {
     pages.set(file, original);
     continue;
   }
@@ -514,11 +478,13 @@ if (all.includes("404.html")) {
 }
 
 // Analytics run over every page, listing pages included, so it happens after
-// the schema pass rather than inside it.
+// the schema pass rather than inside it. A frozen page that already carries
+// an analytics block is left exactly as written; a new one still gets it.
 for (const file of all) {
   if (NO_ANALYTICS.has(file)) continue;
   const original = readFileSync(join(ROOT, file), "utf8");
   if (/<meta http-equiv="refresh"/i.test(original)) continue;
+  if (FROZEN.test(file) && original.includes(ANALYTICS_START)) continue;
   const html = injectAnalytics(original);
   if (html !== original) {
     writeFileSync(join(ROOT, file), html);

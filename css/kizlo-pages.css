@@ -1,0 +1,435 @@
+/* The Kizlo Team · inner-page components. Loaded after kizlo.css on every page except the home page. */
+
+/* Old design tokens still referenced by inline styles in page content and generated pages. */
+:root {
+  --ivory: var(--on-night); --ivory-2: var(--paper-2); --ink: var(--text); --body: var(--text-2);
+  --muted: var(--text-2); --muted-on-dark: var(--on-night-2); --espresso: var(--night);
+  --bronze: var(--gold-ink); --bronze-text: var(--gold-ink); --bronze-on-dark: var(--gold);
+  --hairline: var(--rule); --hairline-dark: var(--rule-night); --serif: var(--display);
+}
+
+/* ---------- Page hero: dark band, optional photograph ---------- */
+.page-hero {
+  position: relative; isolation: isolate; overflow: hidden; min-height: auto;
+  background: var(--night); color: var(--on-night);
+  padding: calc(var(--header-h) + clamp(56px, 9vw, 120px)) 0 clamp(64px, 8vw, 112px);
+}
+/* A photo hero runs under the transparent header, full height, text anchored low. */
+.page-hero--image { min-height: min(100svh, 980px); display: flex; align-items: flex-end; }
+.page-hero__img { position: absolute; inset: 0; z-index: -2; }
+.page-hero__img img { width: 100%; height: 100%; object-fit: cover; }
+/* Two Scrim layers: a short top band under the header and breadcrumbs, then a bottom-up wash under the text. */
+.page-hero--image::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgba(6, 8, 10, 0.5), rgba(6, 8, 10, 0) 200px), linear-gradient(to top, rgba(6, 8, 10, 0.86) 0%, rgba(6, 8, 10, 0.64) 55%, rgba(6, 8, 10, 0.58) 100%); } /* taste-skill-ignore: neutral scrim over photography */
+/* Desktop: the wash runs from the text side (left) and the foot, so the sky on the right reads as itself. */
+@media (min-width: 961px) {
+  .page-hero--image::before { background: linear-gradient(rgba(6, 8, 10, 0.5), rgba(6, 8, 10, 0) 200px), linear-gradient(to top, rgba(6, 8, 10, 0.7) 0%, rgba(6, 8, 10, 0) 45%), linear-gradient(90deg, rgba(6, 8, 10, 0.8) 0%, rgba(6, 8, 10, 0.55) 50%, rgba(6, 8, 10, 0.15) 100%); } /* taste-skill-ignore: neutral scrim over photography */
+}
+.page-hero .wrap { width: 100%; }
+/* 22ch of Bodoni Moda zeros = 13.6em; in em so the breaks hold while the fonts load. */
+.page-hero h1 { max-width: 13.6em; font-size: var(--fs-page-title); }
+/* Desktop photo heroes: the title stays in the left 60% of the screen, clear of the open sky. */
+@media (min-width: 961px) { .page-hero--image h1 { max-width: min(13.6em, calc(60vw - var(--pad) - max(0px, (100vw - var(--max)) / 2))); } }
+.page-hero .lede { margin-top: 26px; max-width: 56ch; }
+.page-hero .lede, .page-hero .micro, .page-hero .byline { color: var(--on-night); }
+.page-hero .hero__meta, .page-hero .hero__actions { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: flex-start; }
+
+/* Portrait hero: text left, the team portrait right with the offset brass frame. */
+.page-hero__grid { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(40px, 6vw, 96px); align-items: end; }
+.page-hero__portrait { position: relative; }
+.page-hero__portrait img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+.page-hero__portrait::after { content: ""; position: absolute; inset: 22px -22px -22px 22px; border: 1px solid var(--gold); z-index: -1; } /* taste-skill-ignore: canon gold-outline detail chosen by the client */
+.page-hero--portrait { padding-bottom: calc(clamp(64px, 8vw, 112px) + 22px); }
+
+/* Breadcrumbs ride the top of the hero, just under the header. */
+main { position: relative; }
+.breadcrumbs ol { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: var(--fs-xs); color: var(--on-night-2); margin-bottom: 28px; }
+.breadcrumbs li + li::before { content: "/"; margin-right: 10px; color: var(--gold); }
+.breadcrumbs a { transition: color 0.3s var(--ease); }
+.breadcrumbs a:hover { color: var(--gold); }
+.breadcrumbs [aria-current] { color: var(--on-night); }
+main > .breadcrumbs { position: absolute; top: var(--header-h); left: 0; right: 0; z-index: 3; background: transparent; padding-top: 20px; margin: 0; max-width: none; }
+main > .breadcrumbs ol { max-width: var(--max); margin: 0 auto; padding-inline: 0; margin-bottom: 0; }
+/* Over a hero photograph the 72% Moonlight tone fell to 4.6:1 on the retouched Windermere aerials; 84% keeps it near 6:1. */
+main > .breadcrumbs a { color: rgba(242, 240, 236, 0.84); }
+main > .breadcrumbs + .page-hero { padding-top: calc(var(--header-h) + clamp(72px, 9vw, 120px)); }
+
+/* ---------- Legacy layout helpers kept for page content ---------- */
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: clamp(20px, 2.6vw, 48px); row-gap: 40px; }
+.section--tight { padding-block: clamp(56px, 7vw, 104px); }
+.section--alt { background: var(--paper-2); }
+.section--rule { padding-top: var(--section); }
+h1 em, h2 em, h3 em { font-style: normal; }
+.eyebrow { display: none; } /* taste-skill-ignore: hides any legacy kicker markup; the system shows no eyebrows */
+.micro { font-size: var(--fs-sm); color: var(--text-2); }
+.display { font-size: var(--fs-cta); line-height: 1.04; }
+/* .text-link moved to css/kizlo.css (2026-10-20) so the home page has it too */
+.btn--solid { background: var(--gold); color: var(--night); }
+.btn--light { background: transparent; color: var(--on-night); border-color: rgba(242, 240, 236, 0.6); }
+.section:not(.cta-band):not(.night) .btn--light { color: var(--night); border-color: var(--night); }
+@media (hover: hover) {
+  .btn--light:hover { background: var(--on-night); color: var(--night); border-color: var(--on-night); }
+  .section:not(.cta-band):not(.night) .btn--light:hover { background: var(--night); color: var(--on-night); }
+}
+.lede + p, h2 + p, h2 + .lede { margin-top: 24px; }
+.wrap > h2 + *, .grid h2 { margin-bottom: 0; }
+
+.frame { overflow: hidden; background: var(--paper-2); }
+.frame img { width: 100%; height: auto; transition: transform 1.2s var(--ease); }
+@media (hover: hover) { a.frame:hover img, .card:hover .frame img { transform: scale(1.03); } }
+
+/* Old split markup: .grid.split with .split__text / .split__media */
+.grid.split { align-items: center; display: grid; grid-template-columns: repeat(12, 1fr); }
+.grid.split .split__text { grid-column: 1 / span 5; }
+.grid.split .split__media { grid-column: 7 / span 6; }
+.grid.split.split--flip .split__text { grid-column: 8 / span 5; grid-row: 1; order: 0; }
+.grid.split.split--flip .split__media { grid-column: 1 / span 6; grid-row: 1; }
+.grid.split .split__media::after { display: none; }
+
+/* Cards */
+.editorial-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(32px, 4vw, 64px) clamp(20px, 3vw, 48px); }
+.card { position: relative; }
+.card--lg { grid-column: span 7; } .card--sm { grid-column: span 5; } .card--half { grid-column: span 6; } .card--third { grid-column: span 4; }
+.card .frame img { aspect-ratio: 4 / 3; object-fit: cover; }
+.card .frame img[src*="horizon-west-aerial"] { transform-origin: 50% 100%; scale: 1.5; } /* the frame is half sunset sky: keep the roofs and the lake */
+.card--tall .frame img { aspect-ratio: 4 / 5; }
+.caption { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-top: 20px; }
+.card__title { font-size: var(--fs-card); }
+.card__title a { transition: color 0.3s var(--ease); }
+.card__title a::after { content: ""; position: absolute; inset: 0; }
+.card__title a:focus-visible { color: var(--gold-ink); }
+@media (hover: hover) { .card:hover .card__title a { color: var(--gold-ink); } }
+
+/* Numbered process: a real ordered list, numbers in brass */
+.num-list { list-style: none; counter-reset: steps; display: grid; gap: 14px; }
+.num-list { gap: 0; }
+.num-list li { counter-increment: steps; display: grid; grid-template-columns: 64px 1fr; gap: 20px; padding: 30px 0; border-top: 1px solid var(--rule); } /* taste-skill-ignore: canon rule-separated steps */
+.num-list li:last-child { border-bottom: 1px solid var(--rule); } /* taste-skill-ignore: canon rule-separated steps */
+.num-list li::before { content: counter(steps); font: 400 var(--fs-step-num)/1 var(--display); color: var(--gold-ink); }
+.num-list h3 { font-size: var(--fs-step); margin-bottom: 8px; }
+
+/* FAQ accordion */
+.faq-item { background: var(--paper-2); margin-bottom: 10px; transition: background 0.3s var(--ease); }
+.section--alt .faq-item, .tint .faq-item { background: var(--paper); }
+.faq-item summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 24px 28px; font: 400 var(--fs-faq)/1.35 var(--display); color: var(--text); transition: color 0.3s var(--ease); }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: ""; flex: none; width: 14px; height: 14px; background: linear-gradient(var(--gold-ink), var(--gold-ink)) center / 14px 1.5px no-repeat, linear-gradient(var(--gold-ink), var(--gold-ink)) center / 1.5px 14px no-repeat; transition: transform 0.35s var(--ease); } /* taste-skill-ignore: drawn plus icon */
+.faq-item[open] summary::after { transform: rotate(45deg); }
+@media (hover: hover) { .faq-item summary:hover { color: var(--gold-ink); } }
+/* The answer opens to its height where the browser can animate to auto; elsewhere it simply opens. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (interpolate-size: allow-keywords) and selector(::details-content) {
+    .faq-item { interpolate-size: allow-keywords; }
+    .faq-item::details-content { block-size: 0; overflow: hidden; transition: block-size 0.5s var(--ease), content-visibility 0.5s allow-discrete; }
+    .faq-item[open]::details-content { block-size: auto; }
+  }
+}
+.faq-body { padding: 0 28px 28px; color: var(--text-2); max-width: 68ch; }
+
+/* Tables */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.data-table caption { text-align: left; padding-bottom: 14px; color: var(--text-2); }
+.data-table th, .data-table td { padding: 18px 16px 18px 0; vertical-align: baseline; }
+.data-table thead th { font-size: var(--fs-xs); color: var(--text-2); }
+.section .data-table td { font: 400 var(--fs-table)/1.5 var(--sans); text-align: left; }
+.data-table td:last-child, .data-table th:last-child { padding-right: 0; }
+/* Price cells: <td class="num">, right-aligned Bodoni with tabular figures. */
+.data-table th.num, .data-table td.num, .section .data-table td.num { text-align: right; }
+.data-table td.num, .section .data-table td.num { font: 400 var(--fs-cell-num)/1.2 var(--display); color: var(--text); font-variant-numeric: lining-nums tabular-nums; }
+
+/* Stats on inner pages */
+.section .stats { border: 0; }
+.section:not(.night) .stat__num { color: var(--gold-ink); }
+.section:not(.night) .stat__label { color: var(--text-2); }
+
+/* Quote */
+.section:not(.night) .quote blockquote { color: var(--text); min-height: 0; display: block; }
+.section:not(.night) .quote { margin: 0; max-width: 900px; }
+.quote figcaption.micro { color: var(--gold-ink); }
+
+/* Reviews page */
+.review { background: var(--paper-2); padding: clamp(28px, 3vw, 44px); }
+.review__text { color: var(--text); }
+.review__meta { margin-top: 18px; color: var(--gold-ink); font-size: var(--fs-sm); }
+.tint .review, .section--alt .review { background: var(--paper); }
+.review-columns { columns: 2; column-gap: clamp(20px, 3vw, 48px); }
+.review-columns .review { break-inside: avoid; margin-bottom: clamp(20px, 3vw, 48px); }
+.review-columns .review--wide { column-span: all; }
+.review--wide .review__text { max-width: 68ch; }
+.review__more { display: inline-flex; align-items: center; min-height: 44px; margin-top: 10px; font: 500 var(--fs-label)/1.3 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-ink); }
+.review__more[hidden] { display: none; }
+
+/* Forms */
+.form-panel { background: var(--paper-2); padding: clamp(28px, 4vw, 56px); }
+/* Legacy inline styles inside a light panel read the dark-ground token; remap it to Graphite here. */
+.form-panel { --muted-on-dark: var(--text-2); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+.form-field--full { grid-column: 1 / -1; }
+.form-field label { display: block; font-size: var(--fs-sm); font-weight: 500; color: var(--text); margin-bottom: 8px; }
+/* Optional fields say so (the pinned markup cannot change); a label that already carries its own note keeps it. */
+.form-field:has(> input:not([required]):not([type="hidden"]), > select:not([required]), > textarea:not([required])) > label:not(:has(span))::after { content: " (optional)"; font-weight: 400; color: var(--text-2); }
+.form-field input, .form-field select, .form-field textarea {
+  width: 100%; font: inherit; color: var(--text); background: var(--paper);
+  border: 1px solid rgba(25, 25, 27, 0.56); border-radius: 0; padding: 14px 16px; min-height: 54px; /* taste-skill-ignore: form fields keep their borders */
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.form-field textarea { resize: vertical; min-height: 120px; }
+/* An invalid field scrolled into view keeps its label clear of the sticky header. */
+.form-field input, .form-field select, .form-field textarea { scroll-margin-top: calc(var(--header-h) + 48px); }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: var(--gold-ink); box-shadow: 0 0 0 1px var(--gold-ink), 0 0 0 4px rgba(191, 155, 98, 0.28); } /* taste-skill-ignore: focus ring */
+.form-field input::placeholder, .form-field textarea::placeholder { color: #6b6964; }
+.form-field input:user-invalid, .form-field select:user-invalid, .form-field textarea:user-invalid { border-color: var(--error); }
+.hp-field { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+/* Always in the accessibility tree, so the first message is announced; it takes space only when it speaks. */
+.form-status { display: block; margin-top: 0; padding: 0; font-size: var(--fs-sm); }
+.form-status.is-success, .form-status.is-error { margin-top: 20px; padding: 16px 18px; }
+.form-status.is-success { background: var(--night); color: var(--on-night); }
+.form-status.is-error { background: var(--error-bg); color: var(--error-ink); }
+.form-consent { margin-top: 20px; max-width: 60ch; font-size: var(--fs-xs); line-height: 1.6; color: var(--text-2); }
+.form-consent a, .form-disclaimer a { color: var(--gold-ink); text-decoration: underline; text-underline-offset: 3px; }
+.form-disclaimer { margin-bottom: 32px; padding: 18px 22px; background: var(--paper); max-width: 60ch; font-size: var(--fs-sm); color: var(--text-2); }
+.form-panel .form-disclaimer { background: var(--paper); }
+.form-panel .form-disclaimer, .form-panel .form-consent { max-width: none; }
+button[type="submit"][disabled] { opacity: 0.6; cursor: progress; }
+
+/* Partners directory */
+.partner-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+.partner-filters button { min-height: 44px; padding: 0 18px; border: 1px solid var(--rule); background: transparent; font: 500 var(--fs-label)/1.3 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease); } /* taste-skill-ignore: 1px Hairline outline on a filter toggle */
+@media (hover: hover) { .partner-filters button:hover { border-color: var(--text); } }
+.partner-filters button[aria-pressed="true"] { background: var(--night); color: var(--on-night); border-color: var(--night); }
+.partner-card { background: var(--paper-2); padding: 28px; }
+
+/* Long-form text (legal, reports, guides) */
+.prose { max-width: 72ch; }
+.prose > * + * { margin-top: 1.2em; }
+.prose h2 { margin-top: 2em; font-size: var(--fs-subhead); }
+.prose h3 { margin-top: 1.8em; font-size: var(--fs-step); }
+.prose ul, .prose ol { padding-left: 1.3em; }
+.prose li + li { margin-top: 0.5em; }
+.prose a { color: var(--gold-ink); text-decoration: underline; text-underline-offset: 3px; }
+
+/* CTA band = dark closing section. Canonical markup (rebuild plan §3): the text at
+   1 / span 7, then .cta-band__actions at 9 / -1 holding one column of equal-width buttons
+   and the call arrow-link, top-aligned with the headline. */
+.cta-band { background: var(--night); color: var(--on-night-2); }
+.cta-band h2, .cta-band .display { color: var(--on-night); }
+.cta-band p { color: var(--on-night-2); }
+.cta-band .micro { color: var(--on-night-2); }
+.cta-band .display ~ p { max-width: 46ch; }
+.cta-band .arrow-link { color: var(--gold); }
+.cta-band .hero__actions, .cta-band__actions { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px; max-width: 340px; margin-top: 0; }
+.cta-band__actions { grid-column: 9 / -1; }
+.cta-band .btn { width: 100%; }
+.night + .cta-band, .stats--photo + .cta-band { border-top: 1px solid var(--rule-night); } /* taste-skill-ignore: 1px Hairline on Night between two dark bands */
+
+/* ---------- Shared components (rebuild plan §3) ---------- */
+/* Text community index: whole-row links on Warm Stone, Bodoni name, Graphite meta, an arrow that moves. */
+.area-index { list-style: none; background: var(--paper-2); border-top: 1px solid var(--rule); } /* taste-skill-ignore: rule-separated list, DESIGN.md */
+.tint .area-index, .section--alt .area-index { background: var(--paper); }
+.area-index li { border-bottom: 1px solid var(--rule); } /* taste-skill-ignore: rule-separated list, DESIGN.md */
+.area-index a { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto; align-items: center; gap: 6px clamp(16px, 3vw, 40px); min-height: 64px; padding: 18px clamp(16px, 2vw, 28px); color: var(--text); transition: background 0.3s var(--ease); }
+.area-index a:focus-visible { outline-offset: -3px; }
+.area-index__name { font: 400 var(--fs-index)/1.15 var(--display); letter-spacing: -0.01em; transition: color 0.3s var(--ease); }
+.area-index__meta { font-size: var(--fs-sm); line-height: 1.5; color: var(--text-2); }
+.area-index .area__go { opacity: 1; transform: none; color: var(--gold-ink); transition: transform 0.5s var(--ease); }
+.area-index a:focus-visible .area__go { transform: translateX(6px); }
+@media (hover: hover) {
+  .area-index a:hover { background: var(--paper); }
+  .tint .area-index a:hover, .section--alt .area-index a:hover { background: var(--paper-2); }
+  .area-index a:hover .area-index__name { color: var(--gold-ink); }
+  .area-index a:hover .area__go { transform: translateX(6px); }
+}
+/* Byline under a guide's h1: "Guide by <a>…</a>, Keller Williams Realty At The Lakes". An optional 48px portrait leads. */
+.byline { margin-top: 22px; font-size: var(--fs-sm); line-height: 1.6; color: var(--text-2); }
+.byline a { color: inherit; border-bottom: 1px solid var(--gold-ink); transition: color 0.3s var(--ease); } /* taste-skill-ignore: link underline */
+.byline a:hover { color: var(--gold-ink); }
+.page-hero .byline a, .night .byline a { border-bottom-color: var(--gold); }
+.page-hero .byline a:hover, .night .byline a:hover { color: var(--gold); }
+.byline img { display: inline-block; vertical-align: middle; width: 48px; height: 48px; object-fit: cover; object-position: 50% 18%; }
+.byline:has(> picture, > img) { display: grid; grid-template-columns: 48px 1fr; column-gap: 14px; align-items: center; }
+.nowrap { white-space: nowrap; }
+/* Map: a quiet greyscale embed, no frame. */
+.map-embed { background: var(--paper-2); }
+.map-embed iframe { display: block; width: 100%; border: 0; filter: grayscale(1) contrast(0.95) brightness(1.02); }
+/* Ukrainian headings: Bodoni Moda has no Cyrillic, so Playfair Display carries them. */
+h1:lang(uk), h2:lang(uk), h3:lang(uk), .display:lang(uk), summary:lang(uk) { font-family: "Playfair Display", var(--display); } /* taste-skill-ignore: the plan's chosen Cyrillic Didone (Bodoni Moda has no Cyrillic) */
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .grid > *, .grid.split .split__text, .grid.split .split__media,
+  .grid.split.split--flip .split__text, .grid.split.split--flip .split__media { grid-column: 1 / -1 !important; grid-row: auto !important; justify-self: stretch !important; }
+  .grid.split .split__media, .split__media { max-width: none; }
+  .editorial-grid > * { grid-column: 1 / -1; }
+  .form-grid { grid-template-columns: 1fr; }
+  .review-columns { columns: 1; }
+  .cta-band__actions { grid-column: 1 / -1; max-width: none; }
+  .cta-band .hero__actions { max-width: none; }
+  .page-hero__grid { grid-template-columns: 1fr; align-items: start; }
+  .page-hero__portrait { max-width: 420px; }
+}
+@media (max-width: 600px) {
+  .num-list li { grid-template-columns: 32px 1fr; padding: 22px 0; gap: 14px; }
+  .area-index a { grid-template-columns: minmax(0, 1fr) auto; }
+  .area-index__name { grid-column: 1; }
+  .area-index__meta { grid-column: 1; }
+  .area-index .area__go { grid-column: 2; grid-row: 1 / span 2; }
+  /* Tables: tighter cells (a .data-table--stack turns into cards at 960px, below). */
+  .data-table th, .data-table td { padding: 14px 8px 14px 0; }
+  .section .data-table td { font-size: var(--fs-sm); }
+  /* Long reviews fold to eight lines; the button (kizlo.js) opens them, the text stays in the page. */
+  .review--long:not(.is-open) .review__text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 8; line-clamp: 8; overflow: hidden; }
+  .faq-item summary { padding: 20px; }
+  .faq-body { padding: 0 20px 22px; }
+  .page-hero--image { min-height: 100svh; padding-bottom: 48px; }
+  .page-hero--image .hero__actions, .page-hero--image .hero__meta { margin-top: 28px; }
+  /* The wash covers the bottom 65% under the text; above it the photograph opens up. */
+  .page-hero--image::before { background: linear-gradient(rgba(6, 8, 10, 0.5), rgba(6, 8, 10, 0) 200px), linear-gradient(to top, rgba(6, 8, 10, 0.86) 0%, rgba(6, 8, 10, 0.66) 65%, rgba(6, 8, 10, 0.25) 100%); } /* taste-skill-ignore: neutral scrim over photography */
+  .page-hero__portrait { max-width: 78vw; }
+  .page-hero__portrait::after { inset: 12px -8px -12px 8px; }
+  .page-hero--portrait { padding-bottom: calc(clamp(64px, 8vw, 112px) + 12px); }
+  /* One line on phones: the parent and the current page, the current page truncating. */
+  .breadcrumbs li:nth-last-child(n+3) { display: none; }
+  .breadcrumbs li:nth-last-child(2)::before { content: none; }
+  .breadcrumbs ol { flex-wrap: nowrap; }
+  .breadcrumbs li { min-width: 0; white-space: nowrap; }
+  .breadcrumbs [aria-current] { overflow: hidden; text-overflow: ellipsis; }
+  /* The form panel runs edge to edge and the submit button spans it. */
+  .form-panel { margin-inline: calc(var(--pad) * -1); padding: 32px var(--pad); }
+  .form-panel button[type="submit"] { width: 100%; }
+  .page-hero .hero__actions { flex-direction: column; align-items: stretch; }
+  .page-hero .hero__actions .btn { width: 100%; }
+}
+/* Tablet and phone: a .data-table--stack turns each row into a labelled two-column card. */
+@media (max-width: 960px) {
+  .data-table--stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .data-table--stack tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; padding: 18px 0; border-bottom: 1px solid var(--rule); } /* taste-skill-ignore: 1px Hairline between stacked rows */
+  .data-table--stack th, .data-table--stack td, .section .data-table--stack td { display: block; padding: 0; border: 0; text-align: left; }
+  .data-table--stack tbody th { grid-column: 1 / -1; }
+  .data-table--stack td::before { content: attr(data-label); display: block; margin-bottom: 4px; font: 400 var(--fs-label)/1.3 var(--sans); color: var(--text-2); }
+  .data-table--stack td.num, .section .data-table--stack td.num { text-align: left; }
+  .section:has(.form-panel) { padding-bottom: 0; }
+}
+@media (min-width: 601px) and (max-width: 960px) {
+  .cta-band__actions { max-width: 340px; }
+  .areas > .area:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  /* Tablet: half, tall and third cards pair up; an odd last card takes the full row. */
+  .editorial-grid > .card--half, .editorial-grid > .card--tall, .editorial-grid > .card--third, .grid > .card--tall { grid-column: span 6 !important; }
+  .editorial-grid > :is(.card--half, .card--tall, .card--third):last-child:nth-child(odd of .card--half, .card--tall, .card--third),
+  .grid > .card--tall:last-child:nth-child(odd of .card--tall) { grid-column: 1 / -1 !important; }
+}
+
+/* ---------- Type scale: the h1 always leads ---------- */
+/* Every section h2 on an inner page shares one size; claim, form and CTA headings have their own roles. */
+main h2 { font-size: var(--fs-section); }
+.claim h2 { font-size: var(--fs-headline); }
+.form-panel h2 { font-size: var(--fs-form-title); }
+/* 18ch of Bodoni Moda zeros = 11.15em. */
+.cta-band .display { font-size: var(--fs-cta); max-width: 11.15em; }
+.section:not(.night) .quote blockquote { font-size: var(--fs-quote-sm); line-height: 1.45; }
+.data-table { min-width: 0; }
+.table-scroll { max-width: 100%; }
+
+.review__text { font: 400 var(--fs-body)/1.7 var(--sans); }
+.fact-list { list-style: none; }
+.fact-list li { padding: 28px 0; border-top: 1px solid var(--rule); } /* taste-skill-ignore: canon rule-separated list */
+.fact-list li:last-child { border-bottom: 1px solid var(--rule); } /* taste-skill-ignore: canon rule-separated list */
+.fact-list h3 { font-size: var(--fs-step); margin-bottom: 8px; }
+.fact-list h3 a { text-decoration: underline; text-decoration-color: var(--gold); text-decoration-thickness: 1px; text-underline-offset: 6px; transition: color 0.3s var(--ease); }
+.fact-list h3 a:hover { color: var(--gold-ink); }
+/* Contact methods on the Midnight hero: night hairlines and the night text tone. */
+.page-hero--contact .fact-list li { border-color: var(--rule-night); }
+.page-hero--contact .fact-list p { color: var(--on-night-2); }
+@media (min-width: 961px) { .page-hero--contact .fact-list li { padding: 22px 0; } }
+.team-pair .micro { text-wrap: balance; }
+.night .fact-list h3 a:hover, .cta-band .fact-list h3 a:hover { color: var(--gold); }
+/* Slow drift on inner-page hero photographs, the same breath as the home video */
+.page-hero__img img { animation: hero-drift 5s var(--ease) both; }
+@keyframes hero-drift { from { transform: scale(1.04); } to { transform: scale(1); } }
+
+/* Phone type steps. Keep this block last in the file: h1 2.25rem, h2 1.8rem, CTA 1.9rem
+   (the tokens are redefined at 600px in kizlo.css; these rules pin them over any earlier size). */
+@media (max-width: 600px) {
+  .page-hero h1 { font-size: var(--fs-page-title); line-height: 1.08; }
+  main h2 { font-size: var(--fs-section); }
+  .cta-band .display { font-size: var(--fs-cta); }
+}
+
+/* Agent strip: a compact "your Realtor" line with a 4:5 portrait thumbnail (photo-map, 2026-10-20) */
+.agent-strip { display: flex; align-items: center; gap: 22px; padding: 22px 0; max-width: 920px; }
+.agent-strip picture, .agent-strip > img { flex: none; width: 72px; margin-left: 5px; } /* the 4px-offset brass frame stays inside the gutter */
+.agent-strip img { width: 72px; height: 90px; object-fit: cover; object-position: center 20%; outline: 1px solid var(--gold); outline-offset: 4px; } /* taste-skill-ignore: canon brass frame on the portrait thumbnail */
+.agent-strip p { margin: 0; color: var(--text-2); font-size: var(--fs-body); line-height: 1.6; }
+.agent-strip p a:not(.arrow-link) { color: var(--text); font-weight: 500; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 4px; }
+.agent-strip .arrow-link { padding: 0; margin-left: 4px; white-space: nowrap; }
+.night .agent-strip p, .cta-band .agent-strip p { color: var(--on-night-2); }
+.night .agent-strip p a:not(.arrow-link), .cta-band .agent-strip p a:not(.arrow-link) { color: var(--on-night); }
+@media (max-width: 600px) {
+  .agent-strip { align-items: flex-start; gap: 16px; }
+  .agent-strip .arrow-link { display: inline-flex; align-items: center; min-height: 44px; margin: 2px 0 0; }
+}
+
+/* Lead form panel placed inside a dark .page-hero: the panel is Warm Stone, so it returns to light-ground ink (pinned form markup cannot change) */
+.page-hero .form-panel { color: var(--text); }
+.page-hero .form-panel .micro { color: var(--text-2); }
+.page-hero .form-panel :focus-visible { outline-color: var(--gold-ink); }
+.page-hero .form-panel .hero__rating { color: var(--text-2); }
+.page-hero .form-panel .hero__rating strong { color: var(--text); }
+.page-hero .form-panel .hero__rating .stars { color: var(--gold-ink); }
+.page-hero .form-panel .text-link, .page-hero--image .form-panel .text-link { color: var(--gold-ink); border-bottom-color: currentColor; }
+.page-hero .form-panel .text-link:hover { color: var(--text); }
+
+/* .phone-fold moved to css/kizlo.css (2026-10-20) so the home page has it too */
+
+/* Convert-group components (2026-10-20) */
+.reviews__more { margin-top: clamp(32px, 4vw, 48px); }
+.form-panel form + .form-disclaimer { margin: 28px 0 0; }
+.form-panel h2 + .hero__rating { display: flex; width: fit-content; margin: 14px 0 32px; }
+.team-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 4vw, 64px); align-items: start; }
+.team-pair figcaption { margin-top: 44px; }
+.team-pair .card__title + .micro { margin-top: 6px; }
+@media (max-width: 600px) {
+  .team-pair { gap: 22px; }
+  .team-pair .split__media::after { inset: 10px -8px -10px 8px; }
+  .team-pair figcaption { margin-top: 24px; }
+  .team-pair .card__title { min-height: 2lh; }
+}
+
+/* A text index sharing the community tile grid: full width on tablet and phone, beside the last tile on desktop */
+.areas > .area-index, .areas > .phone-fold { grid-column: 1 / -1; align-self: start; }
+@media (min-width: 961px) { .areas > .area-index, .areas > .phone-fold { grid-column: span 4; } }
+
+/* Tablet line length: rail paragraphs and step paragraphs go full width at 960px and below, so cap them at a readable measure */
+@media (max-width: 960px) { .grid > div > p, .num-list p { max-width: 34em; } }
+
+/* Sticky heading columns (desktop): the heading and intro travel beside long steps, forms and tables. */
+@media (min-width: 961px) {
+  .section .wrap.grid > :first-child:has(+ * > .num-list),
+  .page-hero .wrap.grid > :first-child:has(+ .form-panel) { position: sticky; top: calc(var(--header-h) + 48px); align-self: start; }
+  /* clip, not hidden: a hidden hero would become the sticky column's scroll box and pin nothing. */
+  .page-hero:has(.wrap.grid > :first-child + .form-panel) { overflow: clip; }
+}
+@media (min-width: 1024px) {
+  .col-head { position: sticky; top: calc(var(--header-h) + 48px); align-self: start; }
+}
+
+/* Tables: a figure or price range never breaks; a lone range column gets room for it. */
+.data-table td.num { white-space: nowrap; }
+.data-table thead th.num:nth-child(1 of .num):nth-last-child(1 of .num) { width: 22%; }
+.col-body p, .col-body li { max-width: 68ch; }
+
+/* Report cards (market reports index): text column runs to the card foot so the links align. */
+.card--half { display: flex; flex-direction: column; }
+.card__body { display: flex; flex-direction: column; flex: 1; }
+.card__body > :first-child { margin-top: 24px; }
+.card__body > * + * { margin-top: 14px; }
+.card__body > * + .card__title { margin-top: 10px; }
+.card__body > p:last-child { margin-top: auto; padding-top: 14px; }
+
+/* A tighter hero (Isleworth, Keene's Pointe) so the figures band below clears a 900px fold:
+   140px less than the standard hero (top 48px less, bottom 92px less; the bottom was only 112px). */
+@media (min-width: 1121px) {
+  main > .page-hero--tight, main > .breadcrumbs + .page-hero--tight { padding-top: calc(var(--header-h) + 72px); padding-bottom: 20px; }
+}
+
+/* Phone hero titles: authored line breaks give way to the measure; the smallest phones step the size down. */
+@media (max-width: 600px) { .page-hero h1 br { display: none; } }
+@media (max-width: 480px) { .page-hero h1 { font-size: var(--fs-page-title-phone); } }

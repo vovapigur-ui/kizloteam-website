@@ -9,9 +9,9 @@ export const VLAD_ID = `${SITE}/#vlad`;
 export const ANASTASIIA_ID = `${SITE}/#anastasiia`;
 
 // Verified against the assets actually in the repo:
-//   apple-touch-icon.png  180x180  (Google requires >= 112x112 for logo)
+//   img/kizlo-team-logo-512.png  512x512  (Google requires >= 112x112 for logo)
 //   img/team-portrait-960.jpg  960x1200
-export const LOGO = `${SITE}/apple-touch-icon.png`;
+export const LOGO = `${SITE}/img/kizlo-team-logo-512.png`;
 export const TEAM_IMAGE = `${SITE}/img/team-portrait-960.jpg`;
 
 // These coordinates come from the team's own Google Business Profile place URL
@@ -68,7 +68,6 @@ export const agency = () => ({
     "Fix and flip",
   ],
   priceRange: "$$",
-  slogan: "Real estate in West Orlando, done properly.",
   employee: [{ "@id": VLAD_ID }, { "@id": ANASTASIIA_ID }],
   // aggregateRating is deliberately NOT here. Google treats review markup on a
   // business's own site as self-serving, so the rating is attached only on
@@ -88,8 +87,9 @@ export const people = () => [
     "@id": VLAD_ID,
     name: "Vlad Kizlo",
     alternateName: "Volodymyr Kizlo",
+    url: `${SITE}/about/`,
     image: `${SITE}/img/vlad-kizlo-1280.jpg`,
-    jobTitle: "Realtor",
+    jobTitle: "Team Lead, Realtor",
     worksFor: { "@id": AGENCY_ID },
     telephone: "+18139923073",
     knowsLanguage: ["en", "uk"],
@@ -114,6 +114,7 @@ export const people = () => [
     "@type": "Person",
     "@id": ANASTASIIA_ID,
     name: "Anastasiia Zbihla",
+    url: `${SITE}/about/`,
     image: `${SITE}/img/anastasiia-zbihla-1280.jpg`,
     jobTitle: "Realtor",
     worksFor: { "@id": AGENCY_ID },

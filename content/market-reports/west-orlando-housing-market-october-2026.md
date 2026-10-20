@@ -1,10 +1,13 @@
 ---
-title: October 2026 West Orlando Market: Prices Hold, Rates Hit 7.4%
-description: September 2026 numbers for Windermere, Winter Garden, Horizon West and Clermont. Orlando median $399,610, 66 days on market, 5.3 months of supply, rates at 7.4%.
+title: West Orlando Housing Market October 2026: Rates Hit 7.4%
+headline: West Orlando Market, October 2026
+description: September 2026 numbers for Windermere, Winter Garden, Horizon West and Clermont: Orlando median $399,610, 66 days on market, 5.3 months of supply, 7.4% rates.
 date: 2026-10-19
-eyebrow: Market Report · October 2026
 summary: Prices did not move, homes took a little longer, and mortgage rates jumped from 6.7 to 7.4 percent in a single month. Here is what the September 2026 numbers say about Windermere, Winter Garden, Horizon West and Clermont, and what to do about it if you are buying or selling before the holidays.
 image: https://www.kizloteam.com/img/og-horizon-west-aerial.jpg
+cover: horizon-west
+figures: $399,610 | Orlando metro median sale price (ORRA, September 2026); 66 | Average days on market (ORRA, September 2026); 5.3 | Months of supply (ORRA, September 2026); 7.4% | Average 30 year rate (ORRA, September 2026)
+tiles: windermere | $707,471 typical value · Zillow, August 2026; winter-garden | $599,054 median sale price · Redfin, August 2026; horizon-west | $590,000 median sale price · Redfin, August 2026; clermont | $441,790 median sale price · Redfin, September 2026
 draft: false
 ---
 
@@ -26,7 +29,7 @@ In West Orlando that shows up as fewer buyers per listing, more price reductions
 | Clermont | $441,790 median sale price, down 4.0% | 52 median days on market | Redfin, September 2026 |
 | Orlando metro | $399,610 median sale price | 66 average days on market | ORRA, September 2026 |
 
-These sources measure different things. A Zillow typical value is an estimate across every home, a Redfin or ORRA median comes from homes that actually closed, and the local sources run about a month behind ORRA. Compare each market to its own history, not to the line above it. If you want the Stellar MLS figures for your exact neighborhood, ask us and we will pull them the same day.
+These sources measure different things. A Zillow typical value is an estimate across every home, a Redfin or ORRA median comes from homes that actually closed, and the local sources run about a month behind ORRA. Compare each market to its own history, not to the line above it. If you want the Stellar MLS figures for your exact neighborhood, [ask us](/contact/#message-title) and we will pull them the same day.
 
 ## Windermere
 
@@ -52,7 +55,7 @@ Redfin puts the Horizon West median sale price at $590,000 for August, flat year
 
 Forty percent of Horizon West listings cut their price before selling. That is the highest of the four markets and it is the builder effect: resale sellers here compete with new construction that answers a rate of 7.4 percent with rate buydowns and closing cost money rather than base price cuts. A resale seller who prices at the builder's sticker without matching the builder's incentives loses the buyer.
 
-Village by village the spread is wide, from the mid $500s in Waterleigh and Lakeside Village to the high $600s in Hamlin and Village I. Our rebuilt [Horizon West guide](/communities/horizon-west/) now has the fee structure, schools and commute for each village, and the [Summerlake guide](/communities/horizon-west/summerlake/) covers the largest established village in detail.
+Village by village the spread is wide, from the mid $500s in Waterleigh and Lakeside Village to the high $600s in Hamlin and Village I. Our rebuilt [Horizon West guide](/communities/horizon-west/) now has the fee structure, schools and commute for each village, and the [Summerlake guide](/communities/horizon-west/summerlake/) covers Summerlake, the established Bridgewater village community, in detail.
 
 ## Clermont
 
@@ -88,8 +91,13 @@ That is why builder buydowns matter so much right now, and why a seller who offe
 
 **If you are buying.** Inventory at 5.3 months means choice, and 40 percent of Horizon West listings taking a price cut means leverage. Ask for the credit. Negotiate the buydown. In new construction, visit represented, because the builder's incentive is the whole game at this rate. If 7.4 percent is the problem, a two year buydown paid by the seller turns it into a 5.4 percent problem while you wait for a refinance window.
 
-**If you are waiting.** Rates fell a full point between late 2024 and late 2025 and climbed it back in a year. Timing the rate is a coin flip. Buying the right house at a negotiated price with a buydown is not.
+**If you are waiting.** Rates fell more than half a point between late 2024 and late 2025, then climbed over a point in a year. Timing the rate is a coin flip. Buying the right house at a negotiated price with a buydown is not.
 
-Ask us what the September numbers mean for your home. We answer the same day.
+Ask us what the September numbers mean for your home: [request a valuation](/home-valuation/) or call [(813) 992-3073](tel:+18139923073). We answer the same day.
 
-*Sources: Orlando Regional REALTOR Association Housing Market Narrative, September 2026, data as of October 8, 2026. Freddie Mac Primary Mortgage Market Survey, October 8, 2026. Redfin housing market pages for Winter Garden, Horizon West and Clermont, FL, and the 34786 zip, accessed October 19, 2026. Zillow Home Values Index for Windermere and Winter Garden, FL, as of August 31, 2026.*
+## Sources
+
+- Orlando metro: Orlando Regional REALTOR Association Housing Market Narrative, September 2026, data as of October 8, 2026
+- Mortgage rates: Freddie Mac Primary Mortgage Market Survey, October 8, 2026
+- Winter Garden, Horizon West, Clermont and the 34786 zip: Redfin housing market pages, accessed October 19, 2026
+- Windermere and Winter Garden typical values: Zillow Home Value Index, as of August 31, 2026
