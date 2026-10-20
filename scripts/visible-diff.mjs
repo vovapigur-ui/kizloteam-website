@@ -17,7 +17,8 @@ const REF = process.argv[2] || "HEAD";
 function htmlFiles(dir = ROOT) {
   const out = [];
   for (const entry of readdirSync(dir)) {
-    if (entry === ".git" || entry === "node_modules" || entry === "scripts" || entry === "content") continue;
+    // Dot-folders (.git, .impeccable, .taste-skill) hold tooling and drafts, not pages.
+    if (entry.startsWith(".") || entry === "node_modules" || entry === "scripts" || entry === "content") continue;
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) out.push(...htmlFiles(full));
     else if (entry.endsWith(".html")) out.push(relative(ROOT, full));

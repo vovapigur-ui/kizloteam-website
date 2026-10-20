@@ -13,7 +13,7 @@ draft: false
 
 This Privacy Policy explains how The Kizlo Team ("we," "us," "our"), a real estate team affiliated with Keller Williams Realty At The Lakes, collects, uses, and protects your information when you visit kizloteam.com (the "Site") or communicate with us.
 
-## Information We Collect
+## Information we collect
 
 **Information you provide.** When you fill out a form on the Site, request a home valuation, sign up for market updates, or contact us, we may collect your name, email address, phone number, property address, and any details you include in your message.
 
@@ -21,19 +21,19 @@ This Privacy Policy explains how The Kizlo Team ("we," "us," "our"), a real esta
 
 **Your visit history on the Site.** Your browser keeps a short record of the pages you view on the Site and how you first arrived (for example, from a search engine or a link we sent). This record stays on your device. If you submit a form, it is sent along with your inquiry so we can understand what you were looking for.
 
-## How We Use Your Information
+## How we use your information
 
 We use your information to respond to your inquiries, provide real estate services you request, send you market updates or property information you asked for, improve the Site, and comply with legal obligations that apply to licensed real estate professionals in Florida.
 
-## Text Messaging
+## Text messaging
 
 If you provide your phone number and consent to receive text messages from us, we may text you about your inquiry, showings, transactions, or market updates. Message and data rates may apply. Message frequency varies. Reply STOP at any time to opt out, or HELP for assistance. **No mobile information, phone numbers, or SMS opt-in consent will be shared with or sold to third parties or affiliates for marketing or promotional purposes.**
 
-## How We Share Information
+## How we share information
 
 We do not sell your personal information. We share it only with: service providers who help us operate (such as our CRM, email, website hosting, and website analytics providers, who may use it only to provide services to us), our brokerage as required in the course of a real estate transaction, other parties to a transaction when you direct us to (such as lenders, title companies, and inspectors), and legal authorities when required by law.
 
-## Cookies and Analytics
+## Cookies and analytics
 
 We use two analytics tools to understand how visitors find and use the Site:
 
@@ -44,17 +44,17 @@ Both tools set cookies and collect data such as pages viewed, device and browser
 
 ## Do Not Track
 
-Some browsers send Do Not Track signals. The Site does not currently respond to Do Not Track signals. The analytics and session recording tools we use are described under Cookies and Analytics above.
+Some browsers send Do Not Track signals. The Site does not currently respond to Do Not Track signals. The analytics and session recording tools we use are described under Cookies and analytics above.
 
-## Third-Party Sites
+## Third-party sites
 
 The Site links to third-party websites, including our home search portal at kthomesforsale.com and social media platforms. Those sites have their own privacy policies, and we are not responsible for their practices.
 
-## Your Choices
+## Your choices
 
 You may unsubscribe from marketing emails at any time using the link in any email. You may opt out of texts by replying STOP. You may request access to, correction of, or deletion of the personal information we hold about you by emailing [thekizloteam@kw.com](mailto:thekizloteam@kw.com). We will respond to verified requests unless we are required to retain the information for legal or transactional recordkeeping.
 
-## Data Retention and Security
+## Data retention and security
 
 We retain personal information as long as needed for the purposes above and as required by Florida real estate recordkeeping laws. We use commercially reasonable safeguards to protect your information, but no method of transmission or storage is completely secure.
 
@@ -62,13 +62,13 @@ We retain personal information as long as needed for the purposes above and as r
 
 The Site is not directed to children under 18, and we do not knowingly collect personal information from children.
 
-## Changes to This Policy
+## Changes to this policy
 
 We may update this policy from time to time. The effective date above reflects the latest version. Material changes will be posted on this page.
 
-## Contact Us
+## Contact us
 
 The Kizlo Team, Keller Williams Realty At The Lakes
 7107 Beek St, Windermere, FL 34786
-Phone: [813 992 3073](tel:+18139923073)
+Phone: [(813) 992-3073](tel:+18139923073)
 Email: [thekizloteam@kw.com](mailto:thekizloteam@kw.com)
