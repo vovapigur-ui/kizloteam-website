@@ -24,11 +24,20 @@ import { fileURLToPath } from "node:url";
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PARTIALS = join(ROOT, "scripts", "lib", "partials");
 
-// One display weight (400) plus the 500/600 the wordmark and <strong> use;
-// Bodoni pinned to the optical size the whole stylesheet forces ("opsz" 28).
-export const FONT_URL =
-  "https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@28,400..600&family=Jost:wght@400..600&display=swap";
-export const FONT_LINK = `<link href="${FONT_URL}" rel="stylesheet">`;
+// Self-hosted web fonts (fonts/, @font-face at the top of css/kizlo.css, font-display: swap).
+// Both files are latin subsets cut from the OFL variable fonts to weights 400 to 600, with
+// Bodoni pinned to the optical size the whole stylesheet forces ("opsz" 28), so they render
+// exactly as the Google Fonts request they replace. The preloads start both downloads with
+// the HTML instead of after a third party stylesheet, which was the headline's (the LCP's)
+// longest wait on a phone.
+export const FONT_FILES = ["/fonts/bodoni-moda-latin.woff2", "/fonts/jost-latin.woff2"];
+const fontPreload = (href) => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin>`;
+/** The font preload lines, joined with `indent` so the head keeps its indentation. */
+export const fontLinks = (indent = "  ") => FONT_FILES.map(fontPreload).join(`\n${indent}`);
+export const FONT_LINK = fontLinks();
+// Anything that was ever written as the font block: the old Google Fonts link or the preloads.
+const FONT_BLOCK = /([ \t]*)(?:<link href="https:\/\/fonts\.googleapis\.com\/css2\?family=Bodoni\+Moda[^"]*" rel="stylesheet">|<link rel="preload" href="\/fonts\/bodoni-moda-latin\.woff2"[^>]*>\n[ \t]*<link rel="preload" href="\/fonts\/jost-latin\.woff2"[^>]*>)/;
+const GOOGLE_PRECONNECT = /[ \t]*<link rel="preconnect" href="https:\/\/fonts\.(?:googleapis|gstatic)\.com"(?: crossorigin)?>\n/g;
 // Cyrillic Didone for Ukrainian headings (lang="uk" pages only).
 export const UK_FONT_LINK =
   '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400..600&display=swap" rel="stylesheet">';
@@ -116,12 +125,14 @@ function replaceHead(html, uk) {
   if (!/classList\.add\(["']js["']\)/.test(out)) {
     out = out.replace(/([ \t]*)(<meta charset="UTF-8">)/i, (_m, indent, tag) => `${indent}${tag}\n${indent}${JS_CLASS_TAG}`);
   }
-  const font = /([ \t]*)<link href="https:\/\/fonts\.googleapis\.com\/css2\?family=Bodoni\+Moda[^"]*" rel="stylesheet">/;
-  if (font.test(out)) out = out.replace(font, (_m, indent) => `${indent}${FONT_LINK}`);
-  else out = out.replace(/([ \t]*)(<link rel="stylesheet" href="\/css\/kizlo\.css">)/, (_m, indent, css) => `${indent}${FONT_LINK}\n${indent}${css}`);
+  if (FONT_BLOCK.test(out)) out = out.replace(FONT_BLOCK, (_m, indent) => `${indent}${fontLinks(indent)}`);
+  else out = out.replace(/([ \t]*)(<link rel="stylesheet" href="\/css\/kizlo\.css">)/, (_m, indent, css) => `${indent}${fontLinks(indent)}\n${indent}${css}`);
 
-  if (uk && !out.includes(UK_FONT_LINK)) {
-    out = out.replace(FONT_LINK, () => `${FONT_LINK}\n  ${UK_FONT_LINK}`);
+  // Only the Ukrainian pages still reach Google Fonts (Playfair Display for Cyrillic).
+  if (uk) {
+    if (!out.includes(UK_FONT_LINK)) out = out.replace(FONT_LINK, () => `${FONT_LINK}\n  ${UK_FONT_LINK}`);
+  } else {
+    out = out.replace(GOOGLE_PRECONNECT, "");
   }
   if (!out.includes('property="og:site_name"')) {
     out = out.replace(/([ \t]*)(<meta property="og:type"[^>]*>)/, (_m, indent, tag) => `${indent}${tag}\n${indent}${SITE_NAME_META}`);

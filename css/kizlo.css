@@ -2,7 +2,14 @@
    Dark cinematic first screen, bright reading body, one gold accent.
    Palette: Midnight lake & brass (chosen by the client 2026-10-19). Wordmark: K monogram. */
 
-/* Metric-matched fallbacks. Until Google Fonts arrives (display=swap), text is set in a
+/* Web fonts, self-hosted since October 2026 (SIL Open Font License; the license text is in
+   fonts/OFL.txt). Latin subsets, weights 400 to 600, Bodoni pinned at "opsz" 28: the same
+   faces the Google Fonts request served, without the third party round trips. Preloaded
+   from every page head (scripts/lib/chrome.mjs). */
+@font-face { font-family: "Bodoni Moda"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/fonts/bodoni-moda-latin.woff2") format("woff2"); }
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/fonts/jost-latin.woff2") format("woff2"); }
+
+/* Metric-matched fallbacks. Until the web fonts arrive (display=swap), text is set in a
    local face scaled to Jost's and Bodoni Moda's width and line box, so the swap does not
    move the layout. Arial and Georgia (macOS, Windows, iOS) were measured against the web
    fonts in Chrome on a 160-character sample. Roboto and Noto Serif (Android) are not on
@@ -278,18 +285,17 @@ html:not(.js) .hero__pause, .hero__pause[hidden] { display: none; }
 @media (hover: hover) { .hero__pause:hover { border-color: var(--gold); color: var(--gold); } }
 
 /* Entrance, CSS only, so it never waits on JavaScript: a Midnight veil lifts off the
-   poster, then the h1, sub, actions and foot rise in. The h1 starts at 0.01 opacity so it
-   still counts as the largest paint. Inner page heroes stagger their h1, lede and actions. */
+   poster, then the sub, actions and foot rise in. The h1 does not animate: it is the
+   largest paint on a phone, so it is drawn in place on the first frame (October 2026,
+   mobile LCP). Inner page heroes stagger their lede and actions. */
 @media (prefers-reduced-motion: no-preference) {
   .hero__media::after { content: ""; position: absolute; inset: 0; background: var(--night); pointer-events: none; animation: veil-out 1.8s var(--ease) 0.1s both; }
-  .hero h1, .page-hero h1 { animation: rise-in-lcp 1.2s var(--ease) 0.3s both; }
   .hero__sub, .page-hero .lede { animation: rise-in 1.1s var(--ease) 0.48s both; }
   .hero .hero__actions, .page-hero .hero__actions { animation: rise-in 1.1s var(--ease) 0.64s both; }
   .hero__foot { animation: rise-in 1.1s var(--ease) 0.85s both; }
 }
 @keyframes veil-out { to { opacity: 0; } }
 @keyframes rise-in { from { opacity: 0; transform: translateY(22px); } }
-@keyframes rise-in-lcp { from { opacity: 0.01; transform: translateY(22px); } }
 
 /* ---------- Surfaces ---------- */
 .section { padding-block: var(--section); }
