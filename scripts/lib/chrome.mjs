@@ -45,7 +45,10 @@ export const SITE_NAME_META = '<meta property="og:site_name" content="The Kizlo 
 export const SCRIPT_TAG = '<script src="/js/kizlo.js" defer></script>';
 // Set before first paint: the transparent header and the phone menu overlay are
 // scoped under html.js, so without it a page falls back to the no-JS header.
-export const JS_CLASS_TAG = '<script>document.documentElement.classList.add("js")</script>';
+// .js-failed (the plain phone nav) only if kizlo.js has still not run 2.5s after load.
+export const JS_CLASS_TAG =
+  '<script>(function(d){d.classList.add("js");addEventListener("load",function(){setTimeout(function(){if(!d.classList.contains("js-ready"))d.classList.add("js-failed")},2500)})})(document.documentElement)</script>';
+const OLD_JS_CLASS_TAG = '<script>document.documentElement.classList.add("js")</script>';
 
 const EN_LANG_LINK = '<a class="nav-lang" href="/" lang="en" hreflang="en">EN<span class="visually-hidden"> English</span></a>';
 const EN_MORE_LINK = '<a href="/" lang="en" hreflang="en">English</a>';
@@ -122,6 +125,7 @@ const lineStart = (html, i) => html.lastIndexOf("\n", i - 1) + 1;
 
 function replaceHead(html, uk) {
   let out = html;
+  if (out.includes(OLD_JS_CLASS_TAG)) out = out.replace(OLD_JS_CLASS_TAG, () => JS_CLASS_TAG);
   if (!/classList\.add\(["']js["']\)/.test(out)) {
     out = out.replace(/([ \t]*)(<meta charset="UTF-8">)/i, (_m, indent, tag) => `${indent}${tag}\n${indent}${JS_CLASS_TAG}`);
   }

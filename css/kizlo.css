@@ -778,13 +778,16 @@ h1, .display { font-weight: 450; } /* hairlines of the W hold at 1x */
   .split__media > figure:has(> figcaption) > figcaption { margin-top: 24px; }
   .listing__row { flex-direction: column; gap: 10px; }
   .split--text-first .split__text { order: -1; }
-  /* If kizlo.js never arrives, the phone nav stays a plain wrapping list under the wordmark. */
-  .js:not(.js-ready) .site-header { position: relative; height: auto; }
-  .js:not(.js-ready) .site-header__inner { flex-wrap: wrap; padding-block: 14px; }
-  .js:not(.js-ready) .site-nav { position: static; z-index: auto; width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 0 22px; padding: 0; overflow: visible; background: none; opacity: 1; visibility: visible; }
-  .js:not(.js-ready) .site-nav > * { opacity: 1; transform: none; margin: 0; }
-  .js:not(.js-ready) .site-nav > a:not(.btn), .js:not(.js-ready) .site-nav > .btn { font: 500 var(--fs-label)/1.5 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 0; }
-  .js:not(.js-ready) .nav-toggle, .js:not(.js-ready) .nav-more { display: none; }
+  /* If kizlo.js never arrives, the phone nav becomes a plain wrapping list under the wordmark.
+     The head script sets .js-failed only once the page has loaded without it, so a normal
+     load never renders this taller header first and then jumps (that jump was the
+     homepage's 0.21 to 0.26 mobile layout shift, October 2026). */
+  .js.js-failed .site-header { position: relative; height: auto; }
+  .js.js-failed .site-header__inner { flex-wrap: wrap; padding-block: 14px; }
+  .js.js-failed .site-nav { position: static; z-index: auto; width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 0 22px; padding: 0; overflow: visible; background: none; opacity: 1; visibility: visible; }
+  .js.js-failed .site-nav > * { opacity: 1; transform: none; margin: 0; }
+  .js.js-failed .site-nav > a:not(.btn), .js.js-failed .site-nav > .btn { font: 500 var(--fs-label)/1.5 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 0; }
+  .js.js-failed .nav-toggle, .js.js-failed .nav-more { display: none; }
   }
 @media (max-width: 400px) {
   :root { --fs-numeral: 2rem; --fs-numeral-feature: 2rem; --fs-mark-k: 1.5rem; --fs-mark: 0.74rem; }
