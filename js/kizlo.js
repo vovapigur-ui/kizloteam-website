@@ -96,9 +96,11 @@
 
   // Stat figures are plain text and rise in with the reveal above (CSS); nothing counts.
 
-  // Hero video. The markup never autoplays (preload="none", a poster <picture> under it).
-  // After the load event and an idle moment it starts, unless the visitor prefers reduced
-  // motion, has Save-Data on, is on a 2G/3G connection or paused it before (kz_video).
+  // Hero video. Desktop only: phones and tablets keep the poster <picture> and never
+  // download the video (its 2.9 MB was most of the homepage's mobile weight). The markup
+  // never autoplays (preload="none"). On a desktop, after the load event and an idle
+  // moment, the WebP poster goes on the video and it starts, unless the visitor prefers
+  // reduced motion, has Save-Data on, is on a 2G/3G connection or paused it before (kz_video).
   // Safari has no navigator.connection: unknown counts as fast. iOS Low Power Mode
   // rejects play(): the poster stays and the button offers Play.
   var video = document.querySelector(".hero video");
@@ -107,8 +109,9 @@
     var vBtn = hero.querySelector(".hero__pause");
     var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     var net = conn && conn.effectiveType;
+    var desktopQ = window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)");
     var never = function () {
-      return reduceQ.matches || !!(conn && conn.saveData) || /^(slow-2g|2g)$/.test(net || "") || typeof video.play !== "function";
+      return !desktopQ.matches || reduceQ.matches || !!(conn && conn.saveData) || /^(slow-2g|2g)$/.test(net || "") || typeof video.play !== "function";
     };
     var vPaused = false;
     try { vPaused = localStorage.getItem("kz_video") === "paused"; } catch (e) {}
@@ -129,6 +132,7 @@
     };
     var vPlay = function () {
       if (!vReady || vPaused || !vInView || never()) return;
+      if (video.dataset.poster && !video.poster) video.poster = video.dataset.poster;
       if (video.preload !== "auto") video.preload = "auto";
       var p = video.play();
       if (p && p.then) p.then(function () { vBlocked = false; vSync(); }, function () {
@@ -167,6 +171,7 @@
       if (document.readyState === "complete") vBoot(); else window.addEventListener("load", vBoot);
     }
     onMedia(reduceQ, function () { if (reduceQ.matches) vHide(); });
+    onMedia(desktopQ, function () { if (!desktopQ.matches) vHide(); });
   }
 
   // Slow zoom on the claim panels as they cross the screen. Browsers with scroll-driven

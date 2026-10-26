@@ -7,9 +7,7 @@ import { escapeHtml } from "./html.mjs";
 import { SITE } from "./site-data.mjs";
 import { applyChrome, buildFooter, buildHeader, fileOfCanonical, FONT_LINK, SCRIPT_TAG, SITE_NAME_META } from "./chrome.mjs";
 
-export const HEAD_ASSETS = `  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  ${FONT_LINK}
+export const HEAD_ASSETS = `  ${FONT_LINK}
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">

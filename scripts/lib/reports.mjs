@@ -43,6 +43,14 @@ export function loadPosts() {
         return { key, meta };
       });
       if (data.cover && !AREAS[data.cover]) throw new Error(`content/market-reports/${file}: unknown cover "${data.cover}"`);
+      // `communities: windermere, horizon-west` limits which community pages list the report.
+      // Left out, a report covers (and is linked from) all four.
+      const communities = data.communities
+        ? String(data.communities).split(",").map((c) => c.trim()).filter(Boolean)
+        : Object.keys(AREAS);
+      for (const c of communities) {
+        if (!AREAS[c]) throw new Error(`content/market-reports/${file}: unknown community "${c}" (use ${Object.keys(AREAS).join(", ")})`);
+      }
       return {
         file,
         slug,
@@ -55,6 +63,7 @@ export function loadPosts() {
         summary: data.summary || data.description,
         image: data.image || `${SITE}/img/og-windermere-wide.jpg`,
         cover: data.cover || null,
+        communities,
         figures: pairs(data.figures, file, "figures").map(([value, label]) => ({ value, label })),
         tiles,
         body,
@@ -238,10 +247,54 @@ ${article}
   });
 }
 
+// The newest month's report(s) get cards; everything older goes in the past reports list.
+const monthOf = (iso) => iso.slice(0, 7);
+
+function pastReports(past) {
+  if (!past.length) return "";
+  const items = past
+    .map(
+      (p) => `          <li><a class="text-link" href="/market-reports/${p.slug}/">${escapeHtml(p.headline)}</a> <span class="micro">· <time datetime="${p.date}">${longDate(p.date)}</time></span></li>`
+    )
+    .join("\n");
+  return `
+
+    <section class="section section--tight" aria-labelledby="past-reports-title">
+      <div class="wrap">
+        <h2 id="past-reports-title">Past reports</h2>
+        <ul class="link-list">
+${items}
+        </ul>
+      </div>
+    </section>`;
+}
+
+/** The "market reports" block for a community page: every published report that covers `key`, newest first. */
+export function communityReportsBlock(posts, key) {
+  const area = AREAS[key];
+  const mine = posts.filter((p) => p.communities.includes(key));
+  if (!area || !mine.length) return "";
+  const items = mine
+    .map(
+      (p) => `            <li><a class="text-link" href="/market-reports/${p.slug}/">${escapeHtml(p.headline)}</a> <span class="micro">· ${monthYear(p.date)}</span></li>`
+    )
+    .join("\n");
+  return `<div class="wrap">
+          <h2 id="reports-title">${area.name} market reports</h2>
+          <p class="measure">Every monthly report that covers ${area.name}, newest first. <a class="text-link" href="/market-reports/">All market reports</a></p>
+          <ul class="link-list">
+${items}
+          </ul>
+        </div>`;
+}
+
 export function renderIndex(posts) {
   const trail = [{ name: "Home", href: "/" }, { name: "Market Reports" }];
-  const list = posts.length
-    ? posts
+  const newest = posts.length ? monthOf(posts[0].date) : null;
+  const latest = posts.filter((p) => monthOf(p.date) === newest);
+  const past = posts.filter((p) => monthOf(p.date) !== newest);
+  const list = latest.length
+    ? latest
         .map((p, i) => {
           const cover = p.cover
             ? `\n          <div class="frame">${picture(AREAS[p.cover].stem, { alt: AREAS[p.cover].alt, sizes: "(max-width: 600px) 100vw, 50vw", max: 960, eager: i === 0 })}</div>`
@@ -270,11 +323,11 @@ export function renderIndex(posts) {
       </div>
     </section>
 
-    <section class="section section--tight" aria-label="All reports">
+    <section class="section section--tight" aria-label="Latest reports">
       <div class="wrap editorial-grid">
 ${list}
       </div>
-    </section>`;
+    </section>${pastReports(past)}`;
 
   return page({
     title: "West Orlando Housing Market Reports | The Kizlo Team",

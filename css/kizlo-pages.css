@@ -422,3 +422,9 @@ main h2 { font-size: var(--fs-section); }
 /* Phone hero titles: authored line breaks give way to the measure; the smallest phones step the size down. */
 @media (max-width: 600px) { .page-hero h1 br { display: none; } }
 @media (max-width: 480px) { .page-hero h1 { font-size: var(--fs-page-title-phone); } }
+
+/* Plain link lists: the past reports on /market-reports/ and the report list on each
+   community page. Hairline rules only, per the system. */
+.link-list { list-style: none; margin: 1.5rem 0 0; padding: 0; max-width: 46rem; }
+.link-list li { padding: 0.9rem 0; border-top: 1px solid var(--rule); } /* taste-skill-ignore: 1px Hairline, the system rule (DESIGN.md) */
+.link-list li:last-child { border-bottom: 1px solid var(--rule); } /* taste-skill-ignore: 1px Hairline, the system rule (DESIGN.md) */
