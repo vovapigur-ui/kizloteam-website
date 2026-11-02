@@ -35,7 +35,7 @@ These sources measure different things. A Zillow typical value is an estimate ac
 
 Windermere is holding. Zillow's typical value is $707,471, up 0.1 percent over the year, and homes are going pending in about 40 days, the same pace as August. At the top of the market the picture is stronger than the typical value suggests: Redfin's July median sale price for the 34786 zip was $872,256, up 4.3 percent year over year, with 216 sales and 37 median days on market.
 
-What that means in practice: the gated and lakefront segments are still moving because those buyers are less rate sensitive. The $600,000 to $900,000 band is where the 7.4 percent rate bites, and where a listing that misses its first two weeks starts chasing the market down. See the neighborhood breakdown, from Isleworth and Keene's Pointe to Summerport and Windermere Trails, in our [Windermere guide](/communities/windermere/).
+What that means in practice: the gated and lakefront segments are still moving because those buyers are less rate sensitive. The $600,000 to $900,000 band is where the 7.4 percent rate bites, and where a listing that misses its first two weeks starts chasing the market down. See the neighborhood breakdown in our [Windermere guide](/communities/windermere/), and the new subdivision guides for [Isleworth](/communities/windermere/isleworth/), [Keene's Pointe](/communities/windermere/keenes-pointe/), [Lakes of Windermere](/communities/windermere/lakes-of-windermere/) and [Windermere Trails](/communities/windermere/windermere-trails/), each with 2026 sale prices, HOA dues and school zones.
 
 ## Winter Garden
 
@@ -55,7 +55,7 @@ Redfin puts the Horizon West median sale price at $590,000 for August, flat year
 
 Forty percent of Horizon West listings cut their price before selling. That is the highest of the four markets and it is the builder effect: resale sellers here compete with new construction that answers a rate of 7.4 percent with rate buydowns and closing cost money rather than base price cuts. A resale seller who prices at the builder's sticker without matching the builder's incentives loses the buyer.
 
-Village by village the spread is wide, from the mid $500s in Waterleigh and Lakeside Village to the high $600s in Hamlin and Village I. Our rebuilt [Horizon West guide](/communities/horizon-west/) now has the fee structure, schools and commute for each village, and the [Summerlake guide](/communities/horizon-west/summerlake/) covers Summerlake, the established Bridgewater village community, in detail.
+Village by village the spread is wide, from the mid $500s in Waterleigh and Lakeside Village to the high $600s in Hamlin and Village I. Our rebuilt [Horizon West guide](/communities/horizon-west/) now has the fee structure, schools and commute for each village, and the [Summerlake guide](/communities/horizon-west/summerlake/) covers Summerlake, the established Bridgewater village community, in detail. For the Hamlin side, see the new guides to [Hamlin](/communities/horizon-west/hamlin/), [Hamlin Reserve](/communities/horizon-west/hamlin-reserve/), [Overlook at Hamlin](/communities/horizon-west/overlook-at-hamlin/) and [Storey Grove](/communities/horizon-west/storey-grove/), with 2026 sale prices, HOA dues and whether there is a CDD.
 
 ## Clermont
 
