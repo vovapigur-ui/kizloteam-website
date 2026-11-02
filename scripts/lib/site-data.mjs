@@ -164,6 +164,14 @@ export const ANALYTICS = {
 // Pages that never get analytics: the internal studio tool, the open-house
 // kiosk and the Google verification file. Instant redirect stubs are skipped by detection instead,
 // since tracking them would count one visit twice.
+// Partner lead pages (/guide/<agent-slug>/ and its thanks page) are built by
+// scripts/partner-guides/make_page.py for referral partners. They carry the
+// partner's name, not ours: their form posts straight to the partner through
+// FormSubmit (never to kizlohq), so they get no Kizlo analytics, no Kizlo
+// TCPA consent line and no links to our legal pages. They keep the Equal
+// Housing mark and their own consent line, and are noindex.
+export const isPartnerPage = (file) => /^guide\/[a-z0-9-]+\/(thanks\/)?index\.html$/.test(file);
+
 export const NO_ANALYTICS = new Set([
   // The open-house iPad: every guest on one device would read as one
   // returning visitor and skew the site numbers.

@@ -12,7 +12,7 @@ import { applyChrome, chromeFiles, currentNavHref, pagePath } from "./lib/chrome
 import { breadcrumbs, canonicalOf, faqs, images, langOf, reviews, titleOf } from "./lib/extract.mjs";
 import { textOf } from "./lib/html.mjs";
 import { checkContent } from "./lib/content-rules.mjs";
-import { AGENCY_ID, ANALYTICS, ANASTASIIA_ID, HREFLANG_CLUSTERS, NO_ANALYTICS, RATING, SITE, SKIP, VLAD_ID } from "./lib/site-data.mjs";
+import { isPartnerPage, AGENCY_ID, ANALYTICS, ANASTASIIA_ID, HREFLANG_CLUSTERS, NO_ANALYTICS, RATING, SITE, SKIP, VLAD_ID } from "./lib/site-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const HOME_TITLE = "Windermere & Winter Garden Realtors | The Kizlo Team";
@@ -248,6 +248,14 @@ for (const [file, html] of pages) {
     ([tag]) => /\bdata-lead-form\b/i.test(tag) || !/\bmethod\s*=\s*["']?get\b/i.test(tag)
   );
   if (forms.length === 0) continue;
+  if (isPartnerPage(file)) {
+    // The lead goes to the partner agent, so the line names them, not us.
+    const own = [...html.matchAll(/<p class="partner-consent">([\s\S]*?)<\/p>/g)];
+    if (own.length !== forms.length) fail(file, `${forms.length} form(s) but ${own.length} partner consent line(s)`);
+    for (const m of own) if (!/Reply STOP to opt out/.test(textOf(m[1]))) fail(file, "partner consent line is missing the opt-out instruction");
+    if (/kizlohq/.test(html)) fail(file, "partner page must not post to kizlohq");
+    continue;
+  }
 
   const consents = [...html.matchAll(/<p class="form-consent">([\s\S]*?)<\/p>/g)];
   if (consents.length !== forms.length) {
@@ -291,7 +299,7 @@ const allHtml = htmlFiles().filter((f) => !f.startsWith("studio/") && !f.startsW
 for (const file of allHtml) {
   const html = pages.get(file) || readFileSync(join(ROOT, file), "utf8");
   if (file === "russian-ukrainian-realtor-orlando/index.html") continue; // retired-URL stub
-  for (const href of ["/privacy-policy/", "/terms-of-use/", "/accessibility/"]) {
+  for (const href of isPartnerPage(file) ? [] : ["/privacy-policy/", "/terms-of-use/", "/accessibility/"]) {
     if (!html.includes(`href="${href}"`)) fail(file, `footer is missing the ${href} link`);
   }
   if (!html.includes('alt="Equal Housing Opportunity"')) fail(file, "footer is missing the Equal Housing Opportunity mark");
@@ -444,6 +452,10 @@ for (const [file, html] of pages) {
 for (const file of htmlFiles()) {
   if (NO_ANALYTICS.has(file)) continue;
   const html = readFileSync(join(ROOT, file), "utf8");
+  if (isPartnerPage(file)) {
+    if (html.includes("gtag/js") || html.includes("clarity.ms")) fail(file, "partner page must not carry Kizlo analytics");
+    continue;
+  }
   if (/<meta http-equiv="refresh"/i.test(html)) continue;
   if (!html.includes(`gtag/js?id=${ANALYTICS.ga4}`)) fail(file, "missing Google Analytics (run npm run build)");
   if (!html.includes(`"${ANALYTICS.clarity}"`)) fail(file, "missing Microsoft Clarity (run npm run build)");
