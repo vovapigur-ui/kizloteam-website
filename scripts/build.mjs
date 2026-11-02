@@ -19,7 +19,7 @@ import { breadcrumbs, canonicalOf, faqs, reviews } from "./lib/extract.mjs";
 import { escapeHtml, textOf } from "./lib/html.mjs";
 import { parseFrontMatter, renderMarkdown, splitH1 } from "./lib/markdown.mjs";
 import { communityReportsBlock, loadPosts, postUrl, renderIndex, renderPost } from "./lib/reports.mjs";
-import { agency, people, ANALYTICS, HREFLANG_CLUSTERS, NO_ANALYTICS, RATING, SITE, SKIP, VLAD_ID, AGENCY_ID } from "./lib/site-data.mjs";
+import { agency, people, isPartnerPage, ANALYTICS, HREFLANG_CLUSTERS, NO_ANALYTICS, RATING, SITE, SKIP, VLAD_ID, AGENCY_ID } from "./lib/site-data.mjs";
 import { breadcrumbNav, page } from "./lib/template.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -517,7 +517,7 @@ if (all.includes("404.html")) {
 // the schema pass rather than inside it. A frozen page that already carries
 // an analytics block is left exactly as written; a new one still gets it.
 for (const file of all) {
-  if (NO_ANALYTICS.has(file)) continue;
+  if (NO_ANALYTICS.has(file) || isPartnerPage(file)) continue;
   const original = readFileSync(join(ROOT, file), "utf8");
   if (/<meta http-equiv="refresh"/i.test(original)) continue;
   if (FROZEN.test(file) && original.includes(ANALYTICS_START)) continue;
