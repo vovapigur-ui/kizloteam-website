@@ -6,8 +6,8 @@
   "scope": "/open-house/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#23211C",
-  "theme_color": "#23211C",
+  "background_color": "#0a1620",
+  "theme_color": "#0a1620",
   "icons": [
     { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
   ]

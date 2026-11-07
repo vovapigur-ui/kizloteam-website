@@ -10,189 +10,213 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Open House">
   <meta name="format-detection" content="telephone=no">
-  <meta name="theme-color" content="#23211C">
+  <meta name="theme-color" content="#0a1620">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/open-house/manifest.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Hanken+Grotesk:wght@300..600&display=swap" rel="stylesheet">
+  <link rel="preload" href="/fonts/bodoni-moda-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
   <style>
     /* Open-house sign-in kiosk for iPad. Self-contained: no site header, no
-       analytics, nothing a visitor can wander off to. Tokens match
-       /css/main.css exactly. */
+       analytics, nothing a visitor can wander off to. Tokens, faces and the
+       K monogram match /css/kizlo.css (Midnight lake & brass, Oct 2026). */
+    @font-face { font-family: "Bodoni Moda"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/fonts/bodoni-moda-latin.woff2") format("woff2"); }
+    @font-face { font-family: "Jost"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/fonts/jost-latin.woff2") format("woff2"); }
     :root {
-      --ivory: #FAF7F2; --ivory-2: #F3EFE8; --ink: #1C1A17; --body: #4A463F;
-      --muted: #6E6659; --hairline: #E3DED4; --bronze: #8A6D4B; --bronze-on-dark: #AD885E;
-      --espresso: #23211C; --hairline-dark: #3A362F;
-      --serif: "Fraunces", Georgia, serif;
-      --sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+      --night: #0a1620; --night-2: #12212d; --gold: #bf9b62; --gold-ink: #7b5d2c;
+      --paper: #ffffff; --paper-2: #f4f2ee; --text: #19191b; --text-2: #4d4b47;
+      --on-night: #f2f0ec; --on-night-2: rgba(242, 240, 236, 0.72);
+      --rule: rgba(25, 25, 27, 0.14); --rule-night: rgba(242, 240, 236, 0.18);
+      --field: rgba(25, 25, 27, 0.56); --error: #a8362f; --error-ink: #8f2a24; --error-bg: #fbeceb;
+      --display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+      --sans: "Jost", "Futura", "Avenir Next", system-ui, sans-serif;
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
-      --pad: clamp(1.5rem, 4.5vw, 4rem);
+      --pad: clamp(24px, 4.4vw, 64px);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-optical-sizing: none; font-variation-settings: "opsz" 28; }
     html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
     body {
-      background: var(--espresso); color: var(--body); font-family: var(--sans); font-size: 17px;
-      line-height: 1.55; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+      background: var(--night); color: var(--text); font: 400 17px/1.6 var(--sans);
+      -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
       touch-action: manipulation; -webkit-user-select: none; user-select: none;
     }
     input, textarea { -webkit-user-select: text; user-select: text; }
     button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-    :focus-visible { outline: 2px solid var(--bronze); outline-offset: 3px; }
-    h1, h2, .serif { font-family: var(--serif); font-weight: 360; font-variation-settings: "opsz" 144; color: var(--ink); letter-spacing: -0.015em; line-height: 1.04; }
-    em { font-style: italic; font-weight: 340; }
-    .eyebrow { display: block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bronze); }
-    .eyebrow::after { content: ""; display: block; width: 2.5rem; height: 1px; background: var(--hairline); margin-top: 1rem; }
-    .micro { font-size: 0.75rem; font-weight: 450; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    ::selection { background: var(--gold); color: var(--night); }
+    :focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 3px; }
+    .night :focus-visible { outline-color: var(--gold); }
+    h1, h2, .display { font-family: var(--display); font-weight: 450; letter-spacing: -0.01em; line-height: 1.04; text-wrap: balance; font-variation-settings: "opsz" 48; }
+    .label { display: block; font: 500 13px/1.4 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-ink); }
+    .night .label { color: var(--gold); }
+    .rule-gold { display: block; width: 48px; height: 1px; background: var(--gold); }
+
+    /* K monogram lockup, as in the site header */
+    .wm { display: inline-flex; align-items: center; gap: 14px; line-height: 1; white-space: nowrap; text-align: left; }
+    .wm i { font: normal 600 1.7rem/1 var(--display); width: 46px; height: 46px; padding-top: 2px; display: grid; place-items: center; border: 1px solid var(--gold); color: var(--gold); }
+    .wm b { font: 500 0.82rem/1.25 var(--sans); letter-spacing: 0.32em; text-transform: uppercase; }
+    .wm b small { display: block; font-size: 0.6rem; letter-spacing: 0.42em; color: var(--gold); margin-top: 5px; }
+    .on-paper .wm b small { color: var(--gold-ink); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+      min-height: 64px; padding: 14px 38px; text-align: center;
+      font: 500 14px/1.35 var(--sans); letter-spacing: 0.2em; text-transform: uppercase;
+      border: 1px solid var(--gold); background: var(--gold); color: var(--night);
+      transition: background 0.35s var(--ease), color 0.35s var(--ease), transform 0.2s var(--ease), opacity 0.3s var(--ease);
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn[disabled] { opacity: 0.6; }
+    .btn--line { background: transparent; color: var(--text); border-color: var(--text); }
+    .btn .arrow { display: inline-block; width: 30px; height: 1px; background: currentColor; }
 
     .screen { position: fixed; inset: 0; opacity: 0; visibility: hidden; transition: opacity 0.7s var(--ease), visibility 0s linear 0.7s; }
     .screen.is-on { opacity: 1; visibility: visible; transition: opacity 0.7s var(--ease), visibility 0s; }
 
-    /* ── Welcome ───────────────────────────────────────────── */
-    #welcome { background: var(--espresso); color: var(--ivory); cursor: pointer; }
-    .hero-img { position: absolute; inset: 0; overflow: hidden; }
+    /* ── Welcome: the home page hero, held still ───────────── */
+    #welcome { background: var(--night); color: var(--on-night); cursor: pointer; display: grid; place-items: center; isolation: isolate; }
+    .hero-img { position: absolute; inset: 0; overflow: hidden; z-index: -2; }
     .hero-img img, .side img { opacity: 0; }
     .hero-img img.is-loaded, .side img.is-loaded { opacity: 1; }
-    .hero-img img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); transition: opacity 1.2s var(--ease), transform 14s var(--ease); }
+    .hero-img img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transition: opacity 1.2s var(--ease), transform 14s var(--ease); }
     #welcome.is-on .hero-img img { transform: scale(1); }
-    .hero-shade { position: absolute; inset: 0; background: rgba(20, 18, 15, 0.30); }
-    .topbar { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start;
-      padding: calc(env(safe-area-inset-top) + 1.75rem) var(--pad) 0; z-index: 3; }
-    .wordmark { font-family: var(--serif); font-size: 1.45rem; font-weight: 400; font-variation-settings: "opsz" 40; color: var(--ivory); line-height: 1.1; text-align: left; }
-    .wordmark span { display: block; font-family: var(--sans); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.34em; text-transform: uppercase; color: rgba(250,247,242,0.75); margin-top: 0.35rem; }
-    .topbar .micro { color: rgba(250,247,242,0.85); padding-top: 0.4rem; }
-    .welcome-card { position: absolute; left: var(--pad); right: var(--pad); bottom: calc(env(safe-area-inset-bottom) + var(--pad));
-      max-width: 46rem; background: var(--espresso); padding: clamp(2rem, 4vw, 3.25rem); z-index: 2; }
-    .welcome-card .eyebrow { color: var(--bronze-on-dark); }
-    .welcome-card .eyebrow::after { background: var(--hairline-dark); }
-    .welcome-card h1 { color: var(--ivory); font-size: clamp(2.6rem, 6vw, 4.6rem); margin-top: 1.4rem; }
-    .welcome-card .spec { margin-top: 1.1rem; color: rgba(250,247,242,0.72); letter-spacing: 0.14em; font-size: 0.8rem; text-transform: uppercase; }
-    .cta { display: inline-flex; align-items: center; gap: 1rem; margin-top: 2.1rem; background: var(--ivory); color: var(--ink);
-      padding: 1.25rem 2.1rem; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; }
-    .cta .arrow { display: inline-block; width: 1.6rem; height: 1px; background: currentColor; position: relative; transition: transform 0.6s var(--ease); }
-    .cta .arrow::after { content: ""; position: absolute; right: 0; top: -4px; width: 9px; height: 9px; border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: rotate(45deg); }
-    .welcome-card > * { opacity: 0; transform: translateY(18px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
-    #welcome.is-on .welcome-card > * { opacity: 1; transform: none; }
-    #welcome.is-on .welcome-card > *:nth-child(2) { transition-delay: 0.08s; }
-    #welcome.is-on .welcome-card > *:nth-child(3) { transition-delay: 0.16s; }
-    #welcome.is-on .welcome-card > *:nth-child(4) { transition-delay: 0.24s; }
-    .breathe { animation: breathe 2.8s var(--ease) infinite; }
-    @keyframes breathe { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+    .hero-shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgba(6, 8, 10, 0.66) 0%, rgba(6, 8, 10, 0.5) 35%, rgba(6, 8, 10, 0.62) 100%); }
+    .topbar { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center;
+      padding: calc(env(safe-area-inset-top) + 26px) var(--pad) 0; z-index: 3; }
+    .topbar .wm { color: var(--on-night); }
+    .welcome-body { text-align: center; padding: 120px var(--pad) 80px; max-width: 64rem; display: grid; justify-items: center; }
+    .welcome-body h1 { font-size: clamp(2.8rem, 6.4vw, 5.6rem); margin-top: 22px; }
+    .welcome-body .rule-gold { margin: 30px auto 0; }
+    .welcome-body .spec { margin-top: 26px; color: var(--on-night); font-size: clamp(1.05rem, 1.5vw, 1.25rem); letter-spacing: 0.04em; }
+    .welcome-body .btn { margin-top: 44px; }
+    .welcome-foot { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 28px); text-align: center; font-size: 14px; color: var(--on-night-2); padding: 0 var(--pad); }
+    .welcome-body > * { opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+    #welcome.is-on .welcome-body > * { opacity: 1; transform: none; }
+    #welcome.is-on .welcome-body > *:nth-child(2) { transition-delay: 0.08s; }
+    #welcome.is-on .welcome-body > *:nth-child(3) { transition-delay: 0.14s; }
+    #welcome.is-on .welcome-body > *:nth-child(4) { transition-delay: 0.2s; }
+    #welcome.is-on .welcome-body > *:nth-child(5) { transition-delay: 0.26s; }
 
     /* ── Form ──────────────────────────────────────────────── */
-    #form { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); background: var(--ivory); }
-    .side { position: relative; overflow: hidden; background: var(--espresso); }
+    #form { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); background: var(--paper); }
+    .side { position: relative; overflow: hidden; background: var(--night); }
     .side img { width: 100%; height: 100%; object-fit: cover; transition: opacity 1.2s var(--ease); }
-    .side .side-card { position: absolute; left: 0; right: 0; bottom: 0; background: var(--espresso); padding: 1.6rem var(--pad) calc(env(safe-area-inset-bottom) + 1.6rem); }
-    .side .side-card .serif { color: var(--ivory); font-size: clamp(1.4rem, 2.4vw, 2rem); }
-    .side .side-card .micro { color: rgba(250,247,242,0.7); margin-top: 0.5rem; }
+    .side .side-card { position: absolute; left: 0; right: 0; bottom: 0; background: var(--night); color: var(--on-night);
+      padding: 26px var(--pad) calc(env(safe-area-inset-bottom) + 26px); }
+    .side .side-card .display { font-size: clamp(1.5rem, 2.4vw, 2.1rem); line-height: 1.1; }
+    .side .side-card p:last-child { margin-top: 8px; color: var(--on-night-2); font-size: 15px; }
     .pane { position: relative; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
-      padding: calc(env(safe-area-inset-top) + 1.75rem) var(--pad) calc(env(safe-area-inset-bottom) + 2.5rem); }
-    .pane-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--hairline); }
-    .pane-top .wordmark { color: var(--ink); font-size: 1.15rem; }
-    .back { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding: 0.75rem 0 0.75rem 1rem; }
-    .stepcount { font-family: var(--serif); color: var(--bronze); font-size: 1.05rem; letter-spacing: 0.06em; }
+      padding: calc(env(safe-area-inset-top) + 22px) var(--pad) calc(env(safe-area-inset-bottom) + 40px); }
+    .pane-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); }
+    .pane-top .wm { color: var(--text); }
+    .pane-nav { display: flex; align-items: center; gap: 22px; }
+    .stepcount { font: 500 13px/1.4 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-ink); }
+    .back { font: 500 13px/1.4 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-2); padding: 14px 0 14px 12px; }
     .step { display: none; }
-    .step.is-on { display: block; animation: rise 0.7s var(--ease); }
-    @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-    .step h2 { font-size: clamp(2.1rem, 4.4vw, 3.3rem); margin-top: 2rem; }
-    .step .lead { margin-top: 0.9rem; color: var(--body); max-width: 34em; }
-    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1.9rem 1.75rem; margin-top: 2.25rem; }
+    .step.is-on { display: block; animation: rise 0.6s var(--ease); }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    .step h2 { font-size: clamp(2.2rem, 4.2vw, 3.4rem); margin-top: 34px; }
+    .step .lead { margin-top: 14px; color: var(--text-2); font-size: 18px; max-width: 36em; }
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 22px; margin-top: 34px; }
     .full { grid-column: 1 / -1; }
-    .field label, .q-label { display: block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.55rem; }
-    .field label .opt { text-transform: none; letter-spacing: 0; font-weight: 400; }
-    .field input { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--hairline); border-radius: 0;
-      padding: 0.55rem 0 0.7rem; font-family: var(--serif); font-size: 1.75rem; font-weight: 360; color: var(--ink);
-      transition: border-color 0.3s var(--ease); -webkit-appearance: none; appearance: none; }
-    .field input::placeholder { color: #B8B0A3; }
-    .field input:focus { outline: none; border-bottom-color: var(--bronze); }
-    .field.has-error input { border-bottom-color: #A8362F; }
-    .err { display: none; font-size: 0.85rem; color: #A8362F; margin-top: 0.45rem; }
+    .field label, .q-label { display: block; font: 500 16px/1.4 var(--sans); color: var(--text); margin-bottom: 9px; }
+    .field label .opt { font-weight: 400; color: var(--text-2); }
+    .field input { width: 100%; min-height: 62px; padding: 14px 18px; background: var(--paper); border: 1px solid var(--field); border-radius: 0;
+      font: 400 21px/1.3 var(--sans); color: var(--text); -webkit-appearance: none; appearance: none;
+      transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+    .field input::placeholder { color: #8a8780; }
+    .field input:focus { outline: none; border-color: var(--gold-ink); box-shadow: 0 0 0 1px var(--gold-ink), 0 0 0 4px rgba(191, 155, 98, 0.28); }
+    .field.has-error input { border-color: var(--error); box-shadow: 0 0 0 1px var(--error); }
+    .err { display: none; font-size: 15px; color: var(--error-ink); margin-top: 8px; }
     .has-error .err { display: block; }
-    .q { margin-top: 2.1rem; }
+    .q { margin-top: 30px; }
     .q.is-hidden { display: none; }
-    .chips { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; }
     .chip { position: relative; }
     .chip input { position: absolute; opacity: 0; pointer-events: none; }
-    .chip span { display: inline-flex; align-items: center; min-height: 3.6rem; padding: 0.9rem 1.45rem; border: 1px solid var(--hairline);
-      background: var(--ivory); color: var(--ink); font-size: 1.02rem; transition: background 0.35s var(--ease), color 0.35s var(--ease), border-color 0.35s var(--ease); }
-    .chip input:checked + span { background: var(--espresso); color: var(--ivory); border-color: var(--espresso); }
-    .chip input:focus-visible + span { outline: 2px solid var(--bronze); outline-offset: 3px; }
-    .q.has-error .chips span { border-color: #A8362F; }
-    .agent-name { margin-top: 1.25rem; max-width: 30rem; display: none; }
-    .agent-name.is-on { display: block; animation: rise 0.6s var(--ease); }
-    .actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 2.75rem; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 1rem; min-height: 4rem; padding: 1.15rem 2.4rem;
-      background: var(--espresso); color: var(--ivory); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
-      transition: background 0.35s var(--ease), opacity 0.35s var(--ease); }
-    .btn:active { background: var(--ink); }
-    .btn[disabled] { opacity: 0.5; }
-    .submit-err { display: none; margin-top: 1.1rem; color: #A8362F; font-size: 0.95rem; }
+    .chip span { display: inline-flex; align-items: center; min-height: 58px; padding: 12px 24px; border: 1px solid var(--field);
+      background: var(--paper); color: var(--text); font-size: 18px; transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease); }
+    .chip input:checked + span { background: var(--night); color: var(--on-night); border-color: var(--night); }
+    .chip input:focus-visible + span { outline: 2px solid var(--gold-ink); outline-offset: 3px; }
+    .q.has-error .chips span { border-color: var(--error); }
+    .agent-name { margin-top: 18px; max-width: 32rem; display: none; }
+    .agent-name.is-on { display: block; animation: rise 0.5s var(--ease); }
+    .actions { display: flex; align-items: center; gap: 22px; margin-top: 38px; flex-wrap: wrap; }
+    .submit-err { display: none; margin-top: 18px; padding: 14px 18px; background: var(--error-bg); color: var(--error-ink); font-size: 16px; }
     .submit-err.is-on { display: block; }
-    .consent { margin-top: 1.6rem; font-size: 0.78rem; line-height: 1.65; color: var(--muted); max-width: 46em; }
-    .consent a { color: var(--bronze); border-bottom: 1px solid var(--bronze); text-decoration: none; }
+    .consent { margin-top: 22px; font-size: 14px; line-height: 1.6; color: var(--text-2); max-width: 62ch; }
+    .consent .inline-link { color: var(--gold-ink); text-decoration: underline; text-underline-offset: 3px; font-size: inherit; }
     .hp { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-    .legal { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; margin-top: 2.5rem; padding-top: 1.25rem;
-      border-top: 1px solid var(--hairline); font-size: 0.7rem; letter-spacing: 0.04em; color: var(--muted); }
-    .legal img { flex: none; height: 32px; width: auto; filter: brightness(0); opacity: 0.6; } /* the shared mark is drawn ivory for the dark site footer */
+    .legal { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 40px; padding-top: 20px;
+      border-top: 1px solid var(--rule); font-size: 13px; line-height: 1.55; color: var(--text-2); }
+    .legal img { flex: none; height: 30px; width: auto; filter: brightness(0); opacity: 0.62; } /* the shared mark is drawn light for the dark site footer */
 
     /* ── Done ──────────────────────────────────────────────── */
-    #done { background: var(--espresso); color: var(--ivory); display: flex; align-items: center; }
-    .done-wrap { width: 100%; padding: var(--pad); max-width: 60rem; }
-    #done .eyebrow { color: var(--bronze-on-dark); }
-    #done .eyebrow::after { background: var(--hairline-dark); }
-    #done h1 { color: var(--ivory); font-size: clamp(3rem, 7vw, 5.4rem); margin-top: 1.6rem; }
-    #done .lede { font-family: var(--serif); font-weight: 350; font-variation-settings: "opsz" 60; font-size: clamp(1.35rem, 2.4vw, 1.9rem);
-      line-height: 1.4; color: rgba(250,247,242,0.86); margin-top: 1.6rem; max-width: 30em; }
-    .done-foot { display: flex; align-items: center; gap: 2rem; margin-top: 3rem; flex-wrap: wrap; }
-    .done-foot .btn { background: var(--ivory); color: var(--ink); }
-    .timer { flex: 1 1 12rem; max-width: 18rem; height: 1px; background: var(--hairline-dark); position: relative; overflow: hidden; }
-    .timer i { position: absolute; inset: 0; background: var(--bronze-on-dark); transform-origin: left; transform: scaleX(1); }
+    #done { background: var(--night); color: var(--on-night); display: grid; place-items: center; text-align: center; }
+    .done-wrap { width: 100%; padding: var(--pad); max-width: 52rem; display: grid; justify-items: center; }
+    #done h1 { font-size: clamp(3rem, 7vw, 5.6rem); margin-top: 22px; }
+    #done .rule-gold { margin-top: 30px; }
+    #done .lede { font-size: clamp(1.2rem, 2vw, 1.5rem); line-height: 1.5; color: var(--on-night); margin-top: 28px; max-width: 30em; }
+    .done-foot { display: grid; justify-items: center; gap: 26px; margin-top: 44px; }
+    .timer { width: 220px; height: 1px; background: var(--rule-night); position: relative; overflow: hidden; }
+    .timer i { position: absolute; inset: 0; background: var(--gold); transform-origin: left; transform: scaleX(1); }
     #done.is-on .timer i { transform: scaleX(0); transition: transform 10s linear; }
-    #done .done-wrap > * { opacity: 0; transform: translateY(18px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+    #done .done-wrap > * { opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
     #done.is-on .done-wrap > * { opacity: 1; transform: none; }
-    #done.is-on .done-wrap > *:nth-child(2) { transition-delay: 0.1s; }
-    #done.is-on .done-wrap > *:nth-child(3) { transition-delay: 0.2s; }
-    #done.is-on .done-wrap > *:nth-child(4) { transition-delay: 0.3s; }
+    #done.is-on .done-wrap > *:nth-child(2) { transition-delay: 0.08s; }
+    #done.is-on .done-wrap > *:nth-child(3) { transition-delay: 0.14s; }
+    #done.is-on .done-wrap > *:nth-child(4) { transition-delay: 0.2s; }
+    #done.is-on .done-wrap > *:nth-child(5) { transition-delay: 0.26s; }
 
     /* ── Setup / host panel ───────────────────────────────── */
-    #setup { background: var(--ivory); overflow-y: auto; }
-    .setup-wrap { padding: calc(env(safe-area-inset-top) + 2.5rem) var(--pad) 3rem; max-width: 70rem; }
-    .setup-wrap h1 { font-size: clamp(2.4rem, 5vw, 3.8rem); margin-top: 1.5rem; }
-    .homes { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; margin-top: 2.5rem; }
+    #setup { background: var(--paper); overflow-y: auto; }
+    .setup-wrap { padding: calc(env(safe-area-inset-top) + 30px) var(--pad) 48px; max-width: 76rem; margin: 0 auto; }
+    .setup-wrap .wm { color: var(--text); }
+    .setup-wrap .label { margin-top: 44px; }
+    .setup-wrap h1 { font-size: clamp(2.5rem, 5vw, 4rem); margin-top: 16px; }
+    .homes { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 36px; }
     .home { text-align: left; display: block; }
-    .home .frame { aspect-ratio: 4 / 3; overflow: hidden; background: var(--ivory-2); }
+    .home .frame { aspect-ratio: 4 / 3; overflow: hidden; background: var(--paper-2); position: relative; }
     .home .frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
-    .home:active .frame img { transform: scale(1.04); }
-    .home .cap { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1rem; margin-top: 1rem; border-top: 1px solid var(--hairline); }
-    .home .cap .serif { font-size: 1.5rem; }
-    .home.is-current .cap .micro { color: var(--bronze); }
-    .host-stats { display: flex; gap: 3rem; flex-wrap: wrap; margin-top: 2.5rem; padding: 1.5rem 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
-    .host-stats .num { font-family: var(--serif); font-size: 2.4rem; color: var(--ink); font-variation-settings: "opsz" 144; line-height: 1; }
-    .host-stats .micro { margin-top: 0.6rem; }
-    .host-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
-    .btn--line { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
-    .install { margin-top: 2.5rem; background: var(--espresso); color: rgba(250,247,242,0.8); padding: clamp(1.5rem, 3vw, 2.25rem); max-width: 46rem; }
-    .install .micro { color: var(--bronze-on-dark); }
-    .install-title { font-family: var(--serif); font-size: 1.6rem; color: var(--ivory); margin-top: 0.6rem; line-height: 1.2; }
-    .install ol { margin: 1.1rem 0 0 1.2rem; display: grid; gap: 0.6rem; }
-    .install strong { color: var(--ivory); font-weight: 500; }
-    .setup-note { margin-top: 2rem; font-size: 0.9rem; color: var(--muted); max-width: 44em; }
+    .home:active .frame img { transform: scale(1.03); }
+    .home.is-current .frame { outline: 2px solid var(--gold); outline-offset: 4px; }
+    .home .cap { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-top: 16px; }
+    .home .cap .display { font-size: clamp(1.5rem, 2.2vw, 1.9rem); line-height: 1.15; }
+    .home .cap .label { white-space: nowrap; }
+    .home .meta { margin-top: 6px; color: var(--text-2); font-size: 15px; }
+    .host-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 40px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+    .host-stats > div { padding: 22px 20px 22px 0; }
+    .host-stats > div + div { padding-left: 20px; border-left: 1px solid var(--rule); }
+    .host-stats .num { font: 450 2.6rem/1 var(--display); font-variant-numeric: lining-nums tabular-nums; color: var(--text); }
+    .host-stats p:last-child { margin-top: 10px; font-size: 15px; color: var(--text-2); }
+    .host-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+    .install { margin-top: 40px; background: var(--night); color: var(--on-night-2); padding: clamp(24px, 3vw, 36px); max-width: 48rem; }
+    .install-title { font: 450 1.7rem/1.2 var(--display); color: var(--on-night); margin-top: 12px; }
+    .install ol { margin: 16px 0 0 20px; display: grid; gap: 8px; }
+    .install strong { color: var(--on-night); font-weight: 500; }
+    .setup-note { margin-top: 28px; font-size: 15px; color: var(--text-2); max-width: 50em; }
+
+    /* ── Privacy Policy, opened inside the kiosk so a guest can't leave it ── */
+    .sheet { position: fixed; inset: 0; z-index: 50; background: rgba(6, 8, 10, 0.6); display: grid; place-items: center; padding: var(--pad); }
+    .sheet[hidden] { display: none; }
+    .sheet-box { width: min(900px, 100%); height: min(86vh, 100%); background: var(--paper); display: grid; grid-template-rows: auto 1fr; }
+    .sheet-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; border-bottom: 1px solid var(--rule); }
+    .sheet-top .btn { min-height: 48px; padding: 10px 24px; }
+    .sheet iframe { width: 100%; height: 100%; border: 0; }
 
     @media (orientation: portrait), (max-width: 900px) {
-      #form { grid-template-columns: 1fr; grid-template-rows: 26vh 1fr; grid-template-rows: 26dvh 1fr; }
-      .side .side-card { padding-bottom: 1.25rem; }
-      .side .side-card .serif { font-size: 1.5rem; }
+      #form { grid-template-columns: 1fr; grid-template-rows: 24vh 1fr; grid-template-rows: 24dvh 1fr; }
+      .side .side-card { padding-block: 18px; }
     }
     @media (max-width: 640px) {
       .fields { grid-template-columns: 1fr; }
       .homes { grid-template-columns: 1fr; }
-      .welcome-card h1 { font-size: 2.4rem; }
+      .host-stats { grid-template-columns: 1fr; }
+      .host-stats > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+      .wm b { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
-      .welcome-card > *, #done .done-wrap > * { opacity: 1 !important; transform: none !important; }
+      .welcome-body > *, #done .done-wrap > * { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
@@ -200,23 +224,24 @@
 
   <!-- 1 · Choose the property (first launch, or from the host panel) -->
   <section class="screen" id="setup" aria-label="Choose the open house">
-    <div class="setup-wrap">
-      <span class="eyebrow">Open House Setup</span>
-      <h1>Which home is <em>open today?</em></h1>
+    <div class="setup-wrap on-paper">
+      <span class="wm" aria-hidden="true"><i>K</i><b>The Kizlo Team<small>Realtors</small></b></span>
+      <span class="label">Open house setup</span>
+      <h1>Which home is open today?</h1>
       <div class="homes" id="homes"></div>
       <div id="host-extra" hidden>
         <div class="host-stats">
-          <div><p class="num" id="stat-today">0</p><p class="micro">Signed in today on this iPad</p></div>
-          <div><p class="num" id="stat-pending">0</p><p class="micro">Waiting to send</p></div>
-          <div><p class="num" id="stat-held">0</p><p class="micro">Not accepted, kept here</p></div>
+          <div><p class="num" id="stat-today">0</p><p>Signed in today on this iPad</p></div>
+          <div><p class="num" id="stat-pending">0</p><p>Waiting to send</p></div>
+          <div><p class="num" id="stat-held">0</p><p>Not accepted, kept here</p></div>
         </div>
         <div class="host-actions">
           <button class="btn" type="button" id="host-resume">Back to sign in</button>
           <button class="btn btn--line" type="button" id="host-retry">Send waiting sign-ins now</button>
         </div>
       </div>
-      <div class="install" id="install" hidden>
-        <p class="micro">Not full screen yet</p>
+      <div class="install night" id="install" hidden>
+        <p class="label">Not full screen yet</p>
         <p class="install-title">Install it as an app for full screen.</p>
         <ol>
           <li>Open <strong>kizloteam.com/open-house</strong> in <strong>Safari</strong>. Chrome on iPad can't install apps; Apple only allows Safari to.</li>
@@ -229,19 +254,21 @@
   </section>
 
   <!-- 2 · Welcome -->
-  <section class="screen" id="welcome" aria-label="Welcome">
+  <section class="screen night" id="welcome" aria-label="Welcome">
     <div class="hero-img"><img id="welcome-img" alt="" decoding="async"></div>
     <div class="hero-shade"></div>
     <div class="topbar">
-      <button class="wordmark" type="button" data-host>The Kizlo Team<span>Keller Williams Realty At The Lakes</span></button>
-      <p class="micro">Open House · Today</p>
+      <button type="button" data-host aria-label="The Kizlo Team"><span class="wm" aria-hidden="true"><i>K</i><b>The Kizlo Team<small>Realtors</small></b></span></button>
+      <p class="label">Open house today</p>
     </div>
-    <div class="welcome-card">
-      <span class="eyebrow">Welcome</span>
+    <div class="welcome-body">
+      <span class="label">Welcome to</span>
       <h1 id="welcome-title"></h1>
+      <span class="rule-gold" aria-hidden="true"></span>
       <p class="spec" id="welcome-spec"></p>
-      <button class="cta" type="button" id="start">Sign in to tour the home <span class="arrow breathe" aria-hidden="true"></span></button>
+      <button class="btn" type="button" id="start">Sign in to tour the home <span class="arrow" aria-hidden="true"></span></button>
     </div>
+    <p class="welcome-foot">Listed by The Kizlo Team · Keller Williams Realty At The Lakes</p>
   </section>
 
   <!-- 3 · Sign-in form -->
@@ -249,22 +276,22 @@
     <div class="side">
       <img id="side-img" alt="" decoding="async">
       <div class="side-card">
-        <p class="serif" id="side-title"></p>
-        <p class="micro" id="side-spec"></p>
+        <p class="display" id="side-title"></p>
+        <p id="side-spec"></p>
       </div>
     </div>
     <div class="pane" id="pane">
-      <div class="pane-top">
-        <button class="wordmark" type="button" data-host>The Kizlo Team</button>
-        <div style="display: flex; align-items: center; gap: 1.25rem;">
-          <span class="stepcount" id="stepcount">01 / 02</span>
+      <div class="pane-top on-paper">
+        <button type="button" data-host aria-label="The Kizlo Team"><span class="wm" aria-hidden="true"><i>K</i><b>The Kizlo Team<small>Realtors</small></b></span></button>
+        <div class="pane-nav">
+          <span class="stepcount" id="stepcount">Step 1 of 2</span>
           <button class="back" type="button" id="back">Back</button>
         </div>
       </div>
 
       <form id="signin" novalidate autocomplete="off">
         <div class="step is-on" data-step="1">
-          <h2>Welcome in. <em>Who's visiting?</em></h2>
+          <h2>Welcome in. Who's visiting?</h2>
           <p class="lead">Two quick screens, then enjoy the home. We'll text you the photos and details so you have them after you leave.</p>
           <div class="fields">
             <div class="field" data-field="first_name">
@@ -294,7 +321,7 @@
         </div>
 
         <div class="step" data-step="2">
-          <h2>A few quick <em>questions.</em></h2>
+          <h2>A few quick questions.</h2>
           <p class="lead">Tap whatever fits. It helps us point you to the right homes.</p>
 
           <div class="q" data-q="visit_reason">
@@ -367,7 +394,7 @@
             <button class="btn" type="submit" id="submit">Sign in</button>
           </div>
           <p class="submit-err" id="submit-err" role="alert"></p>
-          <p class="consent">By submitting, you agree that The Kizlo Team may contact you about your inquiry by phone, text or email, including messages sent using an automatic telephone dialing system. Consent is not a condition of purchase. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. See our <a href="/privacy-policy/" target="_blank" rel="noopener" tabindex="-1">Privacy Policy</a>.</p>
+          <p class="consent">By submitting, you agree that The Kizlo Team may contact you about your inquiry by phone, text or email, including messages sent using an automatic telephone dialing system. Consent is not a condition of purchase. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. See our <button type="button" class="inline-link" id="privacy-open">Privacy Policy</button>.</p>
         </div>
       </form>
 
@@ -379,10 +406,11 @@
   </section>
 
   <!-- 4 · Thank you -->
-  <section class="screen" id="done" aria-label="Signed in" aria-live="polite">
+  <section class="screen night" id="done" aria-label="Signed in" aria-live="polite">
     <div class="done-wrap">
-      <span class="eyebrow">You're signed in</span>
+      <span class="label">You're signed in</span>
       <h1 id="done-title">Thank you.</h1>
+      <span class="rule-gold" aria-hidden="true"></span>
       <p class="lede" id="done-lede"></p>
       <div class="done-foot">
         <button class="btn" type="button" id="done-btn">Done</button>
@@ -390,6 +418,13 @@
       </div>
     </div>
   </section>
+
+  <div class="sheet" id="privacy" hidden role="dialog" aria-modal="true" aria-label="Privacy Policy">
+    <div class="sheet-box">
+      <div class="sheet-top"><span class="label">Privacy Policy</span><button class="btn" type="button" id="privacy-close">Close</button></div>
+      <iframe id="privacy-frame" title="Privacy Policy"></iframe>
+    </div>
+  </div>
 
   <script>
   (function () {
@@ -400,13 +435,13 @@
     var WAKE_URL = "https://kizlohq.onrender.com/api/version";
     var HOMES = {
       "3625-waters-edge": {
-        title: "3625 Waters Edge <em>Drive</em>", plain: "3625 Waters Edge Dr",
+        title: "3625 Waters Edge Drive", plain: "3625 Waters Edge Dr", town: "Belle Isle",
         spec: "Belle Isle · 4 bed · 3 bath · 2,813 sq ft · $1,250,000",
         img: "/3625-waters-edge/img/hero-2048.jpg",
         alt: "Covered boat dock at twilight at 3625 Waters Edge Dr, Belle Isle, Florida"
       },
       "8291-procida-isle": {
-        title: "8291 Procida Isle <em>Lane</em>", plain: "8291 Procida Isle Ln",
+        title: "8291 Procida Isle Lane", plain: "8291 Procida Isle Ln", town: "Windermere",
         spec: "Windermere · 4 bed · 3 bath · 2,224 sq ft · $775,000",
         img: "/8291-procida-isle/img/hero-pool-dusk-2048.jpg",
         alt: "Saltwater pool and fire table at dusk at 8291 Procida Isle Ln, Windermere, Florida"
@@ -439,7 +474,7 @@
       if (!home) return false;
       store(KEY_HOME, home);
       var h = HOMES[home];
-      $("#welcome-title").innerHTML = h.title;
+      $("#welcome-title").textContent = h.title;
       $("#welcome-spec").textContent = h.spec;
       $("#side-title").textContent = h.plain;
       $("#side-spec").textContent = h.spec;
@@ -462,8 +497,8 @@
         var h = HOMES[slug];
         var b = document.createElement("button");
         b.type = "button"; b.className = "home" + (slug === home ? " is-current" : "");
-        b.innerHTML = '<div class="frame"><img alt="" src="' + h.img + '"></div><div class="cap"><p class="serif">' + h.plain +
-          '</p><p class="micro">' + (slug === home ? "Open now" : "Choose") + "</p></div>";
+        b.innerHTML = '<div class="frame"><img alt="" src="' + h.img + '"></div><div class="cap"><p class="display">' + h.plain +
+          '</p><span class="label">' + (slug === home ? "Last used" : "Choose") + '</span></div><p class="meta">' + h.spec + "</p>";
         b.addEventListener("click", function () { setHome(slug); resetForm(); show("welcome"); });
         wrap.appendChild(b);
       });
@@ -500,7 +535,7 @@
     function goStep(n) {
       step = n;
       $$(".step").forEach(function (s) { s.classList.toggle("is-on", +s.getAttribute("data-step") === n); });
-      $("#stepcount").textContent = "0" + n + " / 02";
+      $("#stepcount").textContent = "Step " + n + " of 2";
       $("#pane").scrollTop = 0;
     }
     $("#back").addEventListener("click", function () {
@@ -580,6 +615,7 @@
       $$(".has-error").forEach(function (e) { e.classList.remove("has-error"); });
       $("#agent-name").classList.remove("is-on");
       $("#submit-err").classList.remove("is-on");
+      $("#privacy").hidden = true;
       $$(".buyer-only").forEach(function (q) { q.classList.remove("is-hidden"); });
       goStep(1);
     }
@@ -655,12 +691,22 @@
     setInterval(flushQueue, 30 * 1000);
     window.addEventListener("online", flushQueue);
 
-    function finish(firstName, texted) {
+    // What the guest is told matches what will actually reach their phone.
+    var DONE_MSG = {
+      texted: "Enjoy the home. We just texted you the photos and details, so you'll have everything after you leave.",
+      queued: "Enjoy the home. We'll text you the photos and details shortly, so you'll have everything after you leave.",
+      already: "We already sent you the photos and details earlier, so just enjoy the home.",
+      none: "Enjoy the home, and ask us anything while you're here."
+    };
+    function textState(body) {
+      if (body && body.texted) return "texted";
+      if (body && body.text_reason === "already_texted_today") return "already";
+      return "none";
+    }
+    function finish(firstName, state) {
       bumpCount();
-      $("#done-title").innerHTML = "Welcome, <em>" + escapeHtml(firstName) + ".</em>";
-      $("#done-lede").textContent = texted
-        ? "Enjoy the home. We just texted you the photos and details, so everything is on your phone when you leave."
-        : "Enjoy the home. We'll text you the photos and details shortly, so everything is on your phone when you leave.";
+      $("#done-title").textContent = "Welcome, " + firstName + ".";
+      $("#done-lede").textContent = DONE_MSG[state] || DONE_MSG.none;
       resetForm();
       show("done");
       doneTimer = setTimeout(function () { show("welcome"); }, DONE_MS);
@@ -680,13 +726,23 @@
       waitForSave.then(function () { return post(p, ENDPOINT); }).then(function (res) {
         // A sign-in is never lost: anything the server didn't accept is kept on
         // this iPad (waiting or held) and the guest still gets their thank-you.
-        if (res.status >= 500 || res.status === 429) { enqueue(p); finish(first, false); return; }
-        if (res.status >= 400) { var held = store(KEY_HELD) || []; held.push(p); store(KEY_HELD, held); finish(first, false); return; }
-        finish(first, !!(res.body && res.body.texted));
-      }, function () { enqueue(p); finish(first, false); });
+        if (res.status >= 500 || res.status === 429) { enqueue(p); finish(first, "queued"); return; }
+        if (res.status >= 400) { var held = store(KEY_HELD) || []; held.push(p); store(KEY_HELD, held); finish(first, "none"); return; }
+        finish(first, textState(res.body));
+      }, function () { enqueue(p); finish(first, "queued"); });
     });
 
     $("#done-btn").addEventListener("click", function () { show("welcome"); });
+
+    /* ---------- Privacy Policy inside the kiosk (a link would open Safari and strand the guest) ---------- */
+    $("#privacy-open").addEventListener("click", function () {
+      var fr = $("#privacy-frame");
+      if (!fr.getAttribute("src")) fr.setAttribute("src", "/privacy-policy/");
+      $("#privacy").hidden = false; $("#privacy-close").focus();
+    });
+    function closePrivacy() { $("#privacy").hidden = true; $("#privacy-open").focus(); }
+    $("#privacy-close").addEventListener("click", closePrivacy);
+    $("#privacy").addEventListener("click", function (e) { if (e.target === this) closePrivacy(); });
 
     /* ---------- stay current: an iPad left open all day picks up fixes on its own ---------- */
     setInterval(function () {
