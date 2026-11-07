@@ -224,7 +224,7 @@
           <li>Close Safari and open <strong>Open House</strong> from the home screen. It runs full screen, with no address bar or tabs.</li>
         </ol>
       </div>
-      <p class="setup-note">During the open house, press and hold The Kizlo Team name in the top left corner for two seconds to come back here.</p>
+      <p class="setup-note">This screen appears every time the app opens. During the open house, press and hold The Kizlo Team name in the top left corner for two seconds to come back here.</p>
     </div>
   </section>
 
@@ -701,8 +701,12 @@
     Object.keys(HOMES).forEach(function (k) { var im = new Image(); im.src = HOMES[k].img; });
 
     var fromUrl = new URLSearchParams(location.search).get("home");
-    if (setHome(fromUrl) || setHome(store(KEY_HOME))) show("welcome");
-    else renderSetup(false);
+    // A link with ?home= opens straight to that home (and the kiosk's own
+    // reloads keep it). Plain /open-house always asks which home is open
+    // today, with the last one marked, so the iPad never silently opens on
+    // yesterday's house.
+    if (setHome(fromUrl)) show("welcome");
+    else { var last = store(KEY_HOME); if (HOMES[last]) home = last; renderSetup(false); }
     flushQueue();
   })();
   </script>
