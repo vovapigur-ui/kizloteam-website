@@ -177,6 +177,7 @@
     .home { text-align: left; display: block; }
     .home .frame { aspect-ratio: 4 / 3; overflow: hidden; background: var(--paper-2); position: relative; }
     .home .frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+    .home .frame:empty { background: var(--night); }
     .home:active .frame img { transform: scale(1.03); }
     .home.is-current .frame { outline: 2px solid var(--gold); outline-offset: 4px; }
     .home .cap { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-top: 16px; }
@@ -433,6 +434,10 @@
     var ENDPOINT = "https://kizlohq.onrender.com/api/public/open-house";
     var PARTIAL_URL = "https://kizlohq.onrender.com/api/public/open-house/partial";
     var WAKE_URL = "https://kizlohq.onrender.com/api/version";
+    var HOMES_URL = "https://kizlohq.onrender.com/api/public/open-house/listings";
+    // The homes come from Kizlo HQ's Open House page (11/7). This list is only
+    // the fallback for an iPad that has never reached Kizlo HQ; after that the
+    // last list it got is kept on the iPad (kz_oh_homes), so it opens offline.
     var HOMES = {
       "3625-waters-edge": {
         title: "3625 Waters Edge Drive", plain: "3625 Waters Edge Dr", town: "Belle Isle",
@@ -447,13 +452,69 @@
         alt: "Saltwater pool and fire table at dusk at 8291 Procida Isle Ln, Windermere, Florida"
       }
     };
-    var KEY_HOME = "kz_oh_home", KEY_QUEUE = "kz_oh_queue", KEY_COUNT = "kz_oh_count", KEY_HELD = "kz_oh_held";
+    var KEY_HOMES = "kz_oh_homes", KEY_HOME = "kz_oh_home", KEY_QUEUE = "kz_oh_queue", KEY_COUNT = "kz_oh_count", KEY_HELD = "kz_oh_held";
     var LOADED_AT = Date.now(), REFRESH_MS = 15 * 60 * 1000;
     var IDLE_MS = 90 * 1000, DONE_MS = 10 * 1000, TIMEOUT_MS = 15 * 1000;
 
     var $ = function (s, r) { return (r || document).querySelector(s); };
     var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
     function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+    function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return "&#" + c.charCodeAt(0) + ";"; }); }
+
+    /* ---------- the homes: Kizlo HQ's list, kept on the iPad ---------- */
+    function homesFrom(list) {
+      var out = {}, n = 0;
+      (list || []).forEach(function (h) {
+        if (!h || !/^[a-z0-9-]{1,60}$/.test(h.slug || "") || !h.address) return;
+        out[h.slug] = {
+          title: h.title || h.address, plain: h.address, town: h.city || "", spec: h.spec || "",
+          img: /^(\/|https:\/\/)/.test(h.photo || "") ? h.photo : "", alt: h.alt || h.title || h.address
+        };
+        n++;
+      });
+      return n ? out : null;
+    }
+    (function () { var kept = store(KEY_HOMES); if (kept && typeof kept === "object" && Object.keys(kept).length) HOMES = kept; })();
+    // Warm every photo, and keep a copy in the offline store (open-house/sw.js
+    // serves it with no Wi-Fi). Done from the page so it works on the very
+    // first visit too, before the offline worker has started.
+    function warmPhotos() {
+      Object.keys(HOMES).forEach(function (k) {
+        var src = HOMES[k].img;
+        if (!src) return;
+        var im = new Image(); im.src = src;
+        if (!window.caches) return;
+        caches.open("kz-open-house-v1").then(function (c) {
+          return c.match(src).then(function (hit) {
+            if (hit) return;
+            var sameSite = src.charAt(0) === "/";
+            return fetch(src, sameSite ? {} : { mode: "no-cors" }).then(function (r) {
+              if (r.ok || r.type === "opaque") return c.put(src, r);
+            });
+          });
+        }).catch(function () {});
+      });
+    }
+    function loadHomes() {
+      var ctl = window.AbortController ? new AbortController() : null;
+      var t = setTimeout(function () { if (ctl) ctl.abort(); }, TIMEOUT_MS);
+      return fetch(HOMES_URL, { cache: "no-store", signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          clearTimeout(t);
+          var next = homesFrom(j && j.homes);
+          // An empty or broken answer never empties the iPad.
+          if (!next) return false;
+          var changed = JSON.stringify(next) !== JSON.stringify(HOMES);
+          HOMES = next; store(KEY_HOMES, HOMES);
+          if (changed) {
+            warmPhotos();
+            if ($("#setup").classList.contains("is-on")) renderSetup(!$("#host-extra").hidden);
+            else if (home && HOMES[home]) setHome(home);
+          }
+          return true;
+        }, function () { clearTimeout(t); return false; });
+    }
 
     var form = $("#signin");
     function isInstalled() {
@@ -480,6 +541,7 @@
       $("#side-spec").textContent = h.spec;
       ["#welcome-img", "#side-img"].forEach(function (sel) {
         var i = $(sel);
+        if (!h.img) { i.removeAttribute("src"); i.classList.remove("is-loaded"); i.alt = ""; return; }
         if (i.getAttribute("src") === h.img) return;
         i.classList.remove("is-loaded");
         i.onload = function () { i.classList.add("is-loaded"); };
@@ -497,8 +559,8 @@
         var h = HOMES[slug];
         var b = document.createElement("button");
         b.type = "button"; b.className = "home" + (slug === home ? " is-current" : "");
-        b.innerHTML = '<div class="frame"><img alt="" src="' + h.img + '"></div><div class="cap"><p class="display">' + h.plain +
-          '</p><span class="label">' + (slug === home ? "Last used" : "Choose") + '</span></div><p class="meta">' + h.spec + "</p>";
+        b.innerHTML = '<div class="frame">' + (h.img ? '<img alt="" src="' + esc(h.img) + '">' : "") + '</div><div class="cap"><p class="display">' + esc(h.plain) +
+          '</p><span class="label">' + (slug === home ? "Last used" : "Choose") + '</span></div><p class="meta">' + esc(h.spec) + "</p>";
         b.addEventListener("click", function () { setHome(slug); resetForm(); show("welcome"); });
         wrap.appendChild(b);
       });
@@ -700,7 +762,7 @@
     };
     function textState(body) {
       if (body && body.texted) return "texted";
-      if (body && body.text_reason === "already_texted_today") return "already";
+      if (body && (body.text_reason === "already_thanked" || body.text_reason === "already_texted_today")) return "already";
       return "none";
     }
     function finish(firstName, state) {
@@ -752,9 +814,16 @@
     /* ---------- keep the CRM awake so the first guest isn't kept waiting ---------- */
     function wake() { try { fetch(WAKE_URL, { mode: "no-cors", cache: "no-store" }).catch(function () {}); } catch (e) {} }
     wake(); setInterval(wake, 4 * 60 * 1000);
+    // Homes added or removed in Kizlo HQ reach an iPad left open on the picker too.
+    setInterval(loadHomes, 10 * 60 * 1000);
 
-    /* ---------- boot: warm both listing photos so no guest ever sees a blank screen ---------- */
-    Object.keys(HOMES).forEach(function (k) { var im = new Image(); im.src = HOMES[k].img; });
+    /* ---------- open with no Wi-Fi: keep the page, fonts and photos on the iPad ---------- */
+    if ("serviceWorker" in navigator) {
+      try { navigator.serviceWorker.register("/open-house/sw.js", { scope: "/open-house/" }).catch(function () {}); } catch (e) {}
+    }
+
+    /* ---------- boot: warm every listing photo so no guest ever sees a blank screen ---------- */
+    warmPhotos();
 
     var fromUrl = new URLSearchParams(location.search).get("home");
     // A link with ?home= opens straight to that home (and the kiosk's own
@@ -763,6 +832,11 @@
     // yesterday's house.
     if (setHome(fromUrl)) show("welcome");
     else { var last = store(KEY_HOME); if (HOMES[last]) home = last; renderSetup(false); }
+    // Fresh list from Kizlo HQ. A ?home= link to a home this iPad hasn't heard
+    // of yet opens once the list arrives, unless someone already picked one.
+    loadHomes().then(function () {
+      if (fromUrl && !home && HOMES[fromUrl] && $("#setup").classList.contains("is-on") && $("#host-extra").hidden && setHome(fromUrl)) show("welcome");
+    });
     flushQueue();
   })();
   </script>
