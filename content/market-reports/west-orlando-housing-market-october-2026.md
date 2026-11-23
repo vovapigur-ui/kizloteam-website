@@ -1,5 +1,5 @@
 ---
-title: West Orlando Housing Market October 2026: Rates Hit 7.4%
+title: West Orlando Market October 2026: Orlando Median $399,610
 headline: West Orlando Market, October 2026
 description: September 2026 numbers for Windermere, Winter Garden, Horizon West and Clermont: Orlando median $399,610, 66 days on market, 5.3 months of supply, 7.4% rates.
 date: 2026-10-19
