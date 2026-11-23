@@ -9,7 +9,7 @@
    (Turnstile > kizloteam.com). Empty means off: the forms work as before. */
 (function () {
   "use strict";
-  var SITE_KEY = "";
+  var SITE_KEY = "0x4AAAAAAGPY8jB7NLhj291h";
   if (!SITE_KEY) return;
 
   var forms = Array.prototype.filter.call(document.querySelectorAll("form"), function (f) {
