@@ -485,7 +485,7 @@ const ownsListingSchema = (html) =>
 // tools are maintained outside the site redesign (lib/chrome.mjs leaves them
 // alone for the same reason). Once built they are read, never rewritten:
 // a site-wide schema or analytics change does not reach them.
-const FROZEN = /^(open-house|studio|3625-waters-edge|8291-procida-isle|listings)\//;
+const FROZEN = /^(open-house|studio|3625-waters-edge|8291-procida-isle|8336-vivaro-isle|listings)\//;
 
 for (const file of files) {
   const original = readFileSync(join(ROOT, file), "utf8");
