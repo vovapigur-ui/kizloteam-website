@@ -118,7 +118,7 @@ export function checkContent({ pages, graphs, fail, warn }) {
       if (src) return src;
       return ((/\bsrcset="([^"]*)"/.exec(tag) || [])[1] || "").split(",")[0].trim().split(/\s+/)[0];
     };
-    const OUT = /^(open-house|studio|3625-waters-edge|8291-procida-isle|listings)\//;
+    const OUT = /^(open-house|studio|3625-waters-edge|8291-procida-isle|8336-vivaro-isle|listings)\//;
     const heroes = new Map();
     for (const [file, html] of pages) {
       if (OUT.test(file)) continue;

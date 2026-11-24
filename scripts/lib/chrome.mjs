@@ -55,7 +55,7 @@ const EN_MORE_LINK = '<a href="/" lang="en" hreflang="en">English</a>';
 
 // Never touched: the internal tools and the single-listing sites keep their
 // own chrome. They do not link kizlo.css today; this is the second guard.
-const OUT_OF_SCOPE = /^(open-house|studio|3625-waters-edge|8291-procida-isle|listings)\//;
+const OUT_OF_SCOPE = /^(open-house|studio|3625-waters-edge|8291-procida-isle|8336-vivaro-isle|listings)\//;
 
 const partial = (name) => readFileSync(join(PARTIALS, name), "utf8").replace(/\n+$/, "");
 
