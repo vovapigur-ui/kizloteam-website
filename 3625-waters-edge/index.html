@@ -246,9 +246,10 @@ window.addEventListener("error", function (ev) {
   .lead h2 { font-family:'Fraunces',serif; font-weight:280; font-size:clamp(2rem,3.6vw,3.2rem); color:var(--white); line-height:1.08; margin-top:1.2rem; text-wrap:balance; }
   .lead h2 em { font-style:italic; color:var(--gold); }
   .lead p.sub { margin-top:1.3rem; color:var(--dim); max-width:44ch; }
-  .agent { display:flex; gap:1.1rem; margin-top:2.5rem; align-items:center; }
-  .agent .ph { width:64px; height:64px; flex:none; border-radius:0; }
-  .agent .ph::before { inset:4px; }
+  .agent { display:flex; gap:1.6rem; margin-top:2.5rem; align-items:flex-end; }
+  .agent .ph { width:200px; aspect-ratio:4/5; flex:none; border-radius:0; }
+  .agent .ph::before { inset:8px; }
+  @media(max-width:560px){ .agent .ph { width:150px; } .agent { gap:1.2rem; } }
   .agent .ph span { font-size:.5rem; padding:.2rem; letter-spacing:.1em; }
   .agent .an { color:var(--white); font-weight:500; font-size:.95rem; }
   .agent .al { font-size:.78rem; color:var(--dim); margin-top:2px; }
